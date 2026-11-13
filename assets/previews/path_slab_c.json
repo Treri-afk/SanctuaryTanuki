@@ -1,0 +1,24 @@
+{
+  "name": "path_slab_c",
+  "triangles": 604,
+  "dims_xyz_m": [
+    1.028,
+    0.938,
+    0.121
+  ],
+  "min_z": -0.005,
+  "center_xy": [
+    -0.027,
+    -0.0
+  ],
+  "collisions": [
+    "path_slab_c-col"
+  ],
+  "materials": [
+    "moss",
+    "stone"
+  ],
+  "warnings": [],
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\path_slab_c.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\path_slab_c.png"
+}

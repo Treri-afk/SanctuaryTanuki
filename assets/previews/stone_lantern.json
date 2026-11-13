@@ -1,0 +1,25 @@
+{
+  "name": "stone_lantern",
+  "triangles": 3774,
+  "dims_xyz_m": [
+    0.969,
+    0.971,
+    1.862
+  ],
+  "min_z": -0.005,
+  "center_xy": [
+    -0.003,
+    -0.002
+  ],
+  "collisions": [
+    "stone_lantern-col"
+  ],
+  "materials": [
+    "moss",
+    "stone",
+    "stone_dark"
+  ],
+  "warnings": [],
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\stone_lantern.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\stone_lantern.png"
+}

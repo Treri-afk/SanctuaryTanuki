@@ -1,0 +1,36 @@
+{
+  "name": "offering_box",
+  "triangles": 4582,
+  "dims_xyz_m": [
+    2.72,
+    1.44,
+    3.344
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [
+    "offering_box-col",
+    "offering_post_-1-col",
+    "offering_post_1-col"
+  ],
+  "materials": [
+    "lacquer_black",
+    "lacquer_red",
+    "metal",
+    "metal_gold",
+    "moss",
+    "rope",
+    "stone",
+    "stone_dark",
+    "straw",
+    "wood_dark",
+    "wood_faded",
+    "wood_light"
+  ],
+  "warnings": [],
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\offering_box.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\offering_box.png"
+}

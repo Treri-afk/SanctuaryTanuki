@@ -1,0 +1,37 @@
+{
+  "name": "bucket",
+  "triangles": 1692,
+  "dims_xyz_m": [
+    0.331,
+    0.318,
+    0.417
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    -0.0,
+    0.0
+  ],
+  "collisions": [
+    "bucket-col"
+  ],
+  "materials": [
+    "bamboo",
+    "metal",
+    "rope",
+    "wood_dark",
+    "wood_faded",
+    "wood_light"
+  ],
+  "warnings": [],
+  "objects": [
+    "bucket",
+    "bucket-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "bucket": 1692,
+    "bucket-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\bucket.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\bucket.png"
+}

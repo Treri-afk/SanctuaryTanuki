@@ -1,0 +1,37 @@
+{
+  "name": "stump_mossy",
+  "triangles": 1356,
+  "dims_xyz_m": [
+    1.33,
+    1.195,
+    0.748
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    -0.02,
+    0.002
+  ],
+  "collisions": [
+    "stump-col"
+  ],
+  "materials": [
+    "bark_cedar",
+    "moss",
+    "wood_cut",
+    "wood_cut_dark"
+  ],
+  "warnings": [],
+  "objects": [
+    "moss",
+    "stump",
+    "stump-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "stump": 396,
+    "moss": 960,
+    "stump-col": 36
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\stump_mossy.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\stump_mossy.png"
+}

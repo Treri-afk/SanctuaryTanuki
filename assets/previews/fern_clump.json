@@ -1,0 +1,29 @@
+{
+  "name": "fern_clump",
+  "triangles": 504,
+  "dims_xyz_m": [
+    0.767,
+    0.65,
+    0.617
+  ],
+  "min_z": -0.001,
+  "center_xy": [
+    -0.023,
+    -0.043
+  ],
+  "collisions": [],
+  "materials": [
+    "fern_dark",
+    "fern_green"
+  ],
+  "warnings": [],
+  "objects": [
+    "fern_blades"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "fern_blades": 504
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\fern_clump.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\fern_clump.png"
+}

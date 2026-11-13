@@ -1,0 +1,29 @@
+{
+  "name": "low_wall",
+  "triangles": 1772,
+  "dims_xyz_m": [
+    2.012,
+    0.398,
+    0.965
+  ],
+  "min_z": -0.005,
+  "center_xy": [
+    -0.001,
+    -0.042
+  ],
+  "collisions": [
+    "low_wall-col"
+  ],
+  "materials": [
+    "moss",
+    "stone",
+    "stone_dark",
+    "wood_dark",
+    "wood_faded"
+  ],
+  "warnings": [
+    "axe Y : 0.40 m au lieu de ~0.3 m"
+  ],
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\low_wall.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\low_wall.png"
+}

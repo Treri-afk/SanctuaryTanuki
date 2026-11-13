@@ -1,0 +1,39 @@
+{
+  "name": "maple_tree",
+  "triangles": 4338,
+  "dims_xyz_m": [
+    7.775,
+    6.066,
+    7.474
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.056,
+    0.084
+  ],
+  "collisions": [
+    "trunk-col"
+  ],
+  "materials": [
+    "foliage_deep",
+    "foliage_light",
+    "foliage_orange",
+    "foliage_red",
+    "moss",
+    "wood_dark"
+  ],
+  "warnings": [],
+  "objects": [
+    "foliage",
+    "trunk",
+    "trunk-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "trunk": 1058,
+    "foliage": 3280,
+    "trunk-col": 44
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\maple_tree.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\maple_tree.png"
+}

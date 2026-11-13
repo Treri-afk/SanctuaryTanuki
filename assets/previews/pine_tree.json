@@ -1,0 +1,36 @@
+{
+  "name": "pine_tree",
+  "triangles": 2780,
+  "dims_xyz_m": [
+    7.295,
+    3.646,
+    9.107
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.019,
+    0.013
+  ],
+  "collisions": [
+    "trunk-col"
+  ],
+  "materials": [
+    "bark_pine",
+    "pine_green",
+    "pine_green_light"
+  ],
+  "warnings": [],
+  "objects": [
+    "foliage",
+    "trunk",
+    "trunk-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "trunk": 540,
+    "foliage": 2240,
+    "trunk-col": 36
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\pine_tree.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\pine_tree.png"
+}

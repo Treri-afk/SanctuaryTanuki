@@ -1,0 +1,25 @@
+{
+  "name": "stone_step",
+  "triangles": 916,
+  "dims_xyz_m": [
+    1.976,
+    0.52,
+    0.206
+  ],
+  "min_z": -0.002,
+  "center_xy": [
+    -0.003,
+    0.002
+  ],
+  "collisions": [
+    "stone_step-col"
+  ],
+  "materials": [
+    "moss",
+    "stone",
+    "stone_dark"
+  ],
+  "warnings": [],
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\stone_step.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\stone_step.png"
+}

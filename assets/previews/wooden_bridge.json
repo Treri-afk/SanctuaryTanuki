@@ -1,0 +1,50 @@
+{
+  "name": "wooden_bridge",
+  "triangles": 3240,
+  "dims_xyz_m": [
+    3.247,
+    1.37,
+    0.893
+  ],
+  "min_z": -0.01,
+  "center_xy": [
+    0.002,
+    0.0
+  ],
+  "collisions": [
+    "bridge_abutment_-1-col",
+    "bridge_abutment_1-col",
+    "bridge_deck-convcol",
+    "bridge_rail_-1-col",
+    "bridge_rail_1-col"
+  ],
+  "materials": [
+    "lacquer_red",
+    "moss",
+    "stone",
+    "stone_dark",
+    "wood_dark",
+    "wood_faded",
+    "wood_light"
+  ],
+  "warnings": [],
+  "objects": [
+    "bridge",
+    "bridge_abutment_-1-col",
+    "bridge_abutment_1-col",
+    "bridge_deck-convcol",
+    "bridge_rail_-1-col",
+    "bridge_rail_1-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "bridge": 3240,
+    "bridge_deck-convcol": 40,
+    "bridge_rail_-1-col": 12,
+    "bridge_rail_1-col": 12,
+    "bridge_abutment_-1-col": 12,
+    "bridge_abutment_1-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\wooden_bridge.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\wooden_bridge.png"
+}

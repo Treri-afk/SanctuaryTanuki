@@ -1,0 +1,34 @@
+{
+  "name": "paper_lantern",
+  "triangles": 1456,
+  "dims_xyz_m": [
+    0.391,
+    0.395,
+    0.598
+  ],
+  "min_z": -0.6,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "lacquer_black",
+    "metal",
+    "paper",
+    "wood_dark"
+  ],
+  "warnings": [],
+  "max_z": -0.002,
+  "objects": [
+    "paper_lantern"
+  ],
+  "empties": [
+    "hang_point"
+  ],
+  "tris_per_object": {
+    "paper_lantern": 1456
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\paper_lantern.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\paper_lantern.png"
+}

@@ -1,0 +1,40 @@
+{
+  "name": "torii_small",
+  "triangles": 2710,
+  "dims_xyz_m": [
+    2.729,
+    0.607,
+    2.418
+  ],
+  "min_z": -0.007,
+  "center_xy": [
+    0.012,
+    0.01
+  ],
+  "collisions": [
+    "pillar_-1-col",
+    "pillar_1-col"
+  ],
+  "materials": [
+    "lacquer_black",
+    "lacquer_red",
+    "moss",
+    "stone",
+    "wood_faded"
+  ],
+  "warnings": [],
+  "max_z": 2.411,
+  "objects": [
+    "pillar_-1-col",
+    "pillar_1-col",
+    "torii_small"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "torii_small": 2710,
+    "pillar_-1-col": 12,
+    "pillar_1-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\torii_small.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\torii_small.png"
+}

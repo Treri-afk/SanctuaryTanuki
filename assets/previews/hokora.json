@@ -1,0 +1,41 @@
+{
+  "name": "hokora",
+  "triangles": 3336,
+  "dims_xyz_m": [
+    1.236,
+    0.931,
+    1.627
+  ],
+  "min_z": -0.014,
+  "center_xy": [
+    -0.018,
+    -0.035
+  ],
+  "collisions": [
+    "hokora-col"
+  ],
+  "materials": [
+    "lacquer_black",
+    "lacquer_red",
+    "moss",
+    "paper",
+    "stone",
+    "stone_dark",
+    "wood_dark",
+    "wood_faded",
+    "wood_light"
+  ],
+  "warnings": [],
+  "max_z": 1.613,
+  "objects": [
+    "hokora",
+    "hokora-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "hokora": 3336,
+    "hokora-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\hokora.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\hokora.png"
+}

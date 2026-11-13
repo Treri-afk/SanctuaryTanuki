@@ -1,0 +1,42 @@
+{
+  "name": "haiden",
+  "triangles": 4960,
+  "dims_xyz_m": [
+    4.4,
+    3.834,
+    4.124
+  ],
+  "min_z": -0.004,
+  "center_xy": [
+    0.0,
+    -0.067
+  ],
+  "collisions": [
+    "haiden_body-col",
+    "haiden_floor-col",
+    "haiden_post_0-col",
+    "haiden_post_1-col",
+    "haiden_post_2-col",
+    "haiden_post_3-col",
+    "haiden_rail_-1-col",
+    "haiden_rail_1-col",
+    "haiden_rail_side_-1-col",
+    "haiden_rail_side_1-col",
+    "haiden_step_a-col",
+    "haiden_step_b-col"
+  ],
+  "materials": [
+    "lacquer_black",
+    "lacquer_red",
+    "moss",
+    "paper",
+    "stone",
+    "stone_dark",
+    "wood_dark",
+    "wood_faded",
+    "wood_light"
+  ],
+  "warnings": [],
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\haiden.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\haiden.png"
+}

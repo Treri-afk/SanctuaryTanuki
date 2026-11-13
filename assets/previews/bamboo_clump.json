@@ -1,0 +1,36 @@
+{
+  "name": "bamboo_clump",
+  "triangles": 2720,
+  "dims_xyz_m": [
+    2.718,
+    2.641,
+    5.026
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.092,
+    -0.188
+  ],
+  "collisions": [
+    "bamboo_clump-col"
+  ],
+  "materials": [
+    "bamboo_green",
+    "bamboo_leaf",
+    "bamboo_node"
+  ],
+  "warnings": [],
+  "objects": [
+    "bamboo_clump-col",
+    "leaves",
+    "stalks"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "stalks": 1680,
+    "leaves": 1040,
+    "bamboo_clump-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\bamboo_clump.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\bamboo_clump.png"
+}

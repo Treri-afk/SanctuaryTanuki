@@ -1,0 +1,36 @@
+{
+  "name": "fox_statue",
+  "triangles": 3042,
+  "dims_xyz_m": [
+    0.88,
+    0.66,
+    0.818
+  ],
+  "min_z": -0.013,
+  "center_xy": [
+    -0.001,
+    -0.015
+  ],
+  "collisions": [
+    "fox_statue-col"
+  ],
+  "materials": [
+    "lacquer_red",
+    "moss",
+    "stone",
+    "stone_dark"
+  ],
+  "warnings": [],
+  "max_z": 0.804,
+  "objects": [
+    "fox_statue",
+    "fox_statue-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "fox_statue": 3042,
+    "fox_statue-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\fox_statue.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\fox_statue.png"
+}

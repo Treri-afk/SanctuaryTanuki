@@ -1,0 +1,32 @@
+{
+  "name": "leaf_pile",
+  "triangles": 1982,
+  "dims_xyz_m": [
+    0.922,
+    0.841,
+    0.327
+  ],
+  "min_z": 0.007,
+  "center_xy": [
+    -0.008,
+    0.02
+  ],
+  "collisions": [],
+  "materials": [
+    "foliage_light",
+    "foliage_orange",
+    "foliage_red"
+  ],
+  "warnings": [],
+  "objects": [
+    "leaf_mound",
+    "leaf_pieces"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "leaf_mound": 178,
+    "leaf_pieces": 1804
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\leaf_pile.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\leaf_pile.png"
+}

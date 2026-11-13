@@ -1,0 +1,68 @@
+{
+  "name": "ema_rack",
+  "triangles": 3740,
+  "dims_xyz_m": [
+    1.5,
+    0.86,
+    2.095
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    -0.0,
+    0.0
+  ],
+  "collisions": [
+    "ema_rack_bars-col",
+    "ema_rack_post_l-col",
+    "ema_rack_post_r-col",
+    "ema_rack_roof-col"
+  ],
+  "materials": [
+    "moss",
+    "paper",
+    "rope",
+    "stone",
+    "wood_dark",
+    "wood_faded",
+    "wood_light"
+  ],
+  "warnings": [],
+  "objects": [
+    "ema_01",
+    "ema_02",
+    "ema_03",
+    "ema_04",
+    "ema_05",
+    "ema_06",
+    "ema_rack_bars-col",
+    "ema_rack_post_l-col",
+    "ema_rack_post_r-col",
+    "ema_rack_roof-col",
+    "frame"
+  ],
+  "empties": [
+    "ema_slot_01",
+    "ema_slot_02",
+    "ema_slot_03",
+    "ema_slot_04",
+    "ema_slot_05",
+    "ema_slot_06",
+    "ema_slot_07",
+    "ema_slot_08"
+  ],
+  "tris_per_object": {
+    "frame": 2024,
+    "ema_01": 232,
+    "ema_02": 340,
+    "ema_03": 232,
+    "ema_04": 340,
+    "ema_05": 340,
+    "ema_06": 232,
+    "ema_rack_post_l-col": 12,
+    "ema_rack_post_r-col": 12,
+    "ema_rack_roof-col": 12,
+    "ema_rack_bars-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\ema_rack.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\ema_rack.png"
+}

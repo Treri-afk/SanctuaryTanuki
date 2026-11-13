@@ -1,0 +1,38 @@
+{
+  "name": "cedar_tree_b",
+  "triangles": 2416,
+  "dims_xyz_m": [
+    5.578,
+    6.109,
+    12.0
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.325,
+    -0.099
+  ],
+  "collisions": [
+    "trunk-col"
+  ],
+  "materials": [
+    "bark_cedar",
+    "foliage_dry",
+    "foliage_green",
+    "foliage_green_light",
+    "foliage_olive"
+  ],
+  "warnings": [],
+  "objects": [
+    "foliage",
+    "trunk",
+    "trunk-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "trunk": 416,
+    "foliage": 2000,
+    "trunk-col": 36
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\cedar_tree_b.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\cedar_tree_b.png"
+}

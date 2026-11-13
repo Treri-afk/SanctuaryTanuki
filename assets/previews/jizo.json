@@ -1,0 +1,35 @@
+{
+  "name": "jizo",
+  "triangles": 2374,
+  "dims_xyz_m": [
+    0.643,
+    0.529,
+    0.916
+  ],
+  "min_z": -0.007,
+  "center_xy": [
+    0.026,
+    0.005
+  ],
+  "collisions": [
+    "jizo-col"
+  ],
+  "materials": [
+    "lacquer_red",
+    "moss",
+    "stone",
+    "stone_dark"
+  ],
+  "warnings": [],
+  "objects": [
+    "jizo",
+    "jizo-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "jizo": 2374,
+    "jizo-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\jizo.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\jizo.png"
+}

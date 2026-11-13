@@ -1,0 +1,39 @@
+{
+  "name": "woodpile",
+  "triangles": 2380,
+  "dims_xyz_m": [
+    1.42,
+    0.742,
+    1.002
+  ],
+  "min_z": -0.01,
+  "center_xy": [
+    0.0,
+    -0.021
+  ],
+  "collisions": [
+    "woodpile-col"
+  ],
+  "materials": [
+    "moss",
+    "shingle",
+    "shingle_dark",
+    "shingle_light",
+    "stone",
+    "wood_dark",
+    "wood_faded",
+    "wood_light"
+  ],
+  "warnings": [],
+  "objects": [
+    "woodpile",
+    "woodpile-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "woodpile": 2380,
+    "woodpile-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\woodpile.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\woodpile.png"
+}

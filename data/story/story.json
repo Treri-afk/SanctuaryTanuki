@@ -1,0 +1,2239 @@
+{
+  "format": "gardien-story",
+  "version": 1,
+  "title": "Gardien de sanctuaire — automne",
+  "settings": {
+    "visits_per_day": [
+      2,
+      3
+    ],
+    "first_visit_delay": [
+      25,
+      50
+    ],
+    "visit_gap": [
+      50,
+      100
+    ],
+    "start_coins": 5,
+    "visitor_patience": 150,
+    "night_chance": 1.0,
+    "harvest_per_day": 12
+  },
+  "spots": [
+    "offrandes",
+    "ema",
+    "etang",
+    "the",
+    "jardin",
+    "arbre",
+    "torii"
+  ],
+  "characters": [
+    {
+      "id": "vieille_dame",
+      "name": "Madame Fumiko",
+      "color": "#B88599",
+      "expressions": [
+        "neutre",
+        "sourire",
+        "triste",
+        "surpris"
+      ],
+      "affection_start": 0,
+      "affection_max": 10,
+      "notes": "Veuve. Montait chaque automne avec son mari. Son fils veut qu'elle parte en ville.",
+      "coins": 3,
+      "gifts": {
+        "feuille": "love",
+        "kaki": "like",
+        "fleur": "like",
+        "champignon": "dislike"
+      },
+      "gift_lines": {
+        "love": "Une feuille d'érable... Mon mari en glissait une dans chaque lettre qu'il m'écrivait. Merci, mon enfant.",
+        "like": "Comme c'est gentil. Je la mettrai près de la fenêtre.",
+        "dislike": "Oh, ces champignons... Je n'ai jamais su les digérer. Mais merci pour l'intention."
+      }
+    },
+    {
+      "id": "etudiant",
+      "name": "Kenta",
+      "color": "#6C8EBF",
+      "expressions": [
+        "neutre",
+        "sourire",
+        "inquiet",
+        "gene"
+      ],
+      "affection_start": 0,
+      "affection_max": 10,
+      "notes": "Lycéen du village. Examen d'entrée à l'université dans trois jours.",
+      "coins": 1,
+      "gifts": {
+        "plume": "love",
+        "kaki": "like",
+        "chataigne": "like",
+        "galet": "dislike"
+      },
+      "gift_lines": {
+        "love": "Une plume de geai ?! Ma grand-mère disait que ça porte chance aux examens. Je la glisse dans ma trousse !",
+        "like": "Merci ! J'ai toujours faim en révisant.",
+        "dislike": "Un... caillou ? Euh. Merci. Je vais le... poser quelque part."
+      }
+    },
+    {
+      "id": "moine",
+      "name": "Le moine Sōen",
+      "color": "#8A7D5C",
+      "expressions": [
+        "neutre",
+        "sourire",
+        "pensif"
+      ],
+      "affection_start": 0,
+      "affection_max": 10,
+      "notes": "Moine itinérant, passe une fois l'an sur la route du col. A connu Seiji, l'ancien gardien.",
+      "coins": 2,
+      "gifts": {
+        "champignon": "love",
+        "pomme_pin": "like",
+        "galet": "like",
+        "fleur": "dislike"
+      },
+      "gift_lines": {
+        "love": "Des shiitakes de la montagne. Ce soir, ma soupe sera digne d'un temple. Merci.",
+        "like": "Un présent simple. Ce sont les meilleurs.",
+        "dislike": "La higanbana pousse près des tombes... Je préfère la laisser où elle est née."
+      }
+    },
+    {
+      "id": "fillette",
+      "name": "Hina",
+      "color": "#E39A6B",
+      "expressions": [
+        "neutre",
+        "sourire",
+        "triste",
+        "surpris"
+      ],
+      "affection_start": 0,
+      "affection_max": 10,
+      "notes": "Huit ans. Cherche son chat Mochi (blanc à taches rousses : c'est le chat de la mare).",
+      "coins": 1,
+      "gifts": {
+        "kaki": "love",
+        "fleur": "like",
+        "galet": "like",
+        "champignon": "dislike"
+      },
+      "gift_lines": {
+        "love": "Un kaki ! C'est mon fruit préféré du monde entier ! Mochi aussi il aime bien, enfin je crois.",
+        "like": "Elle est jolie ! Je vais la montrer à maman.",
+        "dislike": "Beurk, ça ressemble à une limace..."
+      }
+    },
+    {
+      "id": "facteur",
+      "name": "Monsieur Tanaka",
+      "color": "#7A9A6B",
+      "expressions": [
+        "neutre",
+        "sourire",
+        "essouffle"
+      ],
+      "affection_start": 0,
+      "affection_max": 10,
+      "notes": "Facteur de la vallée. Ronchon de façade.",
+      "coins": 2,
+      "gifts": {
+        "chataigne": "love",
+        "kaki": "like",
+        "pomme_pin": "like",
+        "feuille": "dislike"
+      },
+      "gift_lines": {
+        "love": "Des châtaignes ! Grillées au poêle ce soir, avec un peu de sel. Vous me connaissez trop bien.",
+        "like": "Hm. Merci. Ça me fera un en-cas pour la descente.",
+        "dislike": "Encore des feuilles ? J'en ai plein ma sacoche tous les jours, des feuilles."
+      }
+    },
+    {
+      "id": "renard",
+      "name": "Le renard roux",
+      "color": "#D9822B",
+      "expressions": [
+        "neutre",
+        "curieux"
+      ],
+      "affection_start": 0,
+      "affection_max": 10,
+      "coins": 0,
+      "animal": true,
+      "notes": "Apparaît la nuit. S'approche un peu plus à chaque fois si on reste calme."
+    },
+    {
+      "id": "tanuki",
+      "name": "Le tanuki",
+      "color": "#7A6A55",
+      "expressions": [
+        "neutre",
+        "penaud"
+      ],
+      "affection_start": 0,
+      "affection_max": 10,
+      "coins": 0,
+      "animal": true,
+      "notes": "Voleur d'offrandes, au fond pas méchant."
+    }
+  ],
+  "visits": [
+    {
+      "id": "fumiko_j1",
+      "character": "vieille_dame",
+      "title": "Première rencontre",
+      "day_min": 1,
+      "day_max": 1,
+      "priority": 10,
+      "once": true,
+      "spot": "offrandes",
+      "wish": "Que la montagne se souvienne de moi.",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "neutre",
+          "text": "Oh... il y a quelqu'un qui s'occupe encore du sanctuaire. J'avais fini par croire qu'on l'avait oublié.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "sourire",
+          "text": "Mon mari m'amenait ici chaque automne, quand les érables rougissaient. Il disait que la montagne nous regardait passer.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "neutre",
+          "text": "Les marches sont plus longues qu'avant. Ou bien c'est moi qui suis plus lente.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n4": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Reposez-vous autant que vous voulez. Le banc près de l'étang est au soleil.",
+              "next": "n5a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "vieille_dame",
+                  "delta": 2
+                },
+                {
+                  "type": "flag",
+                  "flag": "fumiko_revient",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Vous reviendrez ? Le lieu sera prêt pour vous.",
+              "next": "n5b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "vieille_dame",
+                  "delta": 1
+                },
+                {
+                  "type": "flag",
+                  "flag": "fumiko_revient",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "(Hocher la tête sans rien dire.)",
+              "next": "n5c",
+              "effects": [],
+              "conditions": []
+            }
+          ],
+          "x": 1050,
+          "y": 90
+        },
+        "n5a": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "sourire",
+          "text": "Au soleil... Il aimait le soleil. Merci, mon enfant.",
+          "next": "n6",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        },
+        "n5b": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "sourire",
+          "text": "Peut-être, oui. Si mes jambes me portent... Je reviendrai, je crois.",
+          "next": "n6",
+          "effects": [],
+          "x": 1380,
+          "y": 250
+        },
+        "n5c": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "neutre",
+          "text": "Vous avez raison. Il n'y a pas grand-chose à dire, ici. C'est ce qui est bien.",
+          "next": "n6",
+          "effects": [],
+          "x": 1380,
+          "y": 440
+        },
+        "n6": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "neutre",
+          "text": "Je vais accrocher un ema avant de redescendre. Un tout petit vœu.",
+          "next": "fin",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "soen_j1",
+      "character": "moine",
+      "title": "Le moine de passage",
+      "day_min": 1,
+      "day_max": 1,
+      "priority": 6,
+      "once": true,
+      "spot": "arbre",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "pensif",
+          "text": "Cet érable... Il a perdu une branche depuis la dernière fois. Mais il tient.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "neutre",
+          "text": "Je passe ici une fois l'an, sur la route du col. Seiji, l'ancien gardien, me servait toujours un thé trop fort.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Vous connaissiez Seiji ?",
+              "next": "n4a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "moine",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Je peux vous préparer un thé, si vous voulez.",
+              "next": "n4b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "moine",
+                  "delta": 2
+                },
+                {
+                  "type": "flag",
+                  "flag": "soen_the",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "La route du col est longue ?",
+              "next": "n4c",
+              "effects": [],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4a": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "sourire",
+          "text": "Un peu. Assez pour savoir qu'il parlait plus aux arbres qu'aux gens. Il vous aurait plu, je crois.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4b": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "sourire",
+          "text": "Gardez-le pour un autre jour. Je repasserai avant les neiges, et je vous le rappellerai.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 280
+        },
+        "n4c": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "neutre",
+          "text": "Longue, et belle. On y oublie ce qu'on était venu chercher. C'est le but.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 470
+        },
+        "n5": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "neutre",
+          "text": "Prenez soin de l'arbre. Il voit plus loin que nous.",
+          "next": "fin",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        }
+      }
+    },
+    {
+      "id": "tanaka_j1",
+      "character": "facteur",
+      "title": "Le courrier",
+      "day_min": 1,
+      "day_max": 1,
+      "priority": 3,
+      "once": true,
+      "spot": "torii",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "essouffle",
+          "text": "Trois cent... trente... marches. Qui a eu l'idée de construire un sanctuaire là-haut ?",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "Courrier pour le sanctuaire. Enfin, pour « le gardien ». C'est vous, maintenant, il faut croire.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Merci d'être monté jusqu'ici.",
+              "next": "n4a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "facteur",
+                  "delta": 2
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Vous pourriez le laisser en bas, la prochaine fois.",
+              "next": "n4b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "facteur",
+                  "delta": -1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4a": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "sourire",
+          "text": "Bah. Les jambes, ça s'entretient. Et la vue vaut bien un détour, je l'admets.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4b": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "C'est le règlement. Le courrier se remet en main propre. Même à trois cent trente marches.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 280
+        },
+        "n5": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Il vous tend une enveloppe jaunie, sans timbre. Au dos, une seule ligne : « Pour celui qui reste. »",
+          "next": "n6",
+          "effects": [
+            {
+              "type": "flag",
+              "flag": "lettre_recue",
+              "value": true
+            }
+          ],
+          "x": 1380,
+          "y": 60
+        },
+        "n6": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "Bon. À la prochaine. Si mes genoux veulent bien.",
+          "next": "fin",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "kenta_j2",
+      "character": "etudiant",
+      "title": "L'examen",
+      "day_min": 2,
+      "day_max": 2,
+      "priority": 10,
+      "once": true,
+      "spot": "offrandes",
+      "wish": "Que mes examens se passent bien.",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "inquiet",
+          "text": "Pardon, je ne dérange pas ? Je suis monté en courant depuis le village... j'ai un examen dans trois jours.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "gene",
+          "text": "Je sais, c'est ridicule de venir prier pour ça. Mais je n'ai pas réussi à réviser de toute la semaine.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Personne n'est trop pressé pour être écouté.",
+              "next": "n4a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "etudiant",
+                  "delta": 2
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Respirez. L'escalier vous a déjà fait faire le plus dur.",
+              "next": "n4b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "etudiant",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Vous devriez plutôt réviser, non ?",
+              "next": "n4c",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "etudiant",
+                  "delta": -1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4a": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "sourire",
+          "text": "C'est gentil... Ici, on dirait que le temps s'arrête. J'aimerais pouvoir en garder un peu.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4b": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "sourire",
+          "text": "Ha ! C'est vrai. Mes jambes tremblent, mais ma tête est plus calme.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 280
+        },
+        "n4c": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "gene",
+          "text": "Oui... Oui, vous avez raison. Je redescends tout de suite.",
+          "next": "fin",
+          "effects": [],
+          "x": 1050,
+          "y": 470
+        },
+        "n5": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "neutre",
+          "text": "Je vais écrire mon vœu sur un ema. Je reviendrai vous dire comment ça s'est passé, promis.",
+          "next": "fin",
+          "effects": [
+            {
+              "type": "flag",
+              "flag": "kenta_promesse",
+              "value": true
+            }
+          ],
+          "x": 1380,
+          "y": 60
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1380,
+          "y": 250
+        }
+      }
+    },
+    {
+      "id": "hina_j2",
+      "character": "fillette",
+      "title": "Le chat perdu",
+      "day_min": 2,
+      "day_max": 2,
+      "priority": 8,
+      "once": true,
+      "spot": "etang",
+      "wish": "Que Mochi revienne à la maison.",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "triste",
+          "text": "Bonjour... Vous n'avez pas vu un chat ? Il est blanc avec des taches rousses. Il s'appelle Mochi.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "neutre",
+          "text": "Il s'enfuit toujours dans la montagne. Maman dit qu'il reviendra quand il aura faim, mais ça fait deux jours.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "J'ai vu un chat comme ça près de la mare, dans la forêt.",
+              "next": "n4a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "fillette",
+                  "delta": 2
+                },
+                {
+                  "type": "flag",
+                  "flag": "hina_indice",
+                  "value": true
+                }
+              ],
+              "conditions": [
+                {
+                  "type": "flag",
+                  "flag": "chat_vu",
+                  "is": true
+                }
+              ]
+            },
+            {
+              "text": "Je garderai l'œil ouvert, promis.",
+              "next": "n4b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "fillette",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Les chats savent toujours rentrer.",
+              "next": "n4c",
+              "effects": [],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4a": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "surpris",
+          "text": "C'est vrai ?! La mare après le petit pont ? Je... je n'ai pas le droit d'aller seule dans la forêt.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4b": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "sourire",
+          "text": "Merci. Mochi aime bien les endroits au soleil, et les gens qui ont l'air gentils.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 280
+        },
+        "n4c": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "triste",
+          "text": "Peut-être...",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 470
+        },
+        "n5": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "neutre",
+          "text": "Je laisse un ema pour lui. Les dieux d'ici, ils s'occupent aussi des chats ?",
+          "next": "fin",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        }
+      }
+    },
+    {
+      "id": "tanaka_j2",
+      "character": "facteur",
+      "title": "Pour la vue",
+      "day_min": 2,
+      "day_max": 3,
+      "priority": 2,
+      "once": true,
+      "spot": "torii",
+      "wish": "",
+      "conditions": [
+        {
+          "type": "affection",
+          "character": "facteur",
+          "op": ">=",
+          "value": 1
+        }
+      ],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "sourire",
+          "text": "Pas de courrier aujourd'hui. Je suis monté... comme ça. Pour la vue.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "Ne le dites à personne. J'ai une réputation de ronchon à tenir, en bas.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Votre secret est bien gardé.",
+              "next": "n4",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "facteur",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Vous êtes le bienvenu, avec ou sans lettre.",
+              "next": "n4",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "facteur",
+                  "delta": 2
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "sourire",
+          "text": "Hm. Bon. Ce n'est pas désagréable, ici.",
+          "next": "fin",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "fumiko_j3",
+      "character": "vieille_dame",
+      "title": "Une dernière fois",
+      "day_min": 3,
+      "day_max": 3,
+      "priority": 10,
+      "once": true,
+      "spot": "offrandes",
+      "wish": "Merci d'avoir veillé sur ce lieu.",
+      "conditions": [
+        {
+          "type": "flag",
+          "flag": "fumiko_revient",
+          "is": true
+        }
+      ],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "sourire",
+          "text": "Me voilà. Vous voyez ? Mes jambes m'ont portée jusqu'ici, une dernière fois.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "affection",
+                  "character": "vieille_dame",
+                  "op": ">=",
+                  "value": 3
+                }
+              ],
+              "next": "n3a"
+            }
+          ],
+          "else": "n3b",
+          "x": 390,
+          "y": 90
+        },
+        "n3a": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "sourire",
+          "text": "Je me suis assise sur votre banc, au soleil. J'y ai parlé à mon mari, longtemps. Il aurait aimé vous connaître.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n3b": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "neutre",
+          "text": "J'ai relu mon ema, l'autre jour, en redescendant. Je m'étais promis de ne pas pleurer.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 250
+        },
+        "n4": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "triste",
+          "text": "Mon fils veut que je vienne vivre en ville, chez lui. C'est loin, la ville. Il n'y a pas de montagne.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n5": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Je veillerai sur ce lieu pour vous deux.",
+              "next": "n6",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "vieille_dame",
+                  "delta": 2
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "La montagne se souviendra de vous. Vous l'avez dit vous-même.",
+              "next": "n6",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "vieille_dame",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 1380,
+          "y": 60
+        },
+        "n6": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "sourire",
+          "text": "Alors je peux redescendre tranquille. Merci d'avoir pris soin de nous.",
+          "next": "n7",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        },
+        "n7": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "neutre",
+          "text": "Sonnez la cloche pour moi, ce soir. Doucement.",
+          "next": "fin",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2370,
+          "y": 90
+        }
+      }
+    },
+    {
+      "id": "kenta_j3",
+      "character": "etudiant",
+      "title": "Le résultat",
+      "day_min": 3,
+      "day_max": 3,
+      "priority": 8,
+      "once": true,
+      "spot": "ema",
+      "wish": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "flag": "kenta_promesse",
+          "is": true
+        }
+      ],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "neutre",
+          "text": "C'est moi ! Je vous avais promis de revenir.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "affection",
+                  "character": "etudiant",
+                  "op": ">=",
+                  "value": 2
+                }
+              ],
+              "next": "n3a"
+            }
+          ],
+          "else": "n3b",
+          "x": 390,
+          "y": 90
+        },
+        "n3a": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "sourire",
+          "text": "Je l'ai eu ! Enfin, je crois. Je suis sorti de la salle en souriant, ça n'arrive jamais.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n3b": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "gene",
+          "text": "Ça ne s'est pas très bien passé. J'ai tout oublié en voyant la feuille. Mais bizarrement, ça va.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 250
+        },
+        "n4": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "neutre",
+          "text": "En montant, j'ai compté les marches. Trois cent trente. Je n'avais jamais remarqué qu'il y en avait autant.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n5": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Revenez quand vous voulez les compter à nouveau.",
+              "next": "n6a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "etudiant",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Et maintenant, qu'allez-vous faire ?",
+              "next": "n6b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "etudiant",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 1380,
+          "y": 60
+        },
+        "n6a": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "sourire",
+          "text": "Compter les marches... Oui. Je crois que je reviendrai.",
+          "next": "fin",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        },
+        "n6b": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "neutre",
+          "text": "Respirer, d'abord. Puis... je ne sais pas. C'est la première fois que ça ne me fait pas peur.",
+          "next": "fin",
+          "effects": [],
+          "x": 1710,
+          "y": 280
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "hina_j3",
+      "character": "fillette",
+      "title": "Mochi est rentré",
+      "day_min": 3,
+      "day_max": 3,
+      "priority": 7,
+      "once": true,
+      "spot": "etang",
+      "wish": "",
+      "conditions": [
+        {
+          "type": "affection",
+          "character": "fillette",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "sourire",
+          "text": "Gardien ! Mochi est rentré !",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "flag",
+                  "flag": "hina_indice",
+                  "is": true
+                }
+              ],
+              "next": "n3a"
+            }
+          ],
+          "else": "n3b",
+          "x": 390,
+          "y": 90
+        },
+        "n3a": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "sourire",
+          "text": "Papa m'a accompagnée jusqu'à la mare, et il dormait au soleil sur un rocher, comme vous aviez dit !",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n3b": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "sourire",
+          "text": "Il est rentré tout seul, hier soir, avec de la mousse plein les pattes. Il était sûrement ici !",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 250
+        },
+        "n4": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "neutre",
+          "text": "Je vous ai apporté un kaki. C'est pour vous, ou pour les dieux, comme vous voulez.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n5": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Je le partagerai avec eux.",
+              "next": "n6",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "fillette",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Merci, Hina. Prends soin de Mochi.",
+              "next": "n6",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "fillette",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 1380,
+          "y": 60
+        },
+        "n6": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "sourire",
+          "text": "À bientôt ! Je reviendrai avec Mochi, s'il veut bien.",
+          "next": "fin",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "soen_j3",
+      "character": "moine",
+      "title": "Avant les neiges",
+      "day_min": 3,
+      "day_max": 3,
+      "priority": 5,
+      "once": true,
+      "spot": "arbre",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "neutre",
+          "text": "Je repars vers le col. Les premières neiges ne vont plus tarder.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "flag",
+                  "flag": "soen_the",
+                  "is": true
+                }
+              ],
+              "next": "n3a"
+            }
+          ],
+          "else": "n3b",
+          "x": 390,
+          "y": 90
+        },
+        "n3a": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "sourire",
+          "text": "Vous m'aviez promis un thé. Je vous en fais grâce : à vos gestes, je vois que vous l'avez déjà appris.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n3b": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "neutre",
+          "text": "Le lieu a changé depuis ma venue. Les feuilles sont balayées, l'eau est claire. On sent qu'on y vit de nouveau.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 250
+        },
+        "n4": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "pensif",
+          "text": "Seiji disait qu'un sanctuaire n'appartient pas à son gardien. C'est le gardien qui lui appartient, un peu.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n5": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Je commence à comprendre ce qu'il voulait dire.",
+              "next": "n6",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "moine",
+                  "delta": 2
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Revenez au printemps.",
+              "next": "n6",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "moine",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 1380,
+          "y": 60
+        },
+        "n6": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "sourire",
+          "text": "Au printemps, alors. Prenez soin de l'arbre.",
+          "next": "fin",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "nuit_arrivee",
+      "kind": "night",
+      "character": "narrateur",
+      "title": "La première nuit",
+      "day_min": 1,
+      "day_max": 1,
+      "priority": 10,
+      "once": true,
+      "actor": "",
+      "spot": "offrandes",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "La cloche se tait. Pour la première fois depuis des mois, quelqu'un va dormir au sanctuaire.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "gardien",
+          "expr": "neutre",
+          "text": "Seiji, l'ancien gardien, ne m'avait écrit qu'une phrase pour me faire monter : « La montagne a besoin de quelqu'un qui reste. »",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Je resterai.",
+              "next": "n4a",
+              "effects": [
+                {
+                  "type": "flag",
+                  "flag": "gardien_reste",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "On verra bien.",
+              "next": "n4b",
+              "effects": [
+                {
+                  "type": "flag",
+                  "flag": "gardien_doute",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4a": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Le vent passe dans les cèdres. On dirait qu'il a entendu.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4b": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Le vent passe dans les cèdres, sans rien promettre non plus.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 280
+        },
+        "n5": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Au loin, un renard glapit. Une seule fois.",
+          "next": "fin",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        }
+      }
+    },
+    {
+      "id": "renard_1",
+      "kind": "night",
+      "character": "renard",
+      "title": "Le renard sort de l'ombre",
+      "day_min": 2,
+      "day_max": 3,
+      "priority": 8,
+      "once": true,
+      "actor": "renard",
+      "spot": "offrandes",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Un renard roux sort de l'ombre des cèdres. Il s'arrête à quelques pas, les oreilles dressées.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Rester parfaitement immobile.",
+              "next": "n3a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "renard",
+                  "delta": 2
+                },
+                {
+                  "type": "flag",
+                  "flag": "renard_confiance",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Lui parler tout doucement.",
+              "next": "n3b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "renard",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "S'accroupir et lui tendre la main.",
+              "next": "n3c",
+              "effects": [],
+              "conditions": []
+            }
+          ],
+          "x": 390,
+          "y": 90
+        },
+        "n3a": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Il vous observe longtemps. Puis il baille, comme si vous n'étiez qu'une lanterne de plus.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n3b": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Une oreille pivote vers vous. Il écoute, sans bouger.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 250
+        },
+        "n3c": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Il recule d'un bond. Trop vite. Il garde ses distances, maintenant.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 440
+        },
+        "n4": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Puis il disparaît entre les lanternes. Il reviendra peut-être.",
+          "next": "fin",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "renard_2",
+      "kind": "night",
+      "character": "renard",
+      "title": "Un ema très ancien",
+      "day_min": 2,
+      "day_max": 3,
+      "priority": 7,
+      "once": true,
+      "actor": "renard",
+      "spot": "offrandes",
+      "wish": "",
+      "conditions": [
+        {
+          "type": "affection",
+          "character": "renard",
+          "op": ">=",
+          "value": 2
+        },
+        {
+          "type": "visited",
+          "visit": "renard_1",
+          "is": true
+        }
+      ],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Le renard est revenu. Cette fois, il s'assoit au pied de la lanterne, tout près.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Il dépose quelque chose dans l'herbe : une plaquette de bois à demi rongée. Un ema, très ancien.",
+          "next": "n3",
+          "effects": [
+            {
+              "type": "flag",
+              "flag": "ema_ancien",
+              "value": true
+            }
+          ],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "line",
+          "speaker": "gardien",
+          "expr": "neutre",
+          "text": "Il y a un nom gravé au dos... « Seiji ». Et une date, d'il y a quarante ans.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n4": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Le remercier d'un salut.",
+              "next": "n5",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "renard",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Serrer l'ema contre vous.",
+              "next": "n5",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "renard",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 1050,
+          "y": 90
+        },
+        "n5": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Le renard cligne lentement des yeux, puis s'en va sans se presser.",
+          "next": "fin",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        }
+      }
+    },
+    {
+      "id": "tanuki_1",
+      "kind": "night",
+      "character": "tanuki",
+      "title": "Le voleur d'offrandes",
+      "day_min": 2,
+      "day_max": 3,
+      "priority": 7,
+      "once": true,
+      "actor": "tanuki",
+      "spot": "offrandes",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Un bruit de pièces, du côté du tronc à offrandes.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Un tanuki bedonnant détale, les joues gonflées, avec un petit tintement à chaque pas.",
+          "next": "n3",
+          "effects": [
+            {
+              "type": "coins",
+              "delta": -3
+            }
+          ],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Le suivre dans la nuit.",
+              "next": "n4a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "tanuki",
+                  "delta": 1
+                },
+                {
+                  "type": "flag",
+                  "flag": "tanuki_cachette",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Le laisser filer en riant.",
+              "next": "n4b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "tanuki",
+                  "delta": 2
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4a": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Vous le perdez près du petit pont. Mais vous savez maintenant où il se cache.",
+          "next": "fin",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4b": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Après tout, les dieux d'ici ont toujours eu le sens de l'humour.",
+          "next": "fin",
+          "effects": [],
+          "x": 1050,
+          "y": 280
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "tanuki_2",
+      "kind": "night",
+      "character": "tanuki",
+      "title": "Le tanuki penaud",
+      "day_min": 3,
+      "day_max": 3,
+      "priority": 9,
+      "once": true,
+      "actor": "tanuki",
+      "spot": "offrandes",
+      "wish": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "flag": "tanuki_cachette",
+          "is": true
+        }
+      ],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "penaud",
+          "text": "Le tanuki revient, la tête basse. Il pousse devant lui une petite bourse en tissu.",
+          "next": "n2",
+          "effects": [
+            {
+              "type": "coins",
+              "delta": 6
+            }
+          ],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Dedans, vos pièces. Et quelques autres, qu'il a dû trouver ailleurs.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Merci... je crois ?",
+              "next": "n4",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "tanuki",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Garde-en une pour toi.",
+              "next": "n4",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "tanuki",
+                  "delta": 2
+                },
+                {
+                  "type": "coins",
+                  "delta": -1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Il repart en se dandinant, l'air très fier de lui.",
+          "next": "fin",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "chat_nuit",
+      "kind": "night",
+      "character": "narrateur",
+      "title": "Le chat de la mare",
+      "day_min": 2,
+      "day_max": 3,
+      "priority": 2,
+      "once": true,
+      "actor": "chat",
+      "spot": "offrandes",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Le chat blanc taché de roux est monté jusqu'ici. Il se roule en boule contre une lanterne encore tiède.",
+          "next": "n2",
+          "effects": [
+            {
+              "type": "flag",
+              "flag": "chat_vu",
+              "value": true
+            }
+          ],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Le caresser.",
+              "next": "n3a",
+              "effects": [],
+              "conditions": []
+            },
+            {
+              "text": "Le laisser dormir.",
+              "next": "n3b",
+              "effects": [],
+              "conditions": []
+            }
+          ],
+          "x": 390,
+          "y": 90
+        },
+        "n3a": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Il ronronne si fort qu'on l'entend jusqu'au torii.",
+          "next": "fin",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n3b": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Il ouvre un oeil, le referme. Il a l'air de connaître les lieux mieux que vous.",
+          "next": "fin",
+          "effects": [],
+          "x": 720,
+          "y": 250
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        }
+      }
+    },
+    {
+      "id": "fumiko_lanterne",
+      "kind": "night",
+      "character": "narrateur",
+      "title": "Une lanterne sur les marches",
+      "day_min": 3,
+      "day_max": 3,
+      "priority": 9,
+      "once": true,
+      "actor": "",
+      "spot": "offrandes",
+      "wish": "",
+      "conditions": [
+        {
+          "type": "visited",
+          "visit": "fumiko_j3",
+          "is": true
+        }
+      ],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "En redescendant l'allée, vous trouvez une petite lanterne de papier posée sur la dernière marche.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Pas de mot. Juste une feuille d'érable, pliée en deux, glissée dessous.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "line",
+          "speaker": "gardien",
+          "expr": "neutre",
+          "text": "Bon voyage, Madame Fumiko.",
+          "next": "fin",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        }
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "kaki",
+      "name": "Kaki",
+      "description": "Un fruit orange, mûr à point. Il fond sous la dent.",
+      "color": "#E07B2A",
+      "shape": "kaki",
+      "zones": [
+        "foret",
+        "sentier"
+      ],
+      "weight": 3
+    },
+    {
+      "id": "chataigne",
+      "name": "Châtaigne",
+      "description": "Tombée de sa bogue, luisante comme du bois verni.",
+      "color": "#7A4A2A",
+      "shape": "chataigne",
+      "zones": [
+        "foret",
+        "sentier"
+      ],
+      "weight": 4
+    },
+    {
+      "id": "champignon",
+      "name": "Shiitake",
+      "description": "Il pousse au pied des vieux chênes, dans l'humidité.",
+      "color": "#9A6A4A",
+      "shape": "champignon",
+      "zones": [
+        "foret"
+      ],
+      "weight": 3
+    },
+    {
+      "id": "feuille",
+      "name": "Feuille d'érable parfaite",
+      "description": "D'un rouge sans défaut. On voudrait la garder entre deux pages.",
+      "color": "#C8442B",
+      "shape": "feuille",
+      "zones": [
+        "enceinte",
+        "sentier"
+      ],
+      "weight": 4
+    },
+    {
+      "id": "galet",
+      "name": "Galet lisse",
+      "description": "Poli par le ruisseau, tiède au creux de la main.",
+      "color": "#9A9488",
+      "shape": "galet",
+      "zones": [
+        "mare"
+      ],
+      "weight": 3
+    },
+    {
+      "id": "plume",
+      "name": "Plume de geai",
+      "description": "Bleue, rayée de noir. On dit qu'elle porte chance.",
+      "color": "#4A6FA5",
+      "shape": "plume",
+      "zones": [
+        "foret",
+        "belvedere"
+      ],
+      "weight": 1
+    },
+    {
+      "id": "fleur",
+      "name": "Lys araignée",
+      "description": "Higanbana, la fleur rouge de l'équinoxe d'automne.",
+      "color": "#C8302B",
+      "shape": "fleur",
+      "zones": [
+        "mare",
+        "sentier"
+      ],
+      "weight": 2
+    },
+    {
+      "id": "pomme_pin",
+      "name": "Pomme de pin",
+      "description": "Bien sèche. Elle sentira bon dans le feu.",
+      "color": "#8A6A44",
+      "shape": "pomme_pin",
+      "zones": [
+        "foret",
+        "belvedere"
+      ],
+      "weight": 3
+    }
+  ]
+}

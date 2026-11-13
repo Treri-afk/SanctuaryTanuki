@@ -1,0 +1,63 @@
+{
+  "name": "hut",
+  "triangles": 4920,
+  "dims_xyz_m": [
+    4.54,
+    3.545,
+    3.236
+  ],
+  "min_z": -0.006,
+  "center_xy": [
+    0.0,
+    -0.017
+  ],
+  "collisions": [
+    "hut_body-col",
+    "hut_porch-col",
+    "hut_post_-1-col",
+    "hut_post_1-col",
+    "hut_step_1-col",
+    "hut_step_2-col"
+  ],
+  "materials": [
+    "iron",
+    "lacquer_black",
+    "moss",
+    "paper",
+    "rope",
+    "rust",
+    "shingle",
+    "shingle_dark",
+    "shingle_light",
+    "stone",
+    "stone_dark",
+    "thatch",
+    "wood_dark",
+    "wood_faded",
+    "wood_light"
+  ],
+  "warnings": [],
+  "objects": [
+    "door",
+    "hut",
+    "hut_body-col",
+    "hut_porch-col",
+    "hut_post_-1-col",
+    "hut_post_1-col",
+    "hut_step_1-col",
+    "hut_step_2-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "hut": 4500,
+    "door": 420,
+    "hut_body-col": 12,
+    "hut_porch-col": 12,
+    "hut_step_2-col": 12,
+    "hut_step_1-col": 12,
+    "hut_post_-1-col": 12,
+    "hut_post_1-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\hut.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\hut.png"
+}

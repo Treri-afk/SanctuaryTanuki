@@ -1,0 +1,36 @@
+{
+  "name": "shrine_cat",
+  "triangles": 2456,
+  "dims_xyz_m": [
+    0.319,
+    0.283,
+    0.383
+  ],
+  "min_z": -0.002,
+  "center_xy": [
+    0.014,
+    -0.0
+  ],
+  "collisions": [
+    "shrine_cat-col"
+  ],
+  "materials": [
+    "cat_dark",
+    "cat_orange",
+    "cat_white",
+    "lacquer_red",
+    "metal_gold"
+  ],
+  "warnings": [],
+  "objects": [
+    "cat",
+    "shrine_cat-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "cat": 2456,
+    "shrine_cat-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\shrine_cat.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\shrine_cat.png"
+}

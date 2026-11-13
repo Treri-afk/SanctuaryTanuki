@@ -1,0 +1,36 @@
+{
+  "name": "rock_b",
+  "triangles": 1216,
+  "dims_xyz_m": [
+    1.3,
+    1.01,
+    0.771
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [
+    "rock_b-convcol"
+  ],
+  "materials": [
+    "moss",
+    "stone",
+    "stone_dark"
+  ],
+  "warnings": [],
+  "objects": [
+    "rock_b",
+    "rock_b-convcol",
+    "rock_b_moss"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "rock_b": 496,
+    "rock_b-convcol": 90,
+    "rock_b_moss": 720
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\rock_b.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\rock_b.png"
+}

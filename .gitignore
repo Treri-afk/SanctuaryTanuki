@@ -1,0 +1,8 @@
+.godot/
+*.blend1
+*.tmp
+.import/
+__pycache__/
+# captures de test (régénérables avec tools/shot.sh et tools/model_shot.sh)
+assets/previews/ingame/
+assets/previews/toon/

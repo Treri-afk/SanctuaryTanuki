@@ -1,0 +1,49 @@
+{
+  "name": "rake",
+  "triangles": 1180,
+  "dims_xyz_m": [
+    0.62,
+    0.09,
+    1.421
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "rope",
+    "wood_dark",
+    "wood_faded",
+    "wood_light"
+  ],
+  "warnings": [],
+  "objects": [
+    "binding",
+    "binding_low",
+    "brace_-1",
+    "brace_1",
+    "handle",
+    "head_bar",
+    "head_block",
+    "head_end_-1",
+    "head_end_1",
+    "teeth"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "handle": 300,
+    "head_bar": 44,
+    "head_block": 44,
+    "head_end_-1": 44,
+    "brace_-1": 44,
+    "head_end_1": 44,
+    "brace_1": 44,
+    "binding": 116,
+    "binding_low": 116,
+    "teeth": 384
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\rake.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\rake.png"
+}

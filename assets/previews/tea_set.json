@@ -1,0 +1,37 @@
+{
+  "name": "tea_set",
+  "triangles": 1636,
+  "dims_xyz_m": [
+    0.35,
+    0.25,
+    0.151
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "iron",
+    "metal",
+    "paper",
+    "rust",
+    "stone",
+    "tea",
+    "wood_dark",
+    "wood_faded"
+  ],
+  "warnings": [],
+  "objects": [
+    "teaware",
+    "tray"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "tray": 308,
+    "teaware": 1328
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\tea_set.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\tea_set.png"
+}

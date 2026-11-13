@@ -1,0 +1,31 @@
+{
+  "name": "torii",
+  "triangles": 4178,
+  "dims_xyz_m": [
+    4.1,
+    0.83,
+    3.535
+  ],
+  "min_z": -0.018,
+  "center_xy": [
+    0.0,
+    0.02
+  ],
+  "collisions": [
+    "pillar_-1-col",
+    "pillar_1-col"
+  ],
+  "materials": [
+    "lacquer_black",
+    "lacquer_red",
+    "metal_gold",
+    "moss",
+    "stone",
+    "stone_dark",
+    "wood_dark",
+    "wood_faded"
+  ],
+  "warnings": [],
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\torii.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\torii.png"
+}

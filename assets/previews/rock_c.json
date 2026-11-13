@@ -1,0 +1,36 @@
+{
+  "name": "rock_c",
+  "triangles": 1720,
+  "dims_xyz_m": [
+    2.0,
+    1.482,
+    1.32
+  ],
+  "min_z": -0.0,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [
+    "rock_c-convcol"
+  ],
+  "materials": [
+    "moss",
+    "stone",
+    "stone_dark"
+  ],
+  "warnings": [],
+  "objects": [
+    "rock_c",
+    "rock_c-convcol",
+    "rock_c_moss"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "rock_c": 680,
+    "rock_c-convcol": 90,
+    "rock_c_moss": 1040
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\rock_c.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\rock_c.png"
+}

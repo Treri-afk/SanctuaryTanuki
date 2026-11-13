@@ -1,0 +1,32 @@
+{
+  "name": "match_box",
+  "triangles": 728,
+  "dims_xyz_m": [
+    0.065,
+    0.046,
+    0.028
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.001,
+    -0.002
+  ],
+  "collisions": [],
+  "materials": [
+    "lacquer_black",
+    "lacquer_red",
+    "paper",
+    "wood_dark",
+    "wood_light"
+  ],
+  "warnings": [],
+  "objects": [
+    "match_box"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "match_box": 728
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\match_box.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\match_box.png"
+}

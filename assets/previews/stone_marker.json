@@ -1,0 +1,36 @@
+{
+  "name": "stone_marker",
+  "triangles": 1896,
+  "dims_xyz_m": [
+    0.544,
+    0.285,
+    1.607
+  ],
+  "min_z": -0.006,
+  "center_xy": [
+    0.015,
+    -0.005
+  ],
+  "collisions": [
+    "stone_marker-col"
+  ],
+  "materials": [
+    "lacquer_red",
+    "moss",
+    "stone",
+    "stone_dark"
+  ],
+  "warnings": [],
+  "max_z": 1.602,
+  "objects": [
+    "stone_marker",
+    "stone_marker-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "stone_marker": 1896,
+    "stone_marker-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\stone_marker.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\stone_marker.png"
+}

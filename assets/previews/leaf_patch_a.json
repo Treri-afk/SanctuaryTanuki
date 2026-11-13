@@ -1,0 +1,32 @@
+{
+  "name": "leaf_patch_a",
+  "triangles": 580,
+  "dims_xyz_m": [
+    0.951,
+    0.956,
+    0.036
+  ],
+  "min_z": -0.0,
+  "center_xy": [
+    -0.06,
+    -0.043
+  ],
+  "collisions": [],
+  "materials": [
+    "foliage_light",
+    "foliage_orange",
+    "foliage_red"
+  ],
+  "warnings": [],
+  "objects": [
+    "leaf_patch_a_base",
+    "leaf_patch_a_leaves"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "leaf_patch_a_base": 60,
+    "leaf_patch_a_leaves": 520
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\leaf_patch_a.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\leaf_patch_a.png"
+}

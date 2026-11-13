@@ -1,0 +1,29 @@
+{
+  "name": "water_basin",
+  "triangles": 2802,
+  "dims_xyz_m": [
+    1.159,
+    0.673,
+    0.843
+  ],
+  "min_z": -0.003,
+  "center_xy": [
+    0.003,
+    -0.027
+  ],
+  "collisions": [
+    "water_basin-col"
+  ],
+  "materials": [
+    "bamboo",
+    "moss",
+    "rope",
+    "stone",
+    "stone_dark",
+    "water",
+    "wood_dark"
+  ],
+  "warnings": [],
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\water_basin.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\water_basin.png"
+}

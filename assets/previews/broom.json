@@ -1,0 +1,43 @@
+{
+  "name": "broom",
+  "triangles": 2912,
+  "dims_xyz_m": [
+    0.699,
+    0.401,
+    1.388
+  ],
+  "min_z": 0.009,
+  "center_xy": [
+    0.023,
+    -0.014
+  ],
+  "collisions": [
+    "broom_handle-col",
+    "broom_tuft-col"
+  ],
+  "materials": [
+    "bamboo",
+    "rope",
+    "straw",
+    "wood_faded",
+    "wood_light"
+  ],
+  "warnings": [],
+  "objects": [
+    "bristles",
+    "broom_handle-col",
+    "broom_tuft-col",
+    "handle",
+    "rope"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "handle": 448,
+    "bristles": 1580,
+    "rope": 884,
+    "broom_handle-col": 12,
+    "broom_tuft-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\broom.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\broom.png"
+}

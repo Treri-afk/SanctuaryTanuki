@@ -1,0 +1,37 @@
+{
+  "name": "fallen_log",
+  "triangles": 1352,
+  "dims_xyz_m": [
+    2.6,
+    0.789,
+    0.604
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [
+    "fallen_log-col"
+  ],
+  "materials": [
+    "moss",
+    "wood_dark",
+    "wood_faded",
+    "wood_light"
+  ],
+  "warnings": [
+    "axe Y : 0.79 m au lieu de ~0.55 m"
+  ],
+  "objects": [
+    "fallen_log",
+    "fallen_log-col"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "fallen_log": 1352,
+    "fallen_log-col": 12
+  },
+  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\fallen_log.glb",
+  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\fallen_log.png"
+}
