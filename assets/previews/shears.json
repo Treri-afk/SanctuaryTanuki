@@ -1,0 +1,38 @@
+{
+  "name": "shears",
+  "triangles": 1272,
+  "dims_xyz_m": [
+    0.138,
+    0.032,
+    0.608
+  ],
+  "min_z": 0.003,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "forge",
+    "oak",
+    "oak_dark",
+    "oak_worn",
+    "steel",
+    "steel_dark",
+    "steel_edge"
+  ],
+  "warnings": [],
+  "objects": [
+    "arm_l",
+    "arm_r",
+    "pivot"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "arm_l": 564,
+    "arm_r": 564,
+    "pivot": 144
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/shears.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/shears.png"
+}

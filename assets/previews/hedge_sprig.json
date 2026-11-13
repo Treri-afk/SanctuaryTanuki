@@ -1,0 +1,35 @@
+{
+  "name": "hedge_sprig",
+  "triangles": 184,
+  "dims_xyz_m": [
+    0.163,
+    0.168,
+    0.291
+  ],
+  "min_z": -0.031,
+  "center_xy": [
+    -0.015,
+    -0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "sprig_bark",
+    "sprig_leaf",
+    "sprig_leaf2"
+  ],
+  "warnings": [
+    "origine pas au sol (min z = -0.031)",
+    "axe Z : 0.29 m au lieu de ~0.23 m"
+  ],
+  "objects": [
+    "leaves",
+    "stem"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "stem": 104,
+    "leaves": 80
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/hedge_sprig.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/hedge_sprig.png"
+}

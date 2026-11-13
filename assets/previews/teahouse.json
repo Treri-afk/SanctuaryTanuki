@@ -1,0 +1,53 @@
+{
+  "name": "teahouse",
+  "triangles": 13144,
+  "dims_xyz_m": [
+    9.99,
+    8.802,
+    7.287
+  ],
+  "min_z": -0.081,
+  "center_xy": [
+    -0.0,
+    -0.013
+  ],
+  "collisions": [
+    "th_floor-col",
+    "th_front_l-col",
+    "th_front_r-col",
+    "th_ramp-convcol",
+    "th_vpost_0-col",
+    "th_vpost_1-col",
+    "th_vpost_2-col",
+    "th_vpost_3-col",
+    "th_wall_-1-col",
+    "th_wall_1-col",
+    "th_wall_back-col"
+  ],
+  "materials": [
+    "bamboo",
+    "earth_wall",
+    "foliage_red",
+    "ink",
+    "interior",
+    "lacquer_black",
+    "log",
+    "log_dark",
+    "shoji_paper",
+    "soffit",
+    "stone",
+    "tatami",
+    "tatami_edge",
+    "thatch",
+    "thatch_dark",
+    "wood_dark",
+    "wood_faded",
+    "wood_light",
+    "wood_mid"
+  ],
+  "warnings": [
+    "origine pas au sol (min z = -0.081)"
+  ],
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/teahouse.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/teahouse.png"
+}

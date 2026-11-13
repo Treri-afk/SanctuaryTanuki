@@ -1,0 +1,37 @@
+{
+  "name": "koi_asagi",
+  "triangles": 3040,
+  "dims_xyz_m": [
+    0.136,
+    0.373,
+    0.109
+  ],
+  "min_z": -0.052,
+  "center_xy": [
+    0.0,
+    0.011
+  ],
+  "collisions": [],
+  "materials": [
+    "koi_blue",
+    "koi_blue_dark",
+    "koi_eye",
+    "koi_fin",
+    "koi_orange",
+    "koi_white"
+  ],
+  "warnings": [
+    "origine pas au sol (min z = -0.052)"
+  ],
+  "objects": [
+    "body",
+    "tail"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "body": 2780,
+    "tail": 260
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/koi_asagi.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/koi_asagi.png"
+}

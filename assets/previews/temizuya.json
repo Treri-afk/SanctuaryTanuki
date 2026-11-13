@@ -1,0 +1,36 @@
+{
+  "name": "temizuya",
+  "triangles": 5524,
+  "dims_xyz_m": [
+    3.58,
+    2.862,
+    3.32
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    -0.0,
+    0.0
+  ],
+  "collisions": [
+    "post_-1_-1-col",
+    "post_-1_1-col",
+    "post_1_-1-col",
+    "post_1_1-col"
+  ],
+  "materials": [
+    "copper",
+    "copper_dark",
+    "lacquer_black",
+    "lacquer_red",
+    "metal_gold",
+    "paper",
+    "roof_edge",
+    "soffit",
+    "stone",
+    "wood_dark",
+    "wood_light"
+  ],
+  "warnings": [],
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/temizuya.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/temizuya.png"
+}

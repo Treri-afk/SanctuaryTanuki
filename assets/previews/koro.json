@@ -1,0 +1,52 @@
+{
+  "name": "koro",
+  "triangles": 1328,
+  "dims_xyz_m": [
+    0.62,
+    0.62,
+    0.755
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [
+    "koro-col"
+  ],
+  "materials": [
+    "ash",
+    "bronze",
+    "bronze_dark",
+    "bronze_green",
+    "moss",
+    "stone",
+    "stone_dark"
+  ],
+  "warnings": [],
+  "objects": [
+    "koro",
+    "koro-col",
+    "moss_0",
+    "moss_1",
+    "moss_2",
+    "plinth",
+    "plinth_low",
+    "plinth_top"
+  ],
+  "empties": [
+    "incense_anchor"
+  ],
+  "tris_per_object": {
+    "plinth_low": 44,
+    "plinth": 44,
+    "plinth_top": 44,
+    "moss_0": 48,
+    "moss_1": 48,
+    "moss_2": 48,
+    "koro": 1052,
+    "koro-col": 12
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/koro.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/koro.png"
+}

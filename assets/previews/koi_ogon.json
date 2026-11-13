@@ -1,0 +1,35 @@
+{
+  "name": "koi_ogon",
+  "triangles": 3040,
+  "dims_xyz_m": [
+    0.136,
+    0.373,
+    0.109
+  ],
+  "min_z": -0.052,
+  "center_xy": [
+    0.0,
+    0.011
+  ],
+  "collisions": [],
+  "materials": [
+    "koi_eye",
+    "koi_gold",
+    "koi_gold_dark",
+    "koi_gold_light"
+  ],
+  "warnings": [
+    "origine pas au sol (min z = -0.052)"
+  ],
+  "objects": [
+    "body",
+    "tail"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "body": 2780,
+    "tail": 260
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/koi_ogon.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/koi_ogon.png"
+}

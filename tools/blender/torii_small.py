@@ -1,4 +1,6 @@
-"""Petit torii de bord de chemin (2,4 m) : piliers evases, kasagi courbe a bouts noirs, nuki, bases de pierre moussues.
+"""Petit torii (portes de l'enceinte, sentiers) : piliers evases, kasagi courbe a bouts noirs, nuki, bases de pierre
+moussues. ~3,2 m de haut pour 2,7 m de large : la traverse basse (nuki) passe a 2,42 m, bien au-dessus des yeux du
+joueur (1,6 m) ; plus bas, la camera la traversait. La largeur tient dans les ouvertures de 2 m du mur d'enceinte.
 Lancer : blender --background --python tools/blender/torii_small.py"""
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -29,7 +31,8 @@ lift = lambda x: 0.14 * (abs(x) / KX) ** 2.4
 XS = [-1.30 + i * (2.60 / 16) for i in range(17)]
 PROF = [(-0.20, -0.095), (0.20, -0.095), (0.235, 0.0), (0.0, 0.12), (-0.235, 0.0)]
 CAP = [(y * 1.08, z * 1.12) for (y, z) in PROF]
-Z0 = 2.14
+HL = 0.80                        # surelevation (m) par rapport au premier modele de 2,4 m
+Z0 = 2.14 + HL
 PXS = 0.80                       # demi-ecartement des piliers
 
 parts = []
@@ -40,16 +43,17 @@ for s in (-1, 1):
     p = CAP if s > 0 else list(reversed(CAP))
     parts.append(sweep_x(f"kasagi_tip_{'r' if s > 0 else 'l'}", p, xs, lift, "lacquer_black", loc=(0, 0, Z0), bevel=0.02))
 # nuki : traverse qui depasse des piliers + cales noires
-parts.append(box("nuki", (2.0, 0.12, 0.16), (0, 0, 1.70), "lacquer_red", bevel=0.02))
+NUKI_Z = 1.70 + HL
+parts.append(box("nuki", (2.0, 0.12, 0.16), (0, 0, NUKI_Z), "lacquer_red", bevel=0.02))
 for s in (-1, 1):
-    parts.append(box(f"kusabi_{s}", (0.06, 0.17, 0.26), (s * 0.97, 0, 1.70), "lacquer_black", bevel=0.02))
+    parts.append(box(f"kusabi_{s}", (0.06, 0.17, 0.26), (s * 0.97, 0, NUKI_Z), "lacquer_black", bevel=0.02))
 # piliers evases (revolution), legerement inclines vers l'interieur : collier noir, bande decoloree, laque rouge
 pm = Mesh()
-PZ0, PZ1 = 0.17, 2.15
-pr = lambda z: 0.165 - 0.045 * (z - PZ0) / (PZ1 - PZ0)
+PZ0, PZ1 = 0.17, 2.15 + HL
+pr = lambda z: 0.175 - 0.05 * (z - PZ0) / (PZ1 - PZ0)      # un peu plus epais : le pilier est plus haut
 for s in (-1, 1):
     start = len(pm.v)
-    zs = [PZ0, 0.32, 0.54, 1.4, PZ1]
+    zs = [PZ0, 0.32, 0.54, 1.8, PZ1]
     prof = [(pr(z) + (0.007 if z < 0.4 else (0.003 if z < 0.6 else 0.0)), z) for z in zs]
     mats = ["lacquer_black", "wood_faded", "lacquer_red", "lacquer_red"]
     pm.lathe(prof, 12, lambda i, j: mats[i], center=(s * PXS, 0))
@@ -78,8 +82,8 @@ apply_rot(t, (0, 0.3, 1.2))
 
 # collisions : piliers seulement
 for s in (-1, 1):
-    collision_box(f"pillar_{s}", (0.46, 0.46, 2.2), (s * PXS, 0, 1.1))
+    collision_box(f"pillar_{s}", (0.46, 0.46, PZ1 + 0.05), (s * PXS, 0, (PZ1 + 0.05) / 2))
 
-tfinish("torii_small", expected_dims=(2.72, 0.5, 2.4), tri_limit=(300, 3500), yaw=28, pitch=12, margin=1.05,
+tfinish("torii_small", expected_dims=(2.72, 0.5, 3.2), tri_limit=(300, 3500), yaw=28, pitch=12, margin=1.05,
         angles={"torii_small": math.radians(45)},
         extra_views=[("_b", dict(yaw=-30, pitch=8, margin=1.05))])

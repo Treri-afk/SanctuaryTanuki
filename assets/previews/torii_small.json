@@ -4,11 +4,11 @@
   "dims_xyz_m": [
     2.729,
     0.607,
-    2.418
+    3.218
   ],
   "min_z": -0.007,
   "center_xy": [
-    0.012,
+    0.016,
     0.01
   ],
   "collisions": [
@@ -23,7 +23,7 @@
     "wood_faded"
   ],
   "warnings": [],
-  "max_z": 2.411,
+  "max_z": 3.211,
   "objects": [
     "pillar_-1-col",
     "pillar_1-col",
@@ -35,6 +35,6 @@
     "pillar_-1-col": 12,
     "pillar_1-col": 12
   },
-  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\torii_small.glb",
-  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\torii_small.png"
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/torii_small.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/torii_small.png"
 }

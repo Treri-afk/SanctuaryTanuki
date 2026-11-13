@@ -1,0 +1,36 @@
+{
+  "name": "sickle",
+  "triangles": 568,
+  "dims_xyz_m": [
+    0.234,
+    0.027,
+    0.34
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    -0.1,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "forge",
+    "oak",
+    "oak_dark",
+    "oak_worn",
+    "patina",
+    "steel_dark",
+    "steel_edge"
+  ],
+  "warnings": [],
+  "objects": [
+    "blade",
+    "handle"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "handle": 304,
+    "blade": 264
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/sickle.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/sickle.png"
+}
