@@ -379,11 +379,14 @@ static func walk_y(x: float, z: float) -> float:
 	return height(x, z)
 
 func _ready() -> void:
+	var t0 := Time.get_ticks_usec()
 	_setup()
 	_build_ground()
 	_build_water()
 	_build_precinct_pond()
 	_build_ridges()
+	if OS.get_cmdline_user_args().has("--deep") or OS.get_cmdline_user_args().has("--cpu"):
+		print("BOOT terrain : %d ms" % ((Time.get_ticks_usec() - t0) / 1000))
 
 func _build_ground() -> void:
 	var xs := _xs

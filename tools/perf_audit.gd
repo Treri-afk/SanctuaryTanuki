@@ -58,6 +58,20 @@ func run(g: Node3D) -> void:
 			["pavillon des ablutions caché", func(): bats[2].visible = false, func(): bats[2].visible = true],
 			["haiden caché (référence)", func(): bats[3].visible = false, func(): bats[3].visible = true],
 		]
+	if OS.get_cmdline_user_args().has("--pixels"):
+		tests = [
+			["rendu 3D 85 % (FSR)", func():
+				vp.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR
+				vp.scaling_3d_scale = 0.85, func(): vp.scaling_3d_scale = 1.0],
+			["rendu 3D 75 % (FSR)", func():
+				vp.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR
+				vp.scaling_3d_scale = 0.75, func(): vp.scaling_3d_scale = 1.0],
+			["FXAA au lieu du MSAA 2x", func():
+				vp.msaa_3d = Viewport.MSAA_DISABLED
+				vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA, func():
+				vp.msaa_3d = Viewport.MSAA_2X
+				vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED],
+		]
 	if OS.get_cmdline_user_args().has("--fixes"):
 		var Q := RenderingServer
 		tests = [

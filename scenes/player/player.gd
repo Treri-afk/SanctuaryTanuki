@@ -78,7 +78,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			head.rotation.x = clampf(head.rotation.x, deg_to_rad(-85), deg_to_rad(85))
 	elif event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_ESCAPE:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED else Input.MOUSE_MODE_CAPTURED
+			pass                        # Échap : menu pause (scenes/ui/menus.gd)
 		elif not input_enabled:
 			return
 		elif event.keycode == KEY_E:
@@ -91,7 +91,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_tree().call_group("game", "player_put_back_tool")
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			if input_enabled:
+				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		elif input_enabled:
 			_press_time = Time.get_ticks_msec() * 0.001
 			_interact()

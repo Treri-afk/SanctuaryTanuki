@@ -44,6 +44,7 @@ class Bed:
 				p = AudioStreamPlayer.new()
 			p.set("stream", s)
 			p.set("volume_db", SILENT)
+			p.set("bus", &"Ambiance")
 			parent.add_child(p)
 			players.append(p)
 
@@ -72,6 +73,7 @@ class Bed:
 
 func setup(g: Node3D) -> void:
 	game = g
+	process_mode = Node.PROCESS_MODE_ALWAYS     # l'ambiance continue, plus douce, dans le menu pause
 	_rng.randomize()
 	for n in ["amb_morning", "amb_day", "amb_day_b", "amb_evening", "amb_night", "amb_forest", "amb_wind"]:
 		_add(n, false)
@@ -132,6 +134,8 @@ func _process(delta: float) -> void:
 	_vol("basin_drips", -10.0 if ph != GameState.Phase.NIGHT else -16.0)
 	# 5. pendant un dialogue, l'ambiance baisse ; la nuit, tout est plus calme
 	var duck := -7.0 if game.vn.visible else 0.0
+	if get_tree().paused:
+		duck = -9.0
 	for n in _beds:
 		(_beds[n] as Bed).step(delta, 10.0, duck)
 	# 6. pics-verts au loin, de jour

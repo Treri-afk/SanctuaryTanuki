@@ -28,6 +28,9 @@ var day_log: Dictionary = {}
 var task_order: Array[StringName] = []
 ## Premier jour guidé (scripts/guide.gd) : le HUD cache ce qui n'a pas encore de sens.
 var guide := false
+var slot := 0                    # emplacement de sauvegarde de la partie en cours (scripts/save_game.gd)
+## Bilan de la partie (fin de démo) : jours, travaux, visites, pièces reçues, cueillette.
+var stats: Dictionary = {}
 var today: Array[StringName] = []    # tâches obligatoires du jour (2 du matin tirées au hasard + lanternes + cloche)
 var morning: Array[StringName] = []  # les 2 tâches du matin
 var task_data: Dictionary = {}     # id -> TaskData
@@ -55,6 +58,7 @@ func reset_story() -> void:
 	koi.clear()
 	koi_state.clear()
 	stock.clear()
+	stats = {"days": 0, "tasks": 0, "visitors": 0, "coins_in": 0, "harvest": 0}
 	Events.coins_changed.emit(coins, 0)
 
 func item_count(id: String) -> int:

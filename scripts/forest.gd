@@ -76,14 +76,19 @@ func _ready() -> void:
 	_noise.seed = 77
 	_noise.frequency = 0.07
 	_noise.fractal_octaves = 2
+	var t0 := Time.get_ticks_usec()
 	_scatter_big()
 	_build_mask()
 	_scatter_small()
 	_apply_mask()
 	_scatter_grass()
+	var t1 := Time.get_ticks_usec()
 	_build_multimeshes()
+	var t2 := Time.get_ticks_usec()
 	_build_grass()
 	_build_collisions()
+	if OS.get_cmdline_user_args().has("--deep") or OS.get_cmdline_user_args().has("--cpu"):
+		print("BOOT forêt : placement %d ms, modèles %d ms, herbe et collisions %d ms" % [(t1 - t0) / 1000, (t2 - t1) / 1000, (Time.get_ticks_usec() - t2) / 1000])
 
 func _add(model: String, pos: Vector3, yaw: float, s: float) -> void:
 	if not _placements.has(model):

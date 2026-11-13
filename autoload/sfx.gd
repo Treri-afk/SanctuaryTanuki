@@ -43,6 +43,7 @@ func _ready() -> void:
 	_rng.randomize()
 	for i in 8:
 		var p := AudioStreamPlayer.new()
+		p.bus = &"Effets"
 		add_child(p)
 		_players_2d.append(p)
 	for i in 10:
@@ -50,6 +51,7 @@ func _ready() -> void:
 		p.unit_size = 4.0
 		p.max_distance = 40.0
 		p.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
+		p.bus = &"Effets"
 		add_child(p)
 		_players_3d.append(p)
 	_build()
@@ -95,6 +97,7 @@ func loop(sound: StringName, on: bool) -> void:
 	var l: Dictionary = _loops.get(sound, {})
 	if l.is_empty():
 		var p := AudioStreamPlayer.new()
+		p.bus = &"Effets"
 		add_child(p)
 		p.stream = list[0]
 		p.volume_db = -60.0

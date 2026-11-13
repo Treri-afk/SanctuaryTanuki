@@ -37,6 +37,16 @@ On met à jour le statut de chaque ligne au fur et à mesure.
 
 ---
 
+## 2 bis. Structure du jeu
+
+| Statut | Élément | Notes |
+|---|---|---|
+| ✅ | Écran titre | Sur le vrai sanctuaire, caméra qui dérive ; continuer, nouvelle partie, charger, options, quitter |
+| ✅ | Sauvegardes | 3 emplacements, sauvegarde chaque soir après le journal, reprise au matin |
+| ✅ | Menu pause et options | Volumes (général, ambiances, effets), souris, balancement de tête, qualité (basse / moyenne / haute), résolution 3D, plein écran, synchro verticale |
+| ✅ | Fin de la démo | Après le jour 3 : bilan (travaux, visites, pièces, cueillette, lettres, carpes, personnes rencontrées) |
+| 💡 | Au-delà de la démo | Plus de 3 jours, saisons ; la fin de démo deviendra une fin de saison |
+
 ## 3. Économie douce : pièces et boutique
 
 | Statut | Élément | Notes |

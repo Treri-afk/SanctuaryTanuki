@@ -57,6 +57,8 @@ var zen_last := Vector3.INF
 var zen_mat: ShaderMaterial
 var guide: Guide
 var shop: Shop
+var menus: Menus
+const BASE_MOUSE := 0.0022
 var ambience: Ambience
 var _guided := false               # le premier jour guidé n'a lieu qu'une fois par partie
 
@@ -65,6 +67,14 @@ func _ready() -> void:
 	randomize()
 	props = world.get_node("Props")
 	atmosphere = world.get_node("Atmosphere")
+	# lot 1 de l'audit de performance (docs/audit-performance.md)
+	var batched := RenderBudget.batch(props, ["Wall"]) + RenderBudget.batch(props, ["Slab", "Path", "Step"])
+	var trimmed := RenderBudget.trim_shadows(world)
+	get_tree().node_added.connect(func(n: Node):
+		if n is MeshInstance3D:
+			RenderBudget.trim_one.call_deferred(n))
+	if OS.get_cmdline_user_args().has("--deep") or OS.get_cmdline_user_args().has("--groups"):
+		print("BOOT allègements : %d pièces regroupées, %d ombres coupées" % [batched, trimmed])
 	hud.player = player
 	_setup_workshop()
 	_setup_tools()
@@ -100,6 +110,7 @@ func _ready() -> void:
 	_bell_sound = AudioStreamPlayer.new()
 	_bell_sound.stream = _make_bell_sound()
 	_bell_sound.volume_db = -4.0
+	_bell_sound.bus = &"Effets"
 	add_child(_bell_sound)
 	var args := OS.get_cmdline_user_args()
 	for a in args:
@@ -107,12 +118,32 @@ func _ready() -> void:
 			for t in a.trim_prefix("--tasks=").split(","):
 				if TASKS.has(StringName(t)):
 					_forced.append(StringName(t))
+	menus = Menus.new()
+	menus.name = "Menus"
+	menus.game = self
+	add_child(menus)
+	Settings.apply_graphics(get_viewport(), atmosphere)
+	_apply_player_settings()
+	Settings.changed.connect(func(_k): _apply_player_settings())
 	await get_tree().process_frame
+	if not Settings.testing():
+		menus.show_title()           # le jeu commence par l'écran titre (les modes de test le sautent)
+		return
 	_start_day(1)
 	if args.size() >= 7 and args[0] == "--shot":
 		_debug_shot(args)
 	elif args.size() >= 1 and args[0] == "--autoplay":
 		_autoplay()
+	elif args.size() >= 1 and (args[0] == "--deep" or args[0] == "--cpu" or args[0] == "--groups"):
+		var pd: Node = load("res://tools/perf_deep.gd").new()
+		add_child(pd)
+		pd.run(self)
+	elif args.size() >= 1 and args[0] == "--savetest":
+		var stt: Node = load("res://tools/save_test.gd").new()
+		add_child(stt)
+		stt.run(self)
+	elif args.size() >= 3 and args[0] == "--menushot":
+		_menu_shot(args[1], args[2])
 	elif args.size() >= 1 and args[0] == "--soundtest":
 		ambience.report()
 	elif args.size() >= 1 and args[0] == "--walktest":
@@ -718,14 +749,114 @@ func _creature_walk(n: Node3D, to: Vector3, speed: float) -> void:
 func _end_day() -> void:
 	GameState.update_bonds()
 	Events.day_ended.emit(GameState.day)
+	_count_day()
 	await hud.fade_to(1.0, 2.0)
 	var d := GameState.day
 	await hud.show_journal(_journal_page())
 	if d >= GameState.MAX_DAYS:
-		await hud.show_card("Le sanctuaire est calme.\nFin du prototype — merci d'avoir veillé sur ce lieu.", 5.0)
-		_start_day(1)
+		if Settings.testing():
+			await hud.show_card("Le sanctuaire est calme.\nFin du prototype — merci d'avoir veillé sur ce lieu.", 5.0)
+			_start_day(1)
+			return
+		SaveGame.write(GameState.slot, SaveGame.capture(self, d, true))
+		var choice: String = await menus.show_end(_demo_summary())
+		if choice == "quit":
+			get_tree().quit()
+		else:
+			get_tree().reload_current_scene()
 		return
+	# le soir, on sauvegarde : la partie reprendra au matin du lendemain
+	if not Settings.testing():
+		SaveGame.write(GameState.slot, SaveGame.capture(self, d + 1))
 	_start_day(d + 1)
+	if not Settings.testing():
+		await get_tree().create_timer(3.0).timeout
+		Events.toast.emit("Partie sauvegardée.")
+
+# ---------------------------------------------------------------- parties, réglages
+## Capture d'un menu : godot --path . -- --menushot fichier.png title|options|slots|pause|end
+func _menu_shot(file: String, screen: String) -> void:
+	match screen:
+		"title", "options", "slots":
+			menus.show_title()
+			await get_tree().create_timer(2.5).timeout
+			if screen == "options":
+				menus._options()
+			elif screen == "slots":
+				menus._slots(false)
+		"pause":
+			await get_tree().create_timer(5.0).timeout
+			menus.open_pause()
+		"end":
+			GameState.stats = {"days": 3, "tasks": 11, "visitors": 7, "coins_in": 23, "harvest": 9}
+			for w in ["vieille_dame", "moine", "facteur", "fillette"]:
+				GameState.met[w] = true
+			GameState.add_affection("vieille_dame", 5)
+			GameState.add_affection("moine", 3)
+			menus.show_end(_demo_summary())
+			await get_tree().create_timer(1.6).timeout
+	await get_tree().create_timer(1.2).timeout
+	get_viewport().get_texture().get_image().save_png(file)
+	print("SHOT ", file)
+	get_tree().quit()
+
+## Nouvelle partie dans un emplacement (appelé par l'écran titre).
+func start_new_game(slot: int) -> void:
+	GameState.slot = slot
+	GameState.reset_story()
+	hud.visible = true
+	SaveGame.write(slot, SaveGame.capture(self, 1))
+	_start_day(1)
+
+## Reprend une partie sauvegardée, au matin du jour enregistré.
+func load_and_start(slot: int) -> void:
+	var data := SaveGame.read(slot)
+	if data.is_empty():
+		start_new_game(slot)
+		return
+	GameState.slot = slot
+	SaveGame.apply(self, data)
+	hud.visible = true
+	_start_day(int(data.get("day", 1)))
+
+func _apply_player_settings() -> void:
+	player.mouse_sensitivity = BASE_MOUSE * float(Settings.get_value("mouse_sensitivity"))
+	player.head_bob = float(Settings.get_value("head_bob"))
+
+## Bilan de la partie pour les statistiques de la fin de démo.
+func _count_day() -> void:
+	var lg: Dictionary = GameState.day_log
+	var st: Dictionary = GameState.stats
+	st["days"] = int(st.get("days", 0)) + 1
+	st["tasks"] = int(st.get("tasks", 0)) + (lg.get("tasks", []) as Array).filter(func(t): return t != &"cloche").size()
+	var seen := {}
+	for w in lg.get("visitors", []):
+		seen[w] = true
+	st["visitors"] = int(st.get("visitors", 0)) + seen.size()
+	st["coins_in"] = int(st.get("coins_in", 0)) + int(lg.get("coins_in", 0))
+	st["harvest"] = int(st.get("harvest", 0)) + int(lg.get("harvest", 0))
+
+func _demo_summary() -> Dictionary:
+	var st: Dictionary = GameState.stats
+	var lines := [
+		["Jours au sanctuaire", str(st.get("days", 0))],
+		["Travaux accomplis", str(st.get("tasks", 0))],
+		["Visites reçues", str(st.get("visitors", 0))],
+		["Pièces offertes", str(st.get("coins_in", 0))],
+		["Cueillette", str(st.get("harvest", 0))],
+		["Lettres de Seiji lues", "%d / 3" % int(extras.letters_read)],
+		["Carpes dans l'étang", str(GameState.koi.size())],
+	]
+	var people := []
+	for c in Story.data.get("characters", []):
+		var who := String(c.get("id", ""))
+		if bool(c.get("animal", false)) or not GameState.met.get(who, false):
+			continue
+		var a := int(GameState.affection.get(who, 0))
+		var mx := maxi(Story.affection_max(who), 1)
+		var full := clampi(int(round(5.0 * a / mx)), 0, 5)
+		people.append([Story.display_name(who), "♥".repeat(full) + "♡".repeat(5 - full) if a >= 0 else "lien abîmé"])
+	return {"lines": lines, "people": people}
 
 const JOURNAL_ENDINGS := [
 	"Le vent est tombé avec la nuit. On entend le ruisseau, plus bas.",

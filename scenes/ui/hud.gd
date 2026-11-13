@@ -24,6 +24,7 @@ var _marker_t := 0.0
 var _help_kept := false
 var _opt_header: Label
 var _stamp: Label
+var modal_count := 0       # panneaux ouverts qui se ferment avec Échap (le menu pause attend qu'ils soient fermés)
 var _last_progress: Dictionary = {}   # id -> dernière valeur vue (pour ne réagir qu'aux vrais progrès)
 var ring_phase := -1.0      # cercle de frappe autour du viseur (0 = large, 1 = sur le point) ; -1 = caché
 var _pulse := 0.0
@@ -123,7 +124,7 @@ func _ready() -> void:
 
 	_help = _label(root, 16, Color(0.9, 0.9, 0.95, 0.85))
 	_place(_help, Vector2(0.0, 1.0), Rect2(24, -46, 900, 30))
-	_help.text = "ZQSD : marcher    E ou clic : agir    clic maintenu : geste de l'outil    R : reposer l'outil    Échap : souris"
+	_help.text = "ZQSD : marcher    E ou clic : agir    clic maintenu : geste de l'outil    R : reposer l'outil    Échap : pause"
 
 	_fade = ColorRect.new()
 	_fade.color = Color.BLACK
@@ -397,6 +398,7 @@ func show_card(text: String, hold: float) -> void:
 
 # ---- note (lettre) : panneau de papier, fermé par un clic ----
 func show_note(title: String, text: String) -> void:
+	modal_count += 1
 	Sfx.play(&"paper")
 	var panel := PanelContainer.new()
 	var sb := StyleBoxFlat.new()
@@ -444,6 +446,7 @@ func show_note(title: String, text: String) -> void:
 			break
 	panel.queue_free()
 	await get_tree().create_timer(0.25).timeout
+	modal_count -= 1
 
 # ---- jauge de geste (thé...) : barre horizontale sous le viseur, avec une zone cible optionnelle
 var _gauge_val := -1.0
@@ -583,6 +586,7 @@ func _draw_coin() -> void:
 
 # ---- journal du gardien : page de fin de journée, à la place du simple fondu au noir
 func show_journal(page: Dictionary) -> void:
+	modal_count += 1
 	Sfx.play(&"paper")
 	show_coins(true)
 	var panel := PanelContainer.new()
@@ -723,6 +727,7 @@ func show_journal(page: Dictionary) -> void:
 	await out.finished
 	panel.queue_free()
 	show_coins(false)
+	modal_count -= 1
 
 func _jlabel(parent: Node, text: String, size: int, color: Color) -> Label:
 	var l := Label.new()
@@ -743,6 +748,7 @@ func _jrule(parent: Node) -> void:
 const EMA_STATUS := ["Monte avec plaisir", "Le lien est fragile", "S'éloigne du sanctuaire", "Ne monte plus"]
 
 func show_ema_board(cards: Array) -> void:
+	modal_count += 1
 	var shade := ColorRect.new()
 	shade.color = Color(0.08, 0.06, 0.1, 0.0)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -785,6 +791,7 @@ func show_ema_board(cards: Array) -> void:
 	await out.finished
 	shade.queue_free()
 	await get_tree().create_timer(0.15).timeout
+	modal_count -= 1
 
 func _ema_card(c: Dictionary) -> Control:
 	var met: bool = c.get("met", false)
@@ -965,6 +972,7 @@ func _inv_process(dt: float) -> void:
 ## Boutique : panneau de papier, une ligne par objet (nom, description, réserve, prix, bouton Acheter).
 ## Renvoie l'id choisi, ou "" quand on ferme (bouton ou Échap).
 func show_shop(title: String, rows: Array) -> String:
+	modal_count += 1
 	var panel := PanelContainer.new()
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color("#EFE6D2")
@@ -1040,9 +1048,11 @@ func show_shop(title: String, rows: Array) -> String:
 	panel.queue_free()
 	show_coins(false)
 	await get_tree().create_timer(0.12).timeout
+	modal_count -= 1
 	return String(state["id"])
 
 func ask_text(title: String, placeholder: String, max_len: int = 16) -> String:
+	modal_count += 1
 	var panel := PanelContainer.new()
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color("#EFE6D2")
@@ -1079,4 +1089,5 @@ func ask_text(title: String, placeholder: String, max_len: int = 16) -> String:
 			break
 	panel.queue_free()
 	await get_tree().create_timer(0.15).timeout
+	modal_count -= 1
 	return String(state["text"])
