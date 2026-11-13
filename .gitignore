@@ -6,3 +6,9 @@ __pycache__/
 # captures de test (régénérables avec tools/shot.sh et tools/model_shot.sh)
 assets/previews/ingame/
 assets/previews/toon/
+
+# macOS
+.DS_Store
+
+# banque de sons source (1,2 Go) : les extraits utilisés sont convertis dans assets/sounds/
+sound design/
