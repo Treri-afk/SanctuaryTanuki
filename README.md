@@ -19,6 +19,9 @@ visiteur, dialogue visual novel) -> soir (allumettes + 8 lanternes, puis cloche)
 - bambous : serpe, viser une pousse au bord de l'étang, clic maintenu puis geste vif de la souris sur le côté.
 Marteau, cisaille et serpe sont sur l'établi près du bureau du sanctuaire.
 
+**Histoire** : `data/story/story.json` (personnages, visites, nuits, objets), à écrire avec l'éditeur web
+`editeur-histoire/index.html` (Chrome ou Edge). Format : `docs/story-format.md`. Suivi : `docs/feuille-de-route.md`.
+
 **Outils de dev**
 - `tools/blender/*.py` : un script par modèle (`blender --background --python ...`), module commun `common.py`.
 - `tools/build_world.gd` : régénère `scenes/world/shrine.tscn` (`godot --headless --script res://tools/build_world.gd`).

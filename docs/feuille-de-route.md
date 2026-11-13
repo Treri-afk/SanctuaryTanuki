@@ -17,7 +17,7 @@ On met à jour le statut de chaque ligne au fur et à mesure.
 | ✅ | Lanternes et cloche le soir | |
 | ✅ | 2 à 3 visiteurs par jour, à des moments aléatoires | Le soir tombe quand tâches faites et visiteurs repartis |
 | ✅ | Dialogues visual novel avec affection, choix, conditions, drapeaux | |
-| ✅ | Éditeur d'histoire (application web séparée) | `Documents\programme\gardien-histoire` |
+| ✅ | Éditeur d'histoire (application web) | Dossier `editeur-histoire/` du dépôt : ouvrir `index.html` dans Chrome ou Edge |
 | ✅ | Cérémonie du thé jouable | |
 | ✅ | Activités facultatives : ema égarés, jardin sec, renard, chat, lettres, découvertes | |
 

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Éditeur d'histoire — Gardien de sanctuaire</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">⛩ <input id="storyTitle" aria-label="Titre de l'histoire" spellcheck="false"></div>
+    <div class="file">
+      <button id="btnOpen" title="Ouvrir data/story/story.json du jeu">Ouvrir…</button>
+      <button id="btnSave" class="primary" title="Ctrl+S">Enregistrer</button>
+      <button id="btnDownload" title="Télécharger une copie de story.json">Télécharger</button>
+      <button id="btnNew">Nouvelle histoire</button>
+      <span id="status"></span>
+      <input type="file" id="fileInput" accept=".json,application/json" hidden>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="side">
+      <nav class="tabs">
+        <button data-tab="visits">Visites</button>
+        <button data-tab="characters">Personnages</button>
+        <button data-tab="items">Objets</button>
+        <button data-tab="overview">Ensemble</button>
+        <button data-tab="settings">Réglages</button>
+      </nav>
+      <div id="sidePanel" class="side-body"></div>
+      <div id="issues" class="issues"></div>
+    </aside>
+
+    <section class="center">
+      <div id="toolbar" class="toolbar">
+        <button data-add="line" title="Une réplique d'un personnage, de vous ou de la narration">+ Réplique</button>
+        <button data-add="choice" title="Plusieurs réponses au choix du joueur">+ Choix</button>
+        <button data-add="branch" title="Bifurcation invisible selon l'affection, un drapeau, le jour...">+ Condition</button>
+        <button data-add="end">+ Fin</button>
+        <span class="sep"></span>
+        <button id="btnLayout" title="Ranger les noeuds en colonnes">Ranger</button>
+        <button id="btnFit" title="Tout voir">Recadrer</button>
+        <span class="sep"></span>
+        <button id="btnTest" class="primary">▶ Tester</button>
+        <span class="help">molette : zoom · glisser le fond : déplacer · Suppr : effacer · Ctrl+D : dupliquer</span>
+      </div>
+      <div id="graph" class="graph">
+        <div id="emptyGraph" class="empty">
+          <h2>Éditeur d'histoire</h2>
+          <p>Ouvrez le fichier <code>data/story/story.json</code> du jeu avec <b>Ouvrir…</b> (ou glissez-le sur la page),<br>
+            puis choisissez une visite à gauche pour voir et écrire son dialogue.</p>
+        </div>
+      </div>
+      <div id="overview" class="overview" hidden></div>
+    </section>
+
+    <aside id="inspector" class="inspector"></aside>
+  </main>
+
+  <div id="playtest" class="modal" hidden>
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>Tester le dialogue</h2>
+        <div>
+          <button id="ptRestart">Rejouer</button>
+          <button id="ptReset" title="Affection et drapeaux de départ">Réinitialiser l'état</button>
+          <button id="ptClose" class="primary">Fermer</button>
+        </div>
+      </div>
+      <div class="pt">
+        <div class="pt-state" id="ptState"></div>
+        <div class="pt-main">
+          <div class="pt-view" id="ptView"></div>
+          <ol class="pt-log" id="ptLog"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/model.js"></script>
+  <script src="js/graph.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

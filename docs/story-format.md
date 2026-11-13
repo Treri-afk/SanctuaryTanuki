@@ -1,7 +1,7 @@
 # Format de l'histoire (`data/story/story.json`)
 
 L'histoire du jeu tient dans un seul fichier JSON, écrit par l'éditeur d'histoire
-(`C:\Users\PA54F\Documents\programme\gardien-histoire`, application web séparée) et lu par le jeu (`scripts/story.gd`).
+(`editeur-histoire/index.html`, application web à ouvrir dans Chrome ou Edge) et lu par le jeu (`scripts/story.gd`).
 On peut aussi l'éditer à la main.
 
 ## Structure
