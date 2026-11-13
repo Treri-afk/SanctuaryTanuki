@@ -169,7 +169,7 @@ static func item(id: String) -> Dictionary:
 	for it in items():
 		if String(it.get("id", "")) == id:
 			return it
-	return {}
+	return Shop.item(id)       # objets de la boutique (omamori...)
 
 static func item_name(id: String) -> String:
 	return String(item(id).get("name", id))
@@ -177,6 +177,8 @@ static func item_name(id: String) -> String:
 ## Palier de goût (love, like, neutral, dislike) d'un personnage pour un objet.
 static func gift_tier(who: String, item_id: String) -> String:
 	var g: Dictionary = character(who).get("gifts", {})
+	if not g.has(item_id) and not Shop.item(item_id).is_empty():
+		return String(Shop.item(item_id).get("gift", "neutral"))   # omamori : apprécié de tous, sauf goût contraire
 	return String(g.get(item_id, "neutral"))
 
 static func gift_line(who: String, tier: String) -> String:

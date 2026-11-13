@@ -12,6 +12,7 @@ const GRASS_SHADER := preload("res://shaders/grass.gdshader")
 const MASK_N := 256            # masque du sol : 1 texel = 1 m, de -128 à 128 m
 const MASK_O := -128.0
 const GRASS_CHUNK := 12.0      # tuiles d'herbe (culling)
+const TREE_TILE := 36.0       # tuiles d'arbres (culling hors champ et par cascade d'ombre, LOD)
 const GRASS_FADE_END := 38.0   # au-delà, l'herbe est rentrée dans le sol (le sol porte la même couleur)
 
 # nom du modèle -> [échelle min, échelle max]
@@ -803,17 +804,20 @@ func _build_multimeshes() -> void:
 				if tm != null:
 					mesh.surface_set_material(s, tm)
 			var small := String(model).begins_with("fern") or String(model).begins_with("leaf_patch") or String(model) == "stepping_stone"
-			# petit décor : tuiles de 24 m (la distance d'affichage se mesure depuis le centre de chaque tuile)
+			# Tout est découpé en tuiles : Godot ne masque (hors champ, hors cascade d'ombre) et ne simplifie (LOD)
+			# qu'un bloc entier. Un seul bloc pour toute la carte était donc dessiné en entier à chaque image,
+			# et encore une fois par cascade d'ombre. Petit décor : tuiles de 24 m ; arbres : tuiles de 36 m.
+			var tile := 24.0 if small else _tree_tile()
 			var groups := {}
 			for k in xforms.size():
 				var t: Transform3D = xforms[k]
-				var key := Vector2i(int(floor(t.origin.x / 24.0)), int(floor(t.origin.z / 24.0))) if small else Vector2i.ZERO
+				var key := Vector2i(int(floor(t.origin.x / tile)), int(floor(t.origin.z / tile)))
 				if not groups.has(key):
 					groups[key] = []
 				groups[key].append(t)
 			for key in groups:
 				var list: Array = groups[key]
-				var origin := Vector3((key.x + 0.5) * 24.0, 0.0, (key.y + 0.5) * 24.0) if small else Vector3.ZERO
+				var origin := Vector3((key.x + 0.5) * tile, 0.0, (key.y + 0.5) * tile)
 				var mm := MultiMesh.new()
 				mm.transform_format = MultiMesh.TRANSFORM_3D
 				mm.mesh = mesh
@@ -830,6 +834,14 @@ func _build_multimeshes() -> void:
 				mmi.visibility_range_end = 62.0 if small else 0.0
 				add_child(mmi)
 		root.free()
+
+## Taille des tuiles d'arbres ; --treetile=N sur la ligne de commande pour les mesures (0 = un seul bloc).
+func _tree_tile() -> float:
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--treetile="):
+			var v := float(a.trim_prefix("--treetile="))
+			return v if v > 0.0 else 100000.0
+	return TREE_TILE
 
 func _build_collisions() -> void:
 	var body := StaticBody3D.new()

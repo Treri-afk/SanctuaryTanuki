@@ -55,6 +55,10 @@ var koi_pond: Node
 var zen_marks: Array = []
 var zen_last := Vector3.INF
 var zen_mat: ShaderMaterial
+var guide: Guide
+var shop: Shop
+var ambience: Ambience
+var _guided := false               # le premier jour guidé n'a lieu qu'une fois par partie
 
 func _ready() -> void:
 	add_to_group("game")
@@ -80,6 +84,18 @@ func _ready() -> void:
 	koi_pond.name = "KoiPond"
 	add_child(koi_pond)
 	koi_pond.setup(self)
+	ambience = Ambience.new()
+	ambience.name = "Ambience"
+	add_child(ambience)
+	ambience.setup(self)
+	shop = Shop.new()
+	shop.name = "Shop"
+	add_child(shop)
+	shop.setup(self)
+	guide = Guide.new()
+	guide.name = "Guide"
+	add_child(guide)
+	guide.setup(self)
 	Events.task_done.connect(_on_task_done)
 	_bell_sound = AudioStreamPlayer.new()
 	_bell_sound.stream = _make_bell_sound()
@@ -97,6 +113,19 @@ func _ready() -> void:
 		_debug_shot(args)
 	elif args.size() >= 1 and args[0] == "--autoplay":
 		_autoplay()
+	elif args.size() >= 1 and args[0] == "--soundtest":
+		ambience.report()
+	elif args.size() >= 1 and args[0] == "--walktest":
+		var wt: Node = load("res://tools/walk_test.gd").new()
+		add_child(wt)
+		wt.run(self)
+	elif args.size() >= 1 and args[0] == "--shoptest":
+		await get_tree().create_timer(1.0).timeout
+		shop.selftest()
+	elif args.size() >= 1 and args[0] == "--perf":
+		var pa: Node = load("res://tools/perf_audit.gd").new()
+		add_child(pa)
+		pa.run(self)
 	elif args.size() >= 1 and args[0] == "--feeltest":
 		var ft: Node = load("res://scripts/feel_test.gd").new()
 		add_child(ft)
@@ -283,6 +312,16 @@ func _debug_shot(a: PackedStringArray) -> void:
 		print("SHOT ", a[6], " carpes=", GameState.koi.size(), " mangés=", koi_pond.eaten_today)
 		get_tree().quit()
 		return
+	elif a.size() > 9 and a[9] == "boutique":
+		# capture : la boutique ouverte, avec de quoi acheter
+		GameState.add_coins(8)
+		GameState.stock["encens"] = 1
+		shop.open()
+		await get_tree().create_timer(1.0).timeout
+	elif a.size() > 9 and a[9] == "encens":
+		GameState.stock["encens"] = 1
+		shop.light_incense()
+		await get_tree().create_timer(3.0).timeout
 	elif a.size() > 9 and a[9] == "coins":
 		GameState.add_coins(3)
 		await get_tree().create_timer(0.7).timeout
@@ -372,8 +411,9 @@ func _setup_workshop() -> void:
 	var table := ToolModels.tool_table()
 	table.position = Vector3(-13.4, 0.0, -3.4)
 	props.add_child(table)
-	var lay := {"Hammer": [Vector3(-0.45, 0.76, 0.05), Vector3(0, 30, 90)], "Shears": [Vector3(0.05, 0.76, 0.0), Vector3(90, 0, 80)],
-		"Sickle": [Vector3(0.48, 0.76, -0.05), Vector3(0, -20, 90)]}
+	# outils couchés à plat sur le plateau (dessus à 0,755 m) : la hauteur est la demi-épaisseur de chaque outil
+	var lay := {"Hammer": [Vector3(-0.45, 0.771, 0.05), Vector3(90, 30, 0)], "Shears": [Vector3(0.05, 0.770, 0.0), Vector3(90, 0, 80)],
+		"Sickle": [Vector3(0.48, 0.769, -0.05), Vector3(90, -20, 0)]}
 	var models := {"Hammer": "hammer", "Shears": "shears", "Sickle": "sickle"}
 	for n in lay:
 		var tool_node := Node3D.new()
@@ -419,6 +459,9 @@ func _setup_tasks() -> void:
 ## Tire les tâches du matin : jamais deux jours de suite la même si on peut l'éviter.
 func _choose_morning() -> Array[StringName]:
 	var chosen: Array[StringName] = []
+	if GameState.guide:
+		chosen = Guide.MORNING_TASKS.duplicate()
+		return chosen
 	if not _forced.is_empty():
 		chosen = _forced.duplicate()
 		return chosen
@@ -527,6 +570,7 @@ func _light(i: int) -> void:
 	light.light_energy = 1.5
 	parent.add_child(light)
 	flames.append(light)
+	Sfx.play(&"match_strike", (lanterns[i] as Node3D).global_position + Vector3(0, 1.4, 0))
 	GameState.add_progress(&"lanternes")
 
 # ---------------------------------------------------------------- cloche
@@ -581,7 +625,10 @@ func _ring_bell() -> void:
 			tb.tween_property(bell, "rotation:x", -0.12, 0.3)
 			tb.tween_property(bell, "rotation:x", 0.08, 0.35)
 		tb.tween_property(bell, "rotation:x", 0.0, 0.3)
-	_bell_sound.play()
+	if Sfx.has(&"bell"):
+		Sfx.play(&"bell", props.get_node("OfferingBox").global_position + Vector3(0, 2.0, 0), 4.0)
+	else:
+		_bell_sound.play()
 	GameState.add_progress(&"cloche")
 	await get_tree().create_timer(4.5).timeout
 	await _night()
@@ -724,6 +771,11 @@ func _apply_lighting(phase: int, instant: bool) -> void:
 
 # ---------------------------------------------------------------- journée
 func _start_day(d: int) -> void:
+	if d == 1 and not _guided and Guide.wanted():
+		_guided = true
+		guide.start()
+	elif guide.active:
+		guide.stop()
 	_ending = false
 	_visit_pending = false
 	player.input_enabled = false
@@ -779,6 +831,7 @@ func _start_day(d: int) -> void:
 	zen_marks.clear()
 	zen_last = Vector3.INF
 	extras.on_day_start()
+	shop.on_day_start()
 	harvest.on_day_start()
 	koi_pond.on_day_start(d)
 	_apply_lighting(Phase.MORNING, true)
@@ -790,6 +843,9 @@ func _start_day(d: int) -> void:
 	player.input_enabled = true
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	hud.fade_to(0.0, 1.6)
+	if guide.active:
+		await guide.welcome()
+		return
 	var names := PackedStringArray()
 	for id in morning:
 		names.append((GameState.task_data[id] as TaskData).label.to_lower())
@@ -824,6 +880,8 @@ func _start_evening() -> void:
 	GameState.set_phase(Phase.EVENING)
 	_apply_lighting(Phase.EVENING, false)
 	Events.toast.emit("Le soir tombe. Prenez les allumettes et allumez les lanternes, puis sonnez la cloche.")
+	if GameState.guide:
+		GameState.note("Demain, d'autres travaux m'attendront : la liste du matin me dira lesquels.")
 
 # ---------------------------------------------------------------- visiteurs
 const VISITOR_PATH := [Vector3(0, 0, 36.0), Vector3(0, 0, 28.5), Vector3(0, 0, 13.0), Vector3(0, 0, 9.0)]
@@ -841,6 +899,8 @@ const SPOTS := {
 func _tick_visits(delta: float) -> void:
 	if _ending or GameState.phase == Phase.EVENING or visitor != null or visit_queue.is_empty():
 		return
+	if GameState.guide and GameState.phase == Phase.MORNING:
+		return   # premier jour : les visiteurs attendent que le matin soit fini
 	if not player.input_enabled and not OS.get_cmdline_user_args().has("--autoplay"):
 		return   # transitions, dialogues : le temps des visites ne court pas
 	visit_timer -= delta
@@ -1003,6 +1063,7 @@ func _talk() -> void:
 			_area_on(c, false)
 	player.input_enabled = false
 	await vn.play_visit(visit_current)
+	shop.after_visit(String(visit_current.get("character", "")))
 	GameState.visited[String(visit_current.get("id", ""))] = true
 	(GameState.day_log["visitors"] as Array).append(String(visit_current.get("character", "")))
 	await _offer_gift(String(visit_current.get("character", "")))

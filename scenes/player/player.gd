@@ -8,6 +8,10 @@ signal tool_changed
 @export var walk_speed := 4.0
 @export var mouse_sensitivity := 0.0022
 @export var jump_speed := 5.0
+@export var head_bob := 1.0     # balancement de la tête en marchant (0 = aucun, pour le confort)
+const STRIDE := 1.15            # longueur d'un pas (m) : cadence du balancement et des bruits de pas
+const ACCEL_RATE := 9.0         # mise en mouvement (plus petit = plus d'inertie)
+const STOP_RATE := 11.0         # arrêt
 const GRAVITY := 18.0
 const REACH := 2.8
 const LOCK_START_DELAY := 0.6   # un geste qui fige le regard ne démarre que juste après l'appui
@@ -46,6 +50,14 @@ var _slosh_v := 0.0
 var _water: MeshInstance3D
 var _drops: CPUParticles3D
 var _water_base := Vector3.ZERO
+var _step_phase := 0.0
+var _bob_amt := 0.0
+var _roll := 0.0
+var _land := 0.0
+var _breath := 0.0
+var _was_floor := true
+var _fall_speed := 0.0
+var _sway := Vector3.ZERO
 
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
@@ -120,15 +132,19 @@ func _physics_process(delta: float) -> void:
 		action = &""
 		return
 	var wish := (transform.basis * Vector3(dir.x, 0, dir.y)).normalized()
-	velocity.x = move_toward(velocity.x, wish.x * speed, 22.0 * delta)
-	velocity.z = move_toward(velocity.z, wish.z * speed, 22.0 * delta)
+	# un peu d'inertie : on se met en marche et on s'arrête en quelques dixièmes de seconde, pas d'un coup
+	var k_move := 1.0 - exp(-(ACCEL_RATE if wish != Vector3.ZERO else STOP_RATE) * delta)
+	velocity.x = lerpf(velocity.x, wish.x * speed, k_move)
+	velocity.z = lerpf(velocity.z, wish.z * speed, k_move)
 	var jumped := false
 	if is_on_floor():
 		jumped = input_enabled and not move_locked and Input.is_action_just_pressed("jump")
 		velocity.y = jump_speed if jumped else 0.0
 	else:
 		velocity.y -= GRAVITY * delta
+		_fall_speed = maxf(_fall_speed, -velocity.y)
 	move_and_slide()
+	_update_body(delta)
 	var hv := Vector2(velocity.x, velocity.z)
 	var accel := (hv - _prev_hvel).length() / maxf(delta, 0.0001)
 	_prev_hvel = hv
@@ -204,10 +220,67 @@ func _update_bucket(delta: float, accel: float, jumped: bool) -> void:
 	if _drops:
 		_drops.emitting = spilling
 
+# ---- corps : balancement de la tête au rythme des pas, bruits de pas selon le sol, léger roulis en pas
+# chassé, petit tassement à l'atterrissage, respiration à l'arrêt.
+func _update_body(delta: float) -> void:
+	var on_floor := is_on_floor()
+	var hv := Vector2(velocity.x, velocity.z)
+	var spd := hv.length()
+	var walking := on_floor and spd > 0.35 and not noclip
+	_bob_amt = lerpf(_bob_amt, clampf(spd / walk_speed, 0.0, 1.0) if walking else 0.0, 1.0 - exp(-8.0 * delta))
+	if walking:
+		var before := floorf(_step_phase / PI)
+		_step_phase += spd * delta / STRIDE * PI       # un pas = une demi-période
+		if floorf(_step_phase / PI) != before:
+			Sfx.play(_surface(), null, lerpf(-6.0, 0.0, clampf(spd / walk_speed, 0.0, 1.0)))
+	if on_floor and not _was_floor and _fall_speed > 2.5:
+		_land = -0.06 * clampf(_fall_speed / 8.0, 0.3, 1.0)
+		Sfx.play(_surface(), null, 2.0)
+	if on_floor:
+		_fall_speed = 0.0
+	_was_floor = on_floor
+	_breath += delta
+	# la tête est au plus bas quand le pied touche le sol, et se balance d'un côté à l'autre tous les deux pas
+	var y := (absf(sin(_step_phase)) - 0.5) * 0.032 * _bob_amt + sin(_breath * 1.7) * 0.0035 * (1.0 - _bob_amt)
+	var x := cos(_step_phase) * 0.014 * _bob_amt
+	_land = lerpf(_land, 0.0, 1.0 - exp(-9.0 * delta))
+	var lateral := (global_transform.basis.inverse() * velocity).x
+	_roll = lerpf(_roll, -lateral / walk_speed * deg_to_rad(1.6), 1.0 - exp(-6.0 * delta))
+	var amt := head_bob if not move_locked else 0.0
+	camera.position = Vector3(x * amt, (y * amt) + _land, 0.0)
+	camera.rotation.z = _roll * amt
+
+## Sol sous les pieds, pour le bruit de pas : bois (pavillon, pont, cabanes), pierre (marches, dalles de
+## l'allée), gravier (le reste de l'enceinte), terre (dehors).
+func _surface() -> StringName:
+	for i in get_slide_collision_count():
+		var col := get_slide_collision(i)
+		if col.get_normal().y < 0.6:
+			continue
+		var c := col.get_collider() as Node
+		if c == null:
+			continue
+		var names := (String(c.name) + " " + String(c.get_parent().name if c.get_parent() else "")).to_lower()
+		if names.contains("stair"):
+			return &"step_stone"
+		for w in ["haiden", "bridge", "hut", "tea", "deck", "floor", "veranda", "shamusho"]:
+			if names.contains(w):
+				return &"step_wood"
+		break
+	var p := global_position
+	if Terrain.rect_dist(p.x, p.z) <= 0.0:
+		if absf(p.x) < 1.35 and p.z < 10.0 and p.z > -16.2:
+			return &"step_stone"
+		return &"step_gravel"
+	return &"step_earth"
+
 # ---- animation de la main : balancement de marche + pose du geste + à-coups (kick)
 func _animate_hand(delta: float) -> void:
 	var moving := Vector2(velocity.x, velocity.z).length() > 0.3
 	_hand_time += delta * (7.5 if moving else 1.6)
+	# la main suit le regard avec un léger retard : elle « pèse » (rien pendant un geste qui fige le regard)
+	var sway_to := Vector3(clampf(_look_rate.y * 0.018, -0.07, 0.07), clampf(_look_rate.x * 0.022, -0.09, 0.09), 0.0)
+	_sway = _sway.lerp(sway_to * head_bob, 1.0 - exp(-7.0 * delta))
 	var bob := Vector3(cos(_hand_time * 0.5) * (0.01 if moving else 0.0), sin(_hand_time) * (0.012 if moving else 0.004), 0.0)
 	var pr := Vector3.ZERO
 	var pp := Vector3.ZERO
@@ -231,8 +304,8 @@ func _animate_hand(delta: float) -> void:
 	var k := 1.0 - exp(-12.0 * delta)
 	_pose_rot = _pose_rot.lerp(pr, k)
 	_pose_pos = _pose_pos.lerp(pp, k)
-	hand.position = bob + _pose_pos + _kick_pos
-	hand.rotation = _pose_rot + _kick_rot
+	hand.position = bob + _pose_pos + _kick_pos + Vector3(-_sway.y, _sway.x, 0.0) * 0.25
+	hand.rotation = _pose_rot + _kick_rot + _sway
 
 ## À-coup de la main (frappe, coupe, prise) : aller rapide puis retour amorti.
 func kick(rot: Vector3, pos := Vector3.ZERO, t_in := 0.06, t_out := 0.28) -> void:

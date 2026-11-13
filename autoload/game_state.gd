@@ -21,10 +21,13 @@ var gift_known: Dictionary = {}  # personnage -> {objet: palier} : goûts décou
 const INVENTORY_MAX := 12        # objets portés au total
 var koi: Array = []              # carpes de l'étang : {pattern, size, name, days, seed}
 var koi_state: Dictionary = {}   # fed_yesterday, streak (jours nourris d'affilée)
+var stock: Dictionary = {}       # réserves achetées au bureau du sanctuaire (scripts/shop.gd) : encens, granules
 ## Carnet de la journée, pour le journal du gardien (remis à zéro chaque matin).
 ## coins_in, coins_out, visitors [id personnage], affection {id: delta}, tasks [id], notes [texte]
 var day_log: Dictionary = {}
 var task_order: Array[StringName] = []
+## Premier jour guidé (scripts/guide.gd) : le HUD cache ce qui n'a pas encore de sens.
+var guide := false
 var today: Array[StringName] = []    # tâches obligatoires du jour (2 du matin tirées au hasard + lanternes + cloche)
 var morning: Array[StringName] = []  # les 2 tâches du matin
 var task_data: Dictionary = {}     # id -> TaskData
@@ -51,6 +54,7 @@ func reset_story() -> void:
 	gift_known.clear()
 	koi.clear()
 	koi_state.clear()
+	stock.clear()
 	Events.coins_changed.emit(coins, 0)
 
 func item_count(id: String) -> int:

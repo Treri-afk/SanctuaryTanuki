@@ -89,6 +89,7 @@ var _to: Dictionary = {}
 var _k := 1.0                    # avancement de la transition (1 = arrivée)
 var _t := 0.0
 var _gust := 0.0                 # enveloppe de bourrasque
+var wind_strength := 1.0         # force du vent du moment (lue par l'ambiance sonore)
 var _gust_force := 1.0
 var _ridges: Array[ShaderMaterial] = []
 var _papers: Array = []          # [MeshInstance3D, intensité]
@@ -125,12 +126,13 @@ func _ready() -> void:
 # ------------------------------------------------------------------ configuration
 func _setup_quality() -> void:
 	var vp := get_viewport()
-	vp.msaa_3d = Viewport.MSAA_4X
+	# Réglages mesurés avec `-- --perf` (tools/perf_audit.gd) : le jeu est limité par la carte graphique.
+	vp.msaa_3d = Viewport.MSAA_2X          # les contours sont tracés à l'écran : 2x suffit (4x : +1 à 3 ms)
 	vp.use_debanding = true
 	vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 	RenderingServer.directional_shadow_atlas_set_size(4096, true)
-	RenderingServer.directional_soft_shadow_filter_set_quality(RenderingServer.SHADOW_QUALITY_SOFT_HIGH)
-	RenderingServer.environment_set_volumetric_fog_volume_size(128, 96)
+	RenderingServer.directional_soft_shadow_filter_set_quality(RenderingServer.SHADOW_QUALITY_SOFT_LOW)   # ~3 ms gagnées
+	RenderingServer.environment_set_volumetric_fog_volume_size(64, 48)    # ~4,5 ms gagnées, brume très douce de toute façon
 	RenderingServer.environment_set_volumetric_fog_filter_active(true)
 
 func _setup_sky() -> void:
@@ -202,11 +204,10 @@ func _setup_environment() -> void:
 
 func _setup_sun() -> void:
 	sun.shadow_enabled = true
-	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
-	sun.directional_shadow_max_distance = 95.0
-	sun.directional_shadow_split_1 = 0.06
-	sun.directional_shadow_split_2 = 0.17
-	sun.directional_shadow_split_3 = 0.42
+	# 2 cascades sur 65 m au lieu de 4 sur 95 m : chaque cascade redessine tout ce qu'elle couvre (~4 ms gagnées)
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+	sun.directional_shadow_max_distance = 65.0
+	sun.directional_shadow_split_1 = 0.22
 	sun.directional_shadow_blend_splits = true
 	sun.directional_shadow_fade_start = 0.82
 	sun.directional_shadow_pancake_size = 30.0
@@ -323,6 +324,7 @@ func _update_wind(delta: float) -> void:
 	var n := _wind_noise.get_noise_1d(_t)          # -1..1, lent
 	var n2 := _wind_noise.get_noise_1d(_t * 3.1 + 100.0)
 	var ws := base * (0.85 + 0.3 * n + 0.08 * n2) + g * 1.8 * _gust_force
+	wind_strength = ws
 	var ang := deg_to_rad(21.0 + 14.0 * _wind_noise.get_noise_1d(_t * 0.4 + 50.0))
 	var dir := Vector2(cos(ang), sin(ang))
 	RenderingServer.global_shader_parameter_set("wind_strength", ws)

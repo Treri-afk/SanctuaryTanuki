@@ -25,9 +25,13 @@ On met à jour le statut de chaque ligne au fur et à mesure.
 
 | Statut | Élément | Notes |
 |---|---|---|
-| 📌 | Son et ambiance | Le jeu est presque muet ; les gestes appellent déjà des sons (`Sfx`) qui n'existent pas encore |
-| 📌 | Modèles 3D | Outils, haies, bambous et planches sont des formes simples faites en code ; le reste mérite une passe |
+| 🔨 | Son et ambiance | Banque `sound design/` convertie en extraits légers (`tools/convert_sounds.py`, 14 Mo). Ambiances (`scripts/ambience.gd`) : forêt du matin, de l'après-midi (deux variantes), du soir, chouettes la nuit, forêt profonde hors de l'enceinte, vent qui suit les bourrasques, ruisseau et cascade qui suivent le joueur, gouttes au bassin, pics-verts au loin ; baisse pendant les dialogues. Sons : outils, pièces, clochette (prière, cloche du soir), papier (lettres, journal), coulissant (boutique, cabane), chat, allumettes, carpes, eau, corde. Reste : pas (encore synthétisés, pas d'enregistrement de pas dans la banque), pluie (la banque a une pluie en forêt, pour une future météo), musique |
+| ✅ | Corps du joueur | Inertie au départ et à l'arrêt, tête qui se balance au rythme des pas, léger roulis en pas chassé, tassement à l'atterrissage, respiration à l'arrêt, main qui traîne derrière le regard (`head_bob` = 0 pour tout couper) |
+| ✅ | Retour quand on agit | Fin de tâche : clochette, anneau autour du viseur, nom de la tâche qui monte au centre, ligne qui s'éclaire ; étape d'une tâche courte : petit « toc ». Messages plus courts, sans doublons, accélérés quand ils s'empilent |
+| 🔨 | Fluidité | Audit `-- --perf` (`tools/perf_audit.gd`) : le jeu est limité par la carte graphique. Forêt découpée en tuiles (elle était dessinée en entier à chaque image, et une fois par cascade d'ombre), 2 cascades d'ombre sur 65 m, filtre d'ombre plus simple, brouillard volumétrique allégé, MSAA 2x : ~40 → 27 ms par image sur ce Mac. Reste : un réglage de qualité (résolution 3D surtout) dans un menu d'options |
+| 🔨 | Modèles 3D | Faits au propre : marteau (genno), cisaille (kariko-basami), serpe (kama), carpes koï (5 robes), haies taillées (2 variantes) et rameaux à couper. Bâtiments secondaires à l'échelle du haiden : bureau du sanctuaire avec comptoir de vente (`shamusho.py`), salon de thé en chaume (`teahouse.py`), pavillon des ablutions (`temizuya.py`), grands torii ×1,5 ; module commun `building_util.py` (toits en croupe à tuiles, chaume, cuivre à deux pans, shoji, enseignes). Restent en formes code : établi, bambous de la tâche, planches et clous, renard, tanuki, objets de récolte |
 | 📌 | Débogage de certaines tâches | À lister au fil des parties |
+| 🔨 | Prise en main d'un nouveau joueur | Premier jour guidé (`scripts/guide.gd`) : lettre d'accueil de Seiji, matin fixé et court (feuilles de l'allée en version allégée + prière), objectif courant en haut de l'écran avec la commande utile, repère doré (flèche au bord si hors champ), visiteurs seulement après le matin, liste qui se dévoile (facultatif l'après-midi, lanternes et cloche au soir). À faire : retours de partie, texte de la lettre à valider |
 | 📌 | Personnages | Portraits et sprites (à dessiner) ; les visiteurs sont encore des rectangles colorés |
 | 🔨 | Cohérence des dialogues avec le monde | Corrigé pour Hina : la réponse « j'ai vu un chat près de la mare » n'apparaît que si on a caressé le chat ou qu'il est venu la nuit (drapeau `chat_vu`) |
 
@@ -40,10 +44,11 @@ On met à jour le statut de chaque ligne au fur et à mesure.
 | ✅ | Les visiteurs déposent des pièces dans le tronc à offrandes | En arrivant, chaque visiteur prie au tronc et y jette ses pièces, ramassées automatiquement. Montant : « pièces offertes » du personnage (éditeur) + 1 par tranche de 3 d'affection |
 | ✅ | Compteur de pièces discret | Caché par défaut ; apparaît quand on gagne ou dépense, pendant la prière, ou en maintenant Tab (HUD complet) |
 | ✅ | La pièce de la prière se dépense | S'il n'en reste aucune, le rite continue sans |
-| 📌 | Boutique du bureau du sanctuaire | Dépenser les pièces pour débloquer des activités et objets |
-| 💡 | Encens dans le pavillon | Première activité à débloquer ; effet à définir (ambiance, affection des visiteurs du jour...) |
-| 💡 | Prière de retour | Objet de la boutique : fait revenir un visiteur qui avait décidé de ne plus venir |
-| 💡 | Autres achats | Matériaux de restauration, offrandes, décorations, à compléter |
+| ✅ | Boutique du bureau du sanctuaire | `scripts/shop.gd` : comptoir au porche du bureau (ouest de la cour). Encens, granulés de qualité, omamori, ema vierge, prière de retour. Test : `-- --shoptest` |
+| ✅ | Encens | Brûle-parfum (koro) près du tronc à offrandes ; allumé, chaque visiteur du jour gagne +1 d'affection. Fumée d'encens (`shaders/smoke.gdshader`) |
+| ✅ | Prière de retour | Proposée seulement pour un visiteur parti (6 pièces) |
+| ✅ | Granulés de qualité, omamori, ema vierge | Carpes : croissance doublée le lendemain ; omamori : cadeau apprécié de tous ; ema : son propre vœu au présentoir |
+| 💡 | Autres achats | Matériaux de restauration, décorations (furin, lanternes), à compléter |
 
 ## 4. Récoltes et cadeaux
 
@@ -69,7 +74,7 @@ On met à jour le statut de chaque ligne au fur et à mesure.
 | ✅ | Carte par personnage | Ema dessiné, cœurs d'affection, état du lien, vœux par jour ; « ? » pour qui n'est pas encore venu |
 | ✅ | Visiteurs qui ne reviennent plus | Un visiteur ignoré repart au bout de 150 s (réglable dans l'éditeur) : affection −1. Le lien s'abîme avec l'affection négative ou les visites manquées ; brisé, le personnage ne monte plus |
 | ✅ | Ema qui s'abîme | Intact → fragile (affection < 0 ou 1 visite manquée) → fissuré (≤ −3 ou 2) → brisé (≤ −5 ou 3). Les ema du présentoir penchent puis tombent |
-| 📌 | Prière de retour | Dans la boutique : `GameState.bring_back(personnage)` existe déjà, il reste à la vendre |
+| ✅ | Prière de retour | Vendue au bureau du sanctuaire |
 
 ## 7. Le lieu qui change
 
@@ -95,7 +100,7 @@ On met à jour le statut de chaque ligne au fur et à mesure.
 |---|---|---|
 | 🔨 | Le renard | Deux nuits : il sort de l'ombre, puis revient plus près si on est resté calme et rapporte un vieil ema de Seiji. Reste : offrandes, il finit par nous suivre |
 | 📌 | Le chat | Choisit ses endroits au soleil ; le caresser chaque jour débloque des choses (il guide vers un objet perdu...) |
-| ✅ | Carpes de l'étang | 4 carpes koï (kohaku, sanke, showa, ogon, asagi) dans l'étang de la cour. E en visant l'eau : on lance des granulés, elles accourent et gobent. Nourries, elles grandissent ; deux jours de suite, une petite carpe naît (8 au plus). E sur une carpe : lui donner un nom. Activité facultative « Nourrir les carpes » |
+| ✅ | Carpes de l'étang | 4 carpes koï (kohaku, sanke, showa, ogon, asagi ; modèles `koi_<robe>.glb`, une sur deux en miroir) dans l'étang de la cour. E en visant l'eau : on lance des granulés, elles accourent et gobent. Nourries, elles grandissent ; deux jours de suite, une petite carpe naît (8 au plus). E sur une carpe : lui donner un nom. Activité facultative « Nourrir les carpes » |
 | ⏸ | Carnet d'observation | Oiseaux, insectes, plantes à observer et dessiner ; en dernier |
 
 ## 10. Journal du gardien

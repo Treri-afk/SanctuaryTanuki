@@ -110,7 +110,7 @@ func _stairs() -> void:
 	_own(stairs, scn)
 	for i in 30:
 		place("stone_step", "Step_%d" % i, Vector3(0, -0.18 * (i + 1) - 0.206, 13.25 + 0.5 * i), 0.0, 1.0, 0.0, stairs)
-	place("torii", "ToriiBottom", Vector3(0, -5.58, 30.4))
+	place("torii", "ToriiBottom", Vector3(0, -5.58, 30.4), 0.0, 1.5)   # à l'échelle du haiden : 5,3 m de haut
 	for sx in [-1.7, 1.7]:
 		place("stone_lantern", "StairLantern_%s" % ("L" if sx < 0 else "R"), Vector3(sx * 1.0, -0.18 * 8 - 0.0 - 0.18, 17.5), 0.0)
 	var body := StaticBody3D.new()
@@ -154,8 +154,9 @@ func _slab_line(prefix: String, a: Vector2, b: Vector2) -> void:
 func _precinct() -> void:
 	var y := 0.0
 	# ---- entrée ----
-	place("torii", "Torii", Vector3(0, y, 11.2))
-	place("shimenawa", "Shimenawa", Vector3(0, 2.6, 11.6))
+	# grand torii d'entrée à l'échelle du haiden (5,3 m) ; la corde sacrée suit (même facteur)
+	place("torii", "Torii", Vector3(0, y, 11.2), 0.0, 1.5)
+	place("shimenawa", "Shimenawa", Vector3(0, 3.9, 11.8), 0.0, 1.5)
 	# ---- enceinte ----
 	_wall_line("WallFront", "x", 9.2, -24.2, 24.2, [[-3.0, 3.0]])
 	_wall_line("WallW", "z", -24.2, -35.2, 9.2, [[1.0, 3.0]])        # porte ouest (sentier de la mare)
@@ -178,6 +179,7 @@ func _precinct() -> void:
 		place("stone_lantern", "Lantern_%d" % i, lp[i])
 	# ---- cour d'entrée : purification, puits, outils ----
 	place("water_basin", "WaterBasin", Vector3(-8.5, y, 3.0), 90.0)
+	place("temizuya", "Temizuya", Vector3(-8.5, y, 3.0), 90.0)       # pavillon couvert au-dessus du bassin
 	place("well", "Well", Vector3(9.0, y, 2.0), -20.0)
 	place("bucket", "Bucket", Vector3(7.6, y, 3.6), 20.0)
 	place("basket", "Basket", Vector3(-6.0, y, 7.0))
@@ -196,21 +198,27 @@ func _precinct() -> void:
 	place("paper_lantern", "PaperLanternA", Vector3(-3.2, 3.08, -19.8), 0.0, 1.3)
 	place("paper_lantern", "PaperLanternB", Vector3(3.2, 3.08, -19.8), 0.0, 1.3)
 	# ---- salle de thé (est) ----
-	var teahouse := place("hut", "TeaHouse", Vector3(17.5, y, -4.0), -90.0)
+	# salon de thé (teahouse.glb) : le service à thé est posé sur la véranda (repère tea_anchor du modèle)
+	var teahouse := place("teahouse", "TeaHouse", Vector3(18.2, y, -3.5), -90.0)
 	if teahouse:
-		place("tea_set", "TeaSet", Vector3(1.2, 0.42, 2.3), 0.0, 1.0, 0.0, teahouse)
+		var ta: Node3D = teahouse.find_child("tea_anchor", true, false)
+		place("tea_set", "TeaSet", ta.position if ta else Vector3(1.5, 0.68, 2.86), 0.0, 1.0, 0.0, teahouse)
+		var la: Node3D = teahouse.find_child("lantern_anchor", true, false)
+		if la:
+			place("paper_lantern", "PaperLanternTea", teahouse.transform * la.position)
 	place("bench", "BenchTea", Vector3(12.8, y, -6.8), -90.0)
 	place("woodpile", "WoodpileTea", Vector3(18.0, y, -9.0), -90.0)
-	place("paper_lantern", "PaperLanternTea", Vector3(14.0, 2.4, -1.0))
 	# ---- bureau du sanctuaire (ouest) ----
-	place("hut", "Shamusho", Vector3(-19.0, y, -1.0), 90.0)
+	# bureau du sanctuaire (shamusho.glb) : la boutique ; entre le jardin sec (z < -6) et la porte ouest (z 1..3)
+	place("shamusho", "Shamusho", Vector3(-20.6, y, -2.3), 90.0)
+	place("paper_lantern", "PaperLanternOffice", Vector3(-17.5, 2.95, -0.85))
 	place("bench", "BenchOffice", Vector3(-14.0, y, 1.8), 90.0)
 	place("woodpile", "WoodpileOffice", Vector3(-19.5, y, 3.8), 90.0)
 	# ---- chemins de dalles qui relient les bâtiments à l'allée ----
 	_slab_line("PathBasin", Vector2(-1.8, 3.0), Vector2(-7.2, 3.0))
 	_slab_line("PathWell", Vector2(1.8, 3.0), Vector2(7.2, 3.0))
-	_slab_line("PathTea", Vector2(1.8, -4.0), Vector2(13.2, -4.0))
-	_slab_line("PathOffice", Vector2(-1.8, -1.0), Vector2(-14.2, -1.0))
+	_slab_line("PathTea", Vector2(1.8, -3.5), Vector2(14.2, -3.5))
+	_slab_line("PathOffice", Vector2(-1.8, -1.0), Vector2(-16.6, -1.0))
 	_slab_line("PathZen", Vector2(-1.8, -10.0), Vector2(-9.0, -10.0))
 	_slab_line("PathEma", Vector2(1.8, -14.0), Vector2(8.5, -14.0))
 	_slab_line("PathPond1", Vector2(-2.3, -17.85), Vector2(-14.0, -17.85))

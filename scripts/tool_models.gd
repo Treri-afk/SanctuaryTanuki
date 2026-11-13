@@ -47,8 +47,24 @@ static func ball(parent: Node3D, r: float, color: Color, pos: Vector3, scl := Ve
 	mi.scale = scl
 	return mi
 
+static func glb_exists(model: String) -> bool:
+	return ResourceLoader.exists("res://assets/models/%s.glb" % model)
+
+## Instance d'un modèle importé (assets/models/<nom>.glb) habillé en toon, ou null s'il n'existe pas.
+static func glb(model: String) -> Node3D:
+	var path := "res://assets/models/%s.glb" % model
+	if not ResourceLoader.exists(path):
+		return null
+	var n := (load(path) as PackedScene).instantiate() as Node3D
+	Toon.apply(n, model)
+	return n
+
 ## Modèle d'outil par nom (utilisé pour la main du joueur et l'établi), ou null.
+## Le modèle Blender (tools/blender/<nom>.py) est prioritaire ; les formes simples ci-dessous servent de repli.
 static func make(tool_name: String) -> Node3D:
+	var imported := glb(tool_name)
+	if imported != null:
+		return imported
 	match tool_name:
 		"hammer":
 			return hammer()
@@ -113,7 +129,29 @@ static func tool_table() -> Node3D:
 	return n
 
 ## Haie taillée le long de X, origine au sol au centre. Collision incluse.
+## Modèle Blender hedge_a / hedge_b (tools/blender/hedge.py, 4 m) étiré à la longueur voulue, sinon formes simples.
 static func hedge(length: float, rng: RandomNumberGenerator) -> Node3D:
+	var imported := glb("hedge_a" if rng.randf() < 0.5 else "hedge_b")
+	if imported != null:
+		var n := Node3D.new()
+		imported.scale = Vector3(length / 4.0, 1.0, 1.0)
+		if rng.randf() < 0.5:
+			imported.rotation_degrees.y = 180.0     # les deux faces diffèrent : plus de variété
+		n.add_child(imported)
+		return n
+	return _hedge_shapes(length, rng)
+
+## Rameau qui dépasse d'une haie, le long de +Y, origine à la base, ou null sans le modèle Blender.
+## `length` : longueur voulue (le modèle mesure 0,20 m).
+static func hedge_sprig(length: float, spin: float) -> Node3D:
+	var imported := glb("hedge_sprig")
+	if imported == null:
+		return null
+	imported.scale = Vector3.ONE * (length / 0.20)
+	imported.rotation.y = spin
+	return imported
+
+static func _hedge_shapes(length: float, rng: RandomNumberGenerator) -> Node3D:
 	var n := Node3D.new()
 	var count := int(length / 0.5) + 1
 	for i in count:
@@ -286,7 +324,19 @@ static func item(shape: String, col: Color) -> Node3D:
 ## ogon (dorée), asagi (dos bleu-gris, flancs orange).
 const KOI_PATTERNS := ["kohaku", "sanke", "showa", "ogon", "asagi"]
 
+## Carpe d'une robe donnée : modèle Blender koi_<robe>.glb (tools/blender/koi.py) si présent, sinon formes simples.
+## Le modèle importé a deux enfants, « body » et « tail » (origine sur l'articulation de la queue).
+## Pour que deux carpes de même robe ne soient pas identiques, on retourne la moitié d'entre elles en miroir.
 static func koi(pattern: String, rng: RandomNumberGenerator) -> Node3D:
+	var imported := glb("koi_" + pattern)
+	if imported != null:
+		if rng.randf() < 0.5:
+			for c in imported.get_children():
+				(c as Node3D).scale.x = -1.0
+		return imported
+	return _koi_shapes(pattern, rng)
+
+static func _koi_shapes(pattern: String, rng: RandomNumberGenerator) -> Node3D:
 	var n := Node3D.new()
 	var white := Color("#F2EEE6")
 	var red := Color("#D4462A")

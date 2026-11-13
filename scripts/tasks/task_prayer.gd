@@ -51,6 +51,7 @@ func _start() -> void:
 		return
 	praying = true
 	step = 0
+	Sfx.play(&"bell", box.global_position + Vector3(0, 1.9, 0), -6.0)   # on agite la clochette avant de prier
 	_bowing = false
 	_prev_down = true   # le clic qui a lancé la prière ne compte pas
 	game.hud.show_coins(true)
@@ -116,8 +117,7 @@ func _advance() -> void:
 		player.move_locked = false
 		game.hud.show_coins(false)
 		game._area_on(area, false)
-		game.hud.set_banner("")
-		Sfx.play(&"task_done")
+		game.hud.set_banner("")      # le son et le sceau de fin de tâche viennent du HUD
 		Events.toast.emit("Votre prière monte avec la brume du matin.")
 		return
 	_show()

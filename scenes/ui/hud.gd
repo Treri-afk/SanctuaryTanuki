@@ -16,6 +16,15 @@ var _toast_busy := false
 var _dot: Control
 var _banner: Label
 var _hint: Label
+var _objective: Label
+var _objective_keys: Label
+var _marker: Control
+var _marker_target: Variant = null
+var _marker_t := 0.0
+var _help_kept := false
+var _opt_header: Label
+var _stamp: Label
+var _last_progress: Dictionary = {}   # id -> dernière valeur vue (pour ne réagir qu'aux vrais progrès)
 var ring_phase := -1.0      # cercle de frappe autour du viseur (0 = large, 1 = sur le point) ; -1 = caché
 var _pulse := 0.0
 
@@ -69,6 +78,7 @@ func _ready() -> void:
 			optional_started = true
 			var h := _label(_tasks_box, 15, Color(0.75, 0.72, 0.8))
 			h.text = "Facultatif"
+			_opt_header = h
 		var l := _label(_tasks_box, 18 if not optional_started else 16, Color(0.95, 0.93, 0.88))
 		_task_labels[id] = l
 
@@ -77,6 +87,13 @@ func _ready() -> void:
 	_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_toast.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_toast.modulate.a = 0.0
+
+	# sceau de fin de tâche : grand texte doux au-dessus du viseur, qui monte et s'efface
+	_stamp = _label(root, 30, Color(1.0, 0.88, 0.55))
+	_place(_stamp, Vector2(0.5, 0.5), Rect2(-520, -150, 1040, 44))
+	_stamp.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_stamp.add_theme_constant_override("outline_size", 8)
+	_stamp.modulate.a = 0.0
 
 	_held = _label(root, 20, Color(0.96, 0.93, 0.86))
 	_place(_held, Vector2(1.0, 1.0), Rect2(-460, -92, 436, 30))
@@ -87,9 +104,22 @@ func _ready() -> void:
 	_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 	_banner = _label(root, 22, Color(1, 0.95, 0.84))
-	_place(_banner, Vector2(0.5, 0.0), Rect2(-460, 60, 920, 110))
+	_place(_banner, Vector2(0.5, 0.0), Rect2(-460, 78, 920, 110))
 	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_banner.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+
+	# objectif courant (premier jour guidé) : une ligne en haut, la commande utile dessous
+	_objective = _label(root, 23, Color(1, 0.93, 0.74))
+	_place(_objective, Vector2(0.5, 0.0), Rect2(-520, 14, 1040, 34))
+	_objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_objective_keys = _label(root, 16, Color(0.92, 0.92, 0.96, 0.9))
+	_place(_objective_keys, Vector2(0.5, 0.0), Rect2(-520, 46, 1040, 24))
+	_objective_keys.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_marker = Control.new()
+	_marker.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_marker.draw.connect(_draw_marker)
+	root.add_child(_marker)
 
 	_help = _label(root, 16, Color(0.9, 0.9, 0.95, 0.85))
 	_place(_help, Vector2(0.0, 1.0), Rect2(24, -46, 900, 30))
@@ -108,14 +138,15 @@ func _ready() -> void:
 	_card.modulate.a = 0.0
 
 	Events.task_progress.connect(_on_progress)
-	Events.phase_changed.connect(func(_p): _refresh_phase())
+	Events.phase_changed.connect(func(_p): _refresh_phase(); _refresh_tasks())
 	Events.day_started.connect(func(_d): _refresh_phase(); _refresh_tasks())
 	Events.toast.connect(show_toast)
 	_coins_setup()
 	_refresh_phase()
 	_refresh_tasks()
 	get_tree().create_timer(14.0).timeout.connect(func():
-		create_tween().tween_property(_help, "modulate:a", 0.0, 2.0))
+		if not _help_kept:
+			create_tween().tween_property(_help, "modulate:a", 0.0, 2.0))
 
 ## Ancre un contrôle sur un point de l'écran (0..1) avec un rectangle en pixels relatif à ce point.
 func _place(c: Control, anchor: Vector2, r: Rect2) -> void:
@@ -161,12 +192,113 @@ func pulse() -> void:
 func set_banner(text: String) -> void:
 	_banner.text = text
 
+## Retour quand on avance : petit « toc » et éclat doré de la ligne à chaque étape d'une tâche courte ;
+## clochette, sceau au centre et anneau autour du viseur quand une tâche est terminée.
+func _feedback(id: StringName, v: int, t: int, data: TaskData) -> void:
+	var prev := int(_last_progress.get(id, -1))
+	_last_progress[id] = v
+	if prev < 0 or v <= prev or GameState.phase == GameState.Phase.NIGHT:
+		return      # première valeur de la journée, remise à zéro, ou rien de neuf
+	var l: Label = _task_labels[id]
+	if v >= t:
+		Sfx.play(&"task_done")
+		pulse()
+		_stamp.text = data.label
+		var tw := create_tween()
+		_stamp.modulate.a = 0.0
+		_stamp.offset_top = -150.0
+		_stamp.offset_bottom = -106.0
+		tw.set_parallel(true)
+		tw.tween_property(_stamp, "modulate:a", 1.0, 0.25)
+		tw.tween_property(_stamp, "offset_top", -170.0, 2.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		tw.tween_property(_stamp, "offset_bottom", -126.0, 2.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		tw.chain().tween_property(_stamp, "modulate:a", 0.0, 0.6)
+		_flash(l, Color(1.0, 0.85, 0.4))
+	elif t <= 12:
+		Sfx.play(&"tick")
+		_flash(l, Color(1.0, 0.92, 0.65))
+
+func _flash(l: Label, c: Color) -> void:
+	var tw := create_tween()
+	tw.tween_property(l, "self_modulate", c * 1.25, 0.08)
+	tw.tween_property(l, "self_modulate", Color.WHITE, 0.6)
+
+## Objectif courant du guide (texte, commande utile) ; "" pour le cacher.
+func set_objective(text: String, keys: String) -> void:
+	_objective.text = text
+	_objective_keys.text = keys
+
+## Repère doré sur un point du monde (Vector3), ou null pour le cacher.
+func set_marker(target: Variant) -> void:
+	_marker_target = target
+
+## Garde la barre des commandes affichée (premiers pas du guide), ou la laisse s'effacer.
+func keep_help(on: bool) -> void:
+	_help_kept = on
+	var tw := create_tween()
+	tw.tween_property(_help, "modulate:a", 1.0 if on else 0.0, 0.5 if on else 2.0)
+
+## Losange doré au-dessus de la cible si elle est à l'écran, sinon flèche au bord de l'écran.
+func _draw_marker() -> void:
+	if _marker_target == null or player == null or _fade.color.a > 0.5:
+		return
+	var cam: Camera3D = player.camera
+	var target: Vector3 = _marker_target
+	var dist: float = (player as Node3D).global_position.distance_to(target)
+	if dist < 2.4:
+		return       # on y est : l'invite d'action prend le relais
+	var size := _marker.size
+	var center := size * 0.5
+	var behind := cam.is_position_behind(target)
+	var sp := cam.unproject_position(target)
+	var margin := 70.0
+	var on_screen := not behind and sp.x > margin and sp.x < size.x - margin and sp.y > margin and sp.y < size.y - margin
+	var gold := Color(1.0, 0.82, 0.38, 0.95)
+	var ink := Color(0.12, 0.09, 0.12, 0.85)
+	if on_screen:
+		var bob := sin(_marker_t * 3.0) * 4.0
+		var c := sp + Vector2(0, -8 + bob)
+		var r := 11.0
+		var pts := PackedVector2Array([c + Vector2(0, -r), c + Vector2(r * 0.72, 0), c + Vector2(0, r), c + Vector2(-r * 0.72, 0)])
+		_marker.draw_colored_polygon(pts, gold)
+		pts.append(pts[0])
+		_marker.draw_polyline(pts, ink, 2.0, true)
+		var font := ThemeDB.fallback_font
+		var label := "%d m" % int(round(dist))
+		var w := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
+		_marker.draw_string_outline(font, c + Vector2(-w * 0.5, r + 18), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, 4, ink)
+		_marker.draw_string(font, c + Vector2(-w * 0.5, r + 18), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, gold)
+		return
+	# hors champ : flèche sur le bord, dans la direction de la cible. Derrière soi, elle se met à gauche ou à
+	# droite : elle dit de quel côté se retourner.
+	var local := cam.global_transform.affine_inverse() * target
+	var dir := Vector2(local.x, -local.y)
+	if behind:
+		dir = Vector2(1.0 if local.x >= 0.0 else -1.0, clampf(-local.y * 0.1, -0.3, 0.3))
+	if dir.length() < 0.001:
+		dir = Vector2(1, 0)
+	dir = dir.normalized()
+	var half := center - Vector2(margin, margin)
+	var k := minf(half.x / maxf(absf(dir.x), 0.001), half.y / maxf(absf(dir.y), 0.001))
+	var tip := center + dir * k
+	var pulse := 1.0 + 0.12 * sin(_marker_t * 4.0)
+	var side := Vector2(-dir.y, dir.x)
+	var a := tip + dir * 14.0 * pulse
+	var b := tip - dir * 10.0 + side * 13.0 * pulse
+	var c2 := tip - dir * 10.0 - side * 13.0 * pulse
+	var tri := PackedVector2Array([a, b, c2])
+	_marker.draw_colored_polygon(tri, gold)
+	tri.append(a)
+	_marker.draw_polyline(tri, ink, 2.0, true)
+
 func _process(dt: float) -> void:
 	_coins_process(dt)
 	if player == null:
 		return
 	_prompt.text = player.prompt_text
 	_pulse = maxf(_pulse - dt * 2.2, 0.0)
+	_marker_t += dt
+	_marker.queue_redraw()
 	_dot.queue_redraw()
 	var t: StringName = player.tool
 	var s: String = TOOL_NAMES.get(t, "")
@@ -182,8 +314,27 @@ func _refresh_phase() -> void:
 
 func _refresh_tasks() -> void:
 	for id in _task_labels:
-		(_task_labels[id] as Label).visible = not GameState.is_off_today(id)
+		(_task_labels[id] as Label).visible = _task_visible(id)
 		_on_progress(id, GameState.progress.get(id, 0), GameState.target.get(id, 1))
+	if _opt_header:
+		var any := false
+		for id in _task_labels:
+			if not (GameState.task_data[id] as TaskData).required and _task_visible(id):
+				any = true
+		_opt_header.visible = any
+
+## Premier jour guidé : on ne montre que ce qui a du sens maintenant. Lanternes et cloche au soir ;
+## les activités facultatives à partir de l'après-midi, ou dès qu'on en a commencé une.
+func _task_visible(id: StringName) -> bool:
+	if GameState.is_off_today(id):
+		return false
+	if not GameState.guide:
+		return true
+	if id == &"lanternes" or id == &"cloche":
+		return GameState.phase >= GameState.Phase.EVENING
+	if not (GameState.task_data[id] as TaskData).required:
+		return GameState.phase != GameState.Phase.MORNING or int(GameState.progress.get(id, 0)) > 0
+	return true
 
 func _on_progress(id: StringName, v: int, t: int) -> void:
 	if not _task_labels.has(id):
@@ -196,7 +347,11 @@ func _on_progress(id: StringName, v: int, t: int) -> void:
 	elif t > 1:
 		txt += "  (%d/%d)" % [v, t]
 	var l: Label = _task_labels[id]
-	l.visible = not GameState.is_off_today(id)
+	_feedback(id, v, t, data)
+	var was := l.visible
+	l.visible = _task_visible(id)
+	if _opt_header and l.visible and not was and not (GameState.task_data[id] as TaskData).required:
+		_opt_header.visible = true
 	l.text = txt
 	l.modulate = Color(0.7, 0.9, 0.6) if done else Color.WHITE
 
@@ -208,11 +363,18 @@ func show_toast(text: String) -> void:
 func _run_toasts() -> void:
 	_toast_busy = true
 	while not _toast_queue.is_empty():
-		_toast.text = _toast_queue.pop_front()
+		var text: String = _toast_queue.pop_front()
+		while not _toast_queue.is_empty() and _toast_queue[0] == text:
+			_toast_queue.pop_front()        # même message en double : une seule fois
+		_toast.text = text
+		# durée selon la longueur du texte, et plus court quand d'autres messages attendent
+		var hold := clampf(1.3 + text.length() * 0.035, 1.8, 4.2)
+		if _toast_queue.size() >= 2:
+			hold *= 0.6
 		var tw := create_tween()
-		tw.tween_property(_toast, "modulate:a", 1.0, 0.4)
-		tw.tween_interval(3.6)
-		tw.tween_property(_toast, "modulate:a", 0.0, 0.6)
+		tw.tween_property(_toast, "modulate:a", 1.0, 0.25)
+		tw.tween_interval(hold)
+		tw.tween_property(_toast, "modulate:a", 0.0, 0.4)
 		await tw.finished
 	_toast_busy = false
 
@@ -235,6 +397,7 @@ func show_card(text: String, hold: float) -> void:
 
 # ---- note (lettre) : panneau de papier, fermé par un clic ----
 func show_note(title: String, text: String) -> void:
+	Sfx.play(&"paper")
 	var panel := PanelContainer.new()
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color("#EFE6D2")
@@ -420,6 +583,7 @@ func _draw_coin() -> void:
 
 # ---- journal du gardien : page de fin de journée, à la place du simple fondu au noir
 func show_journal(page: Dictionary) -> void:
+	Sfx.play(&"paper")
 	show_coins(true)
 	var panel := PanelContainer.new()
 	var sb := StyleBoxFlat.new()
@@ -660,6 +824,13 @@ func _ema_card(c: Dictionary) -> Control:
 		_jlabel(v, "Pas encore venu", 15, Color("#5E564A"))
 		return panel
 	_jlabel(v, String(c["name"]), 21, ink)
+	if c.get("self", false):
+		# les vœux du gardien : pas de cœurs ni de lien, seulement ce qu'on a écrit
+		for w in (c.get("wishes", []) as Array).slice(maxi((c.get("wishes", []) as Array).size() - 4, 0)):
+			var lw := _jlabel(v, "Jour %d · « %s »" % [int(w["day"]), String(w["wish"])], 14, ink)
+			lw.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			lw.custom_minimum_size = Vector2(220, 0)
+		return panel
 	# affection : cinq coeurs, ou des coeurs brisés si elle est négative
 	var a := int(c["affection"])
 	var mx := maxi(int(c["max"]), 1)
@@ -791,7 +962,87 @@ func _inv_process(dt: float) -> void:
 	_inv_root.modulate.a = move_toward(_inv_root.modulate.a, want, dt * (4.0 if want > 0.0 else 1.6))
 
 # ---- saisie d'un court texte (nommer une carpe...) : retourne "" si l'on annule
-func ask_text(title: String, placeholder: String) -> String:
+## Boutique : panneau de papier, une ligne par objet (nom, description, réserve, prix, bouton Acheter).
+## Renvoie l'id choisi, ou "" quand on ferme (bouton ou Échap).
+func show_shop(title: String, rows: Array) -> String:
+	var panel := PanelContainer.new()
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#EFE6D2")
+	sb.border_color = Color("#5A3A26")
+	sb.set_border_width_all(4)
+	sb.set_corner_radius_all(8)
+	sb.content_margin_left = 30
+	sb.content_margin_right = 30
+	sb.content_margin_top = 22
+	sb.content_margin_bottom = 20
+	panel.add_theme_stylebox_override("panel", sb)
+	_place(panel, Vector2(0.5, 0.5), Rect2(-430, -250, 860, 0))      # la hauteur suit le contenu
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 10)
+	panel.add_child(v)
+	var head := HBoxContainer.new()
+	v.add_child(head)
+	var t := _jlabel(head, title, 26, Color("#C8442B"))
+	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_jlabel(head, "Pièces : %d" % GameState.coins, 22, Color("#7A5A1E"))
+	_jlabel(v, "Les offrandes des visiteurs font vivre le sanctuaire. On les dépense ici.", 15, Color("#7A6A60"))
+	_jrule(v)
+	var state := {"done": false, "id": ""}
+	for r in rows:
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 16)
+		v.add_child(row)
+		var info := VBoxContainer.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.add_theme_constant_override("separation", 2)
+		row.add_child(info)
+		var name_line := HBoxContainer.new()
+		info.add_child(name_line)
+		_jlabel(name_line, String(r["name"]), 20, Color("#2A2024"))
+		if String(r.get("note", "")) != "":
+			_jlabel(name_line, "   " + String(r["note"]), 14, Color("#5E7A38"))
+		var d := _jlabel(info, String(r["desc"]), 14, Color("#5E544C"))
+		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		d.custom_minimum_size = Vector2(520, 0)
+		var price := _jlabel(row, "%d pièce%s" % [int(r["price"]), "s" if int(r["price"]) > 1 else ""], 18, Color("#7A5A1E"))
+		price.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		price.custom_minimum_size = Vector2(90, 0)
+		var b := Button.new()
+		b.text = "Acheter" if r["ok"] else String(r["why"])
+		b.disabled = not r["ok"]
+		b.custom_minimum_size = Vector2(150, 40)
+		b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		b.add_theme_font_size_override("font_size", 16)
+		var id := String(r["id"])
+		b.pressed.connect(func():
+			state["id"] = id
+			state["done"] = true)
+		row.add_child(b)
+	_jrule(v)
+	var close := Button.new()
+	close.text = "Fermer  (Échap)"
+	close.custom_minimum_size = Vector2(200, 40)
+	close.size_flags_horizontal = Control.SIZE_SHRINK_END
+	close.add_theme_font_size_override("font_size", 16)
+	close.pressed.connect(func(): state["done"] = true)
+	v.add_child(close)
+	add_child(panel)
+	show_coins(true)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	panel.modulate.a = 0.0
+	create_tween().tween_property(panel, "modulate:a", 1.0, 0.2)
+	if OS.get_cmdline_user_args().has("--autoplay"):
+		state["done"] = true
+	while not state["done"]:
+		await get_tree().process_frame
+		if Input.is_key_pressed(KEY_ESCAPE):
+			break
+	panel.queue_free()
+	show_coins(false)
+	await get_tree().create_timer(0.12).timeout
+	return String(state["id"])
+
+func ask_text(title: String, placeholder: String, max_len: int = 16) -> String:
 	var panel := PanelContainer.new()
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color("#EFE6D2")
@@ -803,14 +1054,15 @@ func ask_text(title: String, placeholder: String) -> String:
 	sb.content_margin_top = 20
 	sb.content_margin_bottom = 20
 	panel.add_theme_stylebox_override("panel", sb)
-	_place(panel, Vector2(0.5, 0.5), Rect2(-220, -80, 440, 160))
+	var w := 440 if max_len <= 16 else 640
+	_place(panel, Vector2(0.5, 0.5), Rect2(-w / 2, -80, w, 160))
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 12)
 	panel.add_child(v)
 	_jlabel(v, title, 20, Color("#2A2024"))
 	var edit := LineEdit.new()
 	edit.placeholder_text = placeholder
-	edit.max_length = 16
+	edit.max_length = max_len
 	edit.add_theme_font_size_override("font_size", 22)
 	v.add_child(edit)
 	_jlabel(v, "Entrée pour valider, Échap pour annuler", 13, Color("#7A6A60"))

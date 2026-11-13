@@ -57,7 +57,8 @@ func on_day_start(day: int) -> void:
 		if fed:
 			GameState.koi_state["streak"] = int(GameState.koi_state.get("streak", 0)) + 1
 			for k in GameState.koi:
-				k["size"] = minf(float(k["size"]) + 0.08, 1.6)
+				# granulés de qualité (boutique du bureau) : elles grandissent deux fois plus
+				k["size"] = minf(float(k["size"]) + (0.16 if bool(GameState.koi_state.get("premium_yesterday", false)) else 0.08), 1.6)
 				k["days"] = int(k.get("days", 0)) + 1
 			if int(GameState.koi_state["streak"]) >= 2 and GameState.koi.size() < MAX_KOI:
 				GameState.koi_state["streak"] = 0
@@ -67,6 +68,7 @@ func on_day_start(day: int) -> void:
 		else:
 			GameState.koi_state["streak"] = 0
 	GameState.koi_state["fed_yesterday"] = false
+	GameState.koi_state["premium_yesterday"] = false
 	eaten_today = 0
 	GameState.set_target(&"carpes", 1)
 	_rebuild()
@@ -148,6 +150,8 @@ func _throw(at: Vector3) -> void:
 	if target.distance_to(CENTER) > MAX_R:
 		target = CENTER + (target - CENTER).normalized() * MAX_R
 	game.player.kick(Vector3(0.4, 0, 0), Vector3(0, 0.05, -0.12), 0.06, 0.3)
+	# granulés de qualité en réserve : ils sont dorés
+	_pellet_mat.albedo_color = Color("#E2B04A") if int(GameState.stock.get("granules", 0)) > 0 else Color("#C9A36A")
 	Sfx.play(&"leaves", Vector3(target.x, LEVEL, target.y), -10.0)
 	for i in mini(PER_THROW, room):
 		var p := MeshInstance3D.new()
@@ -253,12 +257,17 @@ func _eat(f: Dictionary, p: Dictionary) -> void:
 		p["node"].queue_free()
 	f["rise"] = 1.0
 	_ripple(Vector3((p["pos"] as Vector2).x, LEVEL + 0.01, (p["pos"] as Vector2).y), 0.12)
-	Sfx.play(&"water_draw", Vector3((p["pos"] as Vector2).x, LEVEL, (p["pos"] as Vector2).y), -14.0)
+	Sfx.play(&"plop", Vector3((p["pos"] as Vector2).x, LEVEL, (p["pos"] as Vector2).y), -2.0)
 	eaten_today += 1
 	if eaten_today >= FULL_ENOUGH and not bool(GameState.koi_state.get("fed_yesterday", false)):
 		GameState.koi_state["fed_yesterday"] = true   # lu le lendemain matin
 		GameState.add_progress(&"carpes")
-		Events.toast.emit("Les carpes se sont régalées. Elles grandiront.")
+		if int(GameState.stock.get("granules", 0)) > 0:
+			GameState.stock["granules"] = int(GameState.stock["granules"]) - 1
+			GameState.koi_state["premium_yesterday"] = true
+			Events.toast.emit("Les carpes dévorent les granulés de qualité. Demain, elles auront bien grandi.")
+		else:
+			Events.toast.emit("Les carpes se sont régalées. Elles grandiront.")
 		GameState.note("J'ai nourri les carpes de l'étang.")
 
 ## Test automatique : nourrit les carpes jusqu'à satiété.

@@ -5,6 +5,8 @@ Godot 4.7, Forward+. Lancer `scenes/main.tscn` (scène principale du projet).
 **Contrôles** : ZQSD / WASD, souris, E ou clic = agir, clic maintenu = geste de l'outil, R = reposer l'outil,
 Tab maintenu = HUD complet (pièces), Échap = libérer la souris. Tests : Espace = saut, F = vol libre (Espace / Maj = monter / descendre).
 
+**Premier jour** : guidé (lettre de Seiji, objectif courant, repère doré), matin fixé : feuilles de l'allée et prière.
+
 **Journée** : matin (2 tâches tirées au hasard, jamais les mêmes deux jours de suite si possible) -> après-midi (un
 visiteur, dialogue visual novel) -> soir (allumettes + 8 lanternes, puis cloche) -> jour suivant (3 jours).
 
@@ -27,5 +29,13 @@ Marteau, cisaille et serpe sont sur l'établi près du bureau du sanctuaire.
 - `tools/build_world.gd` : régénère `scenes/world/shrine.tscn` (`godot --headless --script res://tools/build_world.gd`).
 - `tools/shot.sh x y z yaw pitch nom [phase 0-2] [attente] [outil|vn]` : capture du vrai rendu.
 - `godot --path . -- --autoplay [--tasks=a,b]` : joue automatiquement une journée complète (test).
+- Premier jour guidé (`scripts/guide.gd`) : actif au jour 1 d'une partie lancée normalement. Les modes de test
+  le coupent, sauf avec `--guide` (ex. `-- --autoplay --guide`) ; `--noguide` le coupe toujours.
 - `godot --path . -- --feeltest --tasks=a,b` : teste les gestes avec de vraies entrées souris simulées.
+- `godot --path . -- --shoptest` : achète chaque objet de la boutique et vérifie ses effets.
+- `godot --path . -- --walktest` : fait marcher le joueur (entrée du salon de thé, murs) et vérifie la hauteur libre sous chaque torii.
+- `godot --path . -- --soundtest` : liste les sons chargés depuis des fichiers et les ambiances qui jouent.
+- `python3 tools/convert_sounds.py` : extrait les sons du jeu de la banque `sound design/` (voir `assets/sounds/LISEZMOI.md`).
+- `godot --path . -- --perf` : audit de fluidité (temps d'image par point de vue, puis chaque poste coupé un par un ;
+  `--quick` : seulement la base, `--fixes` : réglages candidats).
 - Portraits : déposer `assets/portraits/<id_visiteur>_<expression>.png` (expressions : neutre, sourire, inquiet).

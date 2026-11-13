@@ -130,6 +130,13 @@ func _read_board() -> void:
 
 func _board_data() -> Array:
 	var out := []
+	var mine := []
+	for e in GameState.ema_log:
+		if e["character"] == "gardien":
+			mine.append(e)
+	if not mine.is_empty():
+		out.append({"id": "gardien", "name": "Vos vœux", "color": Color("#C8442B"), "met": true, "self": true,
+			"affection": 0, "max": 1, "state": 0, "wishes": mine, "missed": 0, "tastes": ""})
 	for c in Story.data.get("characters", []):
 		var who := String(c.get("id", ""))
 		if bool(c.get("animal", false)):
@@ -159,6 +166,13 @@ func _tastes(who: String) -> String:
 		if not names.is_empty():
 			parts.append("%s : %s" % [String(Story.GIFT_TIER_NAMES[tier]).capitalize(), ", ".join(names)])
 	return " · ".join(parts)
+
+## Ema vierge acheté au bureau : le gardien y écrit son vœu, accroché aussitôt au présentoir.
+func hang_player_ema(wish: String) -> void:
+	GameState.ema_log.append({"character": "gardien", "wish": wish, "day": GameState.day})
+	hang_visitor_ema("gardien")
+	GameState.note("J'ai accroché mon propre vœu : « %s »." % wish)
+	Events.toast.emit("Votre ema rejoint les autres au présentoir.")
 
 ## Ema accroché par un visiteur en partant : il reste au présentoir et s'abîme avec le lien.
 func hang_visitor_ema(who: String) -> void:
@@ -225,6 +239,7 @@ func _spawn_ema() -> void:
 			func() -> String: return "E : Ramasser l'ema égaré",
 			func(_p):
 				ema_held += 1
+				Sfx.play(&"pickup")
 				ema_nodes.erase(r)
 				r.queue_free()
 				Events.toast.emit("Un ema trouvé. Rapportez-le au présentoir.")
@@ -243,6 +258,7 @@ func _hang_ema(rack: Node3D) -> void:
 	if hung.size() >= 2:
 		e.position += Vector3(0.0, -0.18, 0.02)
 	hung.append(e)
+	Sfx.play(&"putdown", rack.global_position + Vector3(0, 1.2, 0))
 	GameState.add_progress(&"ema")
 	Events.toast.emit("L'ema est accroché au présentoir.")
 	GameState.note("Un ema égaré a retrouvé sa place.")
@@ -273,6 +289,7 @@ func _setup_cat() -> void:
 		func(_p):
 			cat_pets += 1
 			GameState.set_flag(&"chat_vu")
+			Sfx.play(&"cat", cat.global_position + Vector3(0, 0.3, 0), -4.0)
 			var lines := ["Le chat ronronne et vous regarde à peine.", "Il s'étire au soleil, une patte sur votre main.", "Le chat cligne lentement des yeux : c'est un sourire."]
 			Events.toast.emit(lines[cat_pets % lines.size()]))
 
@@ -298,6 +315,7 @@ func _read_letter() -> void:
 	door_open = true
 	if door:
 		create_tween().tween_property(door, "position:x", door.position.x + 0.9, 0.8)
+		Sfx.play(&"door_slide", door.global_position)
 	player.input_enabled = false
 	await get_tree().create_timer(0.8).timeout
 	var idx := letters_read
