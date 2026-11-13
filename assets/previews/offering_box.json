@@ -1,15 +1,15 @@
 {
   "name": "offering_box",
-  "triangles": 4582,
+  "triangles": 10288,
   "dims_xyz_m": [
-    2.72,
-    1.44,
-    3.344
+    3.217,
+    1.934,
+    3.93
   ],
-  "min_z": 0.0,
+  "min_z": -0.002,
   "center_xy": [
     0.0,
-    0.0
+    -0.023
   ],
   "collisions": [
     "offering_box-col",
@@ -17,17 +17,20 @@
     "offering_post_1-col"
   ],
   "materials": [
+    "cloth_purple",
+    "copper",
+    "copper_dark",
     "lacquer_black",
     "lacquer_red",
     "metal",
     "metal_gold",
     "moss",
-    "rope",
+    "paper",
+    "roof_edge",
+    "soffit",
     "stone",
-    "stone_dark",
     "straw",
     "wood_dark",
-    "wood_faded",
     "wood_light"
   ],
   "warnings": [],

@@ -383,7 +383,7 @@ func _setup_workshop() -> void:
 		m.rotation_degrees = lay[n][1]
 		tool_node.add_child(m)
 		props.add_child(tool_node)
-	for b in [["Basket2", Vector3(5.8, 0, -17.2)], ["Basket3", Vector3(-4.6, 0, -19.8)]]:
+	for b in [["Basket2", Vector3(5.6, 0, -16.3)], ["Basket3", Vector3(-7.4, 0, -19.4)]]:
 		var basket := _model("basket", Color("#A87B4F"))
 		basket.name = b[0]
 		basket.position = b[1]
@@ -829,7 +829,7 @@ func _start_evening() -> void:
 const VISITOR_PATH := [Vector3(0, 0, 36.0), Vector3(0, 0, 28.5), Vector3(0, 0, 13.0), Vector3(0, 0, 9.0)]
 ## Endroits où un visiteur s'arrête et attend qu'on vienne lui parler (clé "spot" d'une visite).
 const SPOTS := {
-	"offrandes": [Vector3(1.0, 0, -15.2), "devant le tronc à offrandes"],
+	"offrandes": [Vector3(1.0, 0, -14.8), "devant le tronc à offrandes"],
 	"ema": [Vector3(8.8, 0, -12.6), "près du présentoir à ema"],
 	"etang": [Vector3(-13.4, 0, -19.8), "au bord de l'étang"],
 	"the": [Vector3(12.4, 0, -2.6), "devant la salle de thé"],
@@ -901,7 +901,7 @@ func _spawn_visit(v: Dictionary) -> void:
 		func() -> String: return "E : Parler à %s" % Story.display_name(who),
 		func(_p): _talk())
 
-const OFFERING_SPOT := Vector3(0.9, 0, -15.3)
+const OFFERING_SPOT := Vector3(0.9, 0, -14.9)
 
 ## Pièces lancées par un visiteur dans le tronc à offrandes : arc, tintement, ajoutées au compte.
 func _toss_offering(v_node: Node3D, n: int) -> void:

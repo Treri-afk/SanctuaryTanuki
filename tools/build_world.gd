@@ -188,12 +188,13 @@ func _precinct() -> void:
 	place("jizo", "JizoB", Vector3(-12.0, y, 8.2), 15.0)
 	place("jizo", "JizoC", Vector3(-13.4, y, 8.4), -10.0)
 	# ---- cour principale : tronc à offrandes et pavillon ----
-	place("offering_box", "OfferingBox", Vector3(0, y, -17.0))
-	place("haiden", "Haiden", Vector3(0, y, -23.0), 0.0, 1.5)
+	place("offering_box", "OfferingBox", Vector3(0, y, -16.6))
+	place("haiden", "Haiden", Vector3(0, y, -24.0))   # échelle réelle : on y entre par l'escalier couvert
 	place("ema_rack", "EmaRack", Vector3(10.5, y, -14.0), -80.0)
 	place("stone_marker", "MarkerCourt", Vector3(-6.5, y, -16.5), 15.0)
-	place("paper_lantern", "PaperLanternA", Vector3(-3.4, 3.2, -19.6), 0.0, 1.3)
-	place("paper_lantern", "PaperLanternB", Vector3(3.4, 3.2, -19.6), 0.0, 1.3)
+	# suspendues aux cordons de l'avant-toit du pavillon (repères lantern_anchor_l/r du modèle)
+	place("paper_lantern", "PaperLanternA", Vector3(-3.2, 3.08, -19.8), 0.0, 1.3)
+	place("paper_lantern", "PaperLanternB", Vector3(3.2, 3.08, -19.8), 0.0, 1.3)
 	# ---- salle de thé (est) ----
 	var teahouse := place("hut", "TeaHouse", Vector3(17.5, y, -4.0), -90.0)
 	if teahouse:
@@ -212,9 +213,10 @@ func _precinct() -> void:
 	_slab_line("PathOffice", Vector2(-1.8, -1.0), Vector2(-14.2, -1.0))
 	_slab_line("PathZen", Vector2(-1.8, -10.0), Vector2(-9.0, -10.0))
 	_slab_line("PathEma", Vector2(1.8, -14.0), Vector2(8.5, -14.0))
-	_slab_line("PathPond1", Vector2(-1.8, -18.5), Vector2(-14.0, -18.5))
-	_slab_line("PathPond2", Vector2(-12.6, -18.5), Vector2(-12.6, -21.0))
-	_slab_line("PathTree", Vector2(1.8, -19.0), Vector2(12.5, -24.0))
+	_slab_line("PathPond1", Vector2(-2.3, -17.85), Vector2(-14.0, -17.85))
+	_slab_line("PathPond2", Vector2(-12.6, -17.85), Vector2(-12.6, -21.0))
+	_slab_line("PathTree1", Vector2(2.3, -17.85), Vector2(8.2, -17.85))
+	_slab_line("PathTree2", Vector2(8.2, -17.85), Vector2(12.5, -24.0))
 	# ---- jardin sec (ouest) : rocs, râteau ----
 	var zen := Vector3(-16.0, y, -11.0)
 	place("rock_a", "ZenRockA", zen + Vector3(-2.2, 0, -1.0), 20.0)
@@ -250,7 +252,7 @@ func _precinct() -> void:
 	place("cedar_tree", "CourtCedarB", Vector3(23.0, y, -34.0), 70.0, 0.75)
 	place("rock_c", "CourtRockA", Vector3(21.5, y, 0.5), 10.0)
 	place("rock_b", "CourtRockB", Vector3(-22.0, y, -22.0), 100.0)
-	place("rock_a", "CourtRockC", Vector3(4.5, y, -30.0), 30.0)
+	place("rock_a", "CourtRockC", Vector3(5.5, y, -32.2), 30.0)
 	var fp := [Vector3(-10.0, y, 8.3), Vector3(11.0, y, 8.0), Vector3(22.5, y, -14.0), Vector3(-22.8, y, 8.0),
 		Vector3(-8.0, y, -33.0), Vector3(12.0, y, -33.5), Vector3(-23.0, y, -17.0), Vector3(23.0, y, -26.0)]
 	for i in fp.size():
