@@ -129,7 +129,22 @@ func _ready() -> void:
 	if not Settings.testing():
 		menus.show_title()           # le jeu commence par l'écran titre (les modes de test le sautent)
 		return
-	_start_day(1)
+	# test d'une journée / d'une visite précise : godot --path . -- --day=2 --visit=hina_j2
+	var start_day := 1
+	var force_visit := ""
+	for a in args:
+		if a.begins_with("--day="):
+			start_day = maxi(1, int(a.trim_prefix("--day=")))
+		elif a.begins_with("--visit="):
+			force_visit = a.trim_prefix("--visit=")
+	_start_day(start_day)
+	if force_visit != "":
+		Story.ensure_loaded()
+		for v in Story.data.get("visits", []):
+			if String(v.get("id", "")) == force_visit:
+				visit_queue = [v]
+				visit_timer = 2.0
+				break
 	if args.size() >= 7 and args[0] == "--shot":
 		_debug_shot(args)
 	elif args.size() >= 1 and args[0] == "--autoplay":
@@ -157,6 +172,10 @@ func _ready() -> void:
 		var pa: Node = load("res://tools/perf_audit.gd").new()
 		add_child(pa)
 		pa.run(self)
+	elif args.size() >= 1 and args[0] == "--vndemo":
+		var vd: Node = load("res://tools/vn_demo.gd").new()
+		add_child(vd)
+		vd.run(self)
 	elif args.size() >= 1 and args[0] == "--feeltest":
 		var ft: Node = load("res://scripts/feel_test.gd").new()
 		add_child(ft)
@@ -1061,6 +1080,7 @@ func _spawn_visit(v: Dictionary) -> void:
 	visitor = load("res://scenes/visitors/visitor_placeholder.tscn").instantiate()
 	visitor.set("display_name", Story.display_name(who))
 	visitor.set("color", Story.color_of(who))
+	visitor.set("character_id", who)
 	var start: Vector3 = VISITOR_PATH[0]
 	visitor.position = Vector3(start.x, TERRAIN.walk_y(start.x, start.z), start.z)
 	world.add_child(visitor)

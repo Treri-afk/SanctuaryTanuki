@@ -1,7 +1,8 @@
 extends CanvasLayer
 ## Dialogue façon visual novel : décor flouté, grand portrait, boîte de texte, choix, gain d'affection.
 ## Joue une visite de data/story/story.json (format : docs/story-format.md) avec play_visit(visite).
-## Portraits : res://assets/portraits/<personnage>_<expression>.png s'il existe, sinon placeholder coloré.
+## Portraits : 3D en direct si le personnage a un modèle VRoid (scripts/live_portrait.gd), sinon
+## res://assets/portraits/<personnage>_<expression>.png s'il existe, sinon placeholder coloré.
 
 signal finished
 
@@ -86,9 +87,28 @@ func _input(event: InputEvent) -> void:
 		_advance = true
 		get_viewport().set_input_as_handled()
 
+var _live := {}                  # id du personnage -> LivePortrait (gardé d'une visite à l'autre)
+var _talker: LivePortrait = null # portrait 3D du personnage qui parle (bouche animée pendant l'écriture)
+
 func _set_portrait(visitor_id: String, expr: String, color: Color, display_name: String) -> void:
 	for c in _portrait_holder.get_children():
-		c.queue_free()
+		if c is LivePortrait:
+			c.visible = false
+		else:
+			c.queue_free()
+	# portrait 3D en direct si le personnage a un modèle VRoid
+	if LivePortrait.has_model(visitor_id):
+		var lp: LivePortrait = _live.get(visitor_id)
+		if lp == null:
+			lp = LivePortrait.new()
+			lp.setup(visitor_id)
+			lp.set_anchors_preset(Control.PRESET_FULL_RECT)
+			lp.offset_bottom = -200
+			_portrait_holder.add_child(lp)
+			_live[visitor_id] = lp
+		lp.visible = true
+		lp.set_expression(expr)
+		return
 	var path := "res://assets/portraits/%s_%s.png" % [visitor_id, expr]
 	if ResourceLoader.exists(path):
 		var tr := TextureRect.new()
@@ -120,6 +140,7 @@ func _show_speaker(speaker: String, expr: String) -> void:
 		_last_char = speaker
 		_last_expr = expr
 		_set_portrait(speaker, expr, Story.color_of(speaker), Story.display_name(speaker))
+	_talker = _live.get(speaker) if is_char else null
 	var tw := create_tween()
 	tw.tween_property(_portrait_holder, "modulate", Color.WHITE if is_char else Color(0.62, 0.6, 0.66), 0.25)
 
@@ -231,12 +252,17 @@ func _type(text: String) -> void:
 	_advance = false
 	var total := _text.get_total_character_count()
 	var t := 0.0
+	var talker := _talker
+	if talker:
+		talker.talking = true
 	while _text.visible_characters < total:
 		await get_tree().process_frame
 		if _advance:
 			break
 		t += get_process_delta_time() * 60.0
 		_text.visible_characters = int(t)
+	if talker:
+		talker.talking = false
 	_text.visible_characters = -1
 	_typing = false
 	_advance = false
