@@ -3,7 +3,7 @@ extends Node
 
 enum Phase { MORNING, VISIT, EVENING, NIGHT }
 const PHASE_NAMES := {Phase.MORNING: "Matin", Phase.VISIT: "Après-midi", Phase.EVENING: "Soir", Phase.NIGHT: "Nuit"}
-const MAX_DAYS := 3
+const MAX_DAYS := 3               # repli si story.json ne donne pas « demo_days »
 
 var day := 1
 var phase: int = Phase.MORNING
@@ -21,10 +21,19 @@ var gift_known: Dictionary = {}  # personnage -> {objet: palier} : goûts décou
 const INVENTORY_MAX := 12        # objets portés au total
 var koi: Array = []              # carpes de l'étang : {pattern, size, name, days, seed}
 var koi_state: Dictionary = {}   # fed_yesterday, streak (jours nourris d'affilée)
+var stock: Dictionary = {}       # réserves achetées au bureau du sanctuaire (scripts/shop.gd) : encens, granules
+var festival: Dictionary = {}    # préparatifs de la fête (scripts/festival.gd) : lanternes, nobori, offrandes
+var decor: Dictionary = {}       # objets de décoration possédés mais pas posés : id -> nombre (scripts/decor.gd)
+var decor_placed: Array = []     # objets posés dans le monde : {id, pos: Vector3, yaw: degrés}
 ## Carnet de la journée, pour le journal du gardien (remis à zéro chaque matin).
 ## coins_in, coins_out, visitors [id personnage], affection {id: delta}, tasks [id], notes [texte]
 var day_log: Dictionary = {}
 var task_order: Array[StringName] = []
+## Premier jour guidé (scripts/guide.gd) : le HUD cache ce qui n'a pas encore de sens.
+var guide := false
+var slot := 0                    # emplacement de sauvegarde de la partie en cours (scripts/save_game.gd)
+## Bilan de la partie (fin de démo) : jours, travaux, visites, pièces reçues, cueillette.
+var stats: Dictionary = {}
 var today: Array[StringName] = []    # tâches obligatoires du jour (2 du matin tirées au hasard + lanternes + cloche)
 var morning: Array[StringName] = []  # les 2 tâches du matin
 var task_data: Dictionary = {}     # id -> TaskData
@@ -51,7 +60,16 @@ func reset_story() -> void:
 	gift_known.clear()
 	koi.clear()
 	koi_state.clear()
+	stock.clear()
+	festival = {}
+	decor = {}
+	decor_placed = []
+	stats = {"days": 0, "tasks": 0, "visitors": 0, "coins_in": 0, "harvest": 0}
 	Events.coins_changed.emit(coins, 0)
+
+## Durée de la démo en jours (réglage « demo_days » de l'histoire).
+func max_days() -> int:
+	return int(Story.settings().get("demo_days", MAX_DAYS))
 
 func item_count(id: String) -> int:
 	return int(inventory.get(id, 0))

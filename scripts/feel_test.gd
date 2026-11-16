@@ -54,6 +54,7 @@ func _press(on: bool) -> void:
 	e.pressed = on
 	e.button_mask = MOUSE_BUTTON_MASK_LEFT if on else 0
 	Input.parse_input_event(e)
+	await get_tree().process_frame
 	await _frames(1)
 
 func _move(rel: Vector2, frames: int) -> void:
@@ -62,6 +63,7 @@ func _move(rel: Vector2, frames: int) -> void:
 		e.relative = rel / frames
 		e.button_mask = MOUSE_BUTTON_MASK_LEFT if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) else 0
 		Input.parse_input_event(e)
+		await get_tree().process_frame     # une vraie souris envoie ses mouvements image par image
 		await get_tree().physics_frame
 
 func _test_water() -> void:
@@ -163,15 +165,20 @@ func _test_hedges() -> void:
 	_check("la cisaille coupe en balayant la haie", after > before, "%d -> %d" % [before, after])
 	game.player_put_back_tool()
 
+## Appui puis relâchement : deux événements distincts, sur deux images affichées différentes (réutiliser le même
+## objet, ou les envoyer dans la même image quand le jeu tourne sous 60 img/s, efface l'appui).
 func _key(code: Key) -> void:
 	var e := InputEventKey.new()
 	e.keycode = code
 	e.pressed = true
 	Input.parse_input_event(e)
-	await _frames(1)
-	e.pressed = false
-	Input.parse_input_event(e)
-	await _frames(1)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	var r := InputEventKey.new()
+	r.keycode = code
+	r.pressed = false
+	Input.parse_input_event(r)
+	await get_tree().process_frame
 
 func _click() -> void:
 	await _press(true)

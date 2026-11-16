@@ -1,0 +1,28 @@
+{
+  "name": "nobori_red",
+  "triangles": 5196,
+  "dims_xyz_m": [
+    0.894,
+    0.351,
+    3.61
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.272,
+    0.001
+  ],
+  "collisions": [
+    "banner-col"
+  ],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "banner": 1088,
+    "banner_cloth": 4108,
+    "banner-col": 12
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/nobori_red.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/nobori_red.png"
+}

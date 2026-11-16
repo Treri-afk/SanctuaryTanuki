@@ -1,0 +1,34 @@
+{
+  "name": "fox",
+  "triangles": 3308,
+  "dims_xyz_m": [
+    0.32,
+    0.371,
+    0.452
+  ],
+  "min_z": -0.001,
+  "center_xy": [
+    0.046,
+    -0.011
+  ],
+  "collisions": [],
+  "materials": [
+    "eye_dark",
+    "fox_cream",
+    "fox_dark",
+    "fox_ear_in",
+    "fox_fur"
+  ],
+  "warnings": [],
+  "objects": [
+    "fox",
+    "tail"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "fox": 3172,
+    "tail": 136
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/fox.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/fox.png"
+}

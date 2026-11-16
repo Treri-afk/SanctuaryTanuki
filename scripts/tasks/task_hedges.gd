@@ -59,18 +59,27 @@ func begin(_day: int) -> void:
 			var side := -1.0 if _rng.randf() < 0.5 else 1.0
 			var pos := Vector3(x, 1.02, _rng.randf_range(-0.2, 0.2)) if on_top else Vector3(x, _rng.randf_range(0.45, 0.85), 0.42 * side)
 			node.position = pos
-			var dir := Vector3(_rng.randf_range(-0.3, 0.3), 1.0, _rng.randf_range(-0.3, 0.3)) if on_top else Vector3(_rng.randf_range(-0.3, 0.3), 0.35, side)
+			# sur les flancs, la pousse monte le long de la haie au lieu de piquer à l'horizontale
+			var dir := Vector3(_rng.randf_range(-0.3, 0.3), 1.0, _rng.randf_range(-0.3, 0.3)) if on_top else Vector3(_rng.randf_range(-0.3, 0.3), 1.0, 0.6 * side)
 			dir = dir.normalized()
-			# rameau : tige fine + petites touffes de feuilles claires
-			var stem_len := _rng.randf_range(0.28, 0.45)
-			var stem := ToolModels.cyl(node, 0.008, stem_len, ToolModels.WOOD_DARK, Vector3.ZERO)
+			# rameau : jeune pousse vert tendre (modèle Blender), sinon tige fine + petites touffes
+			var stem_len := _rng.randf_range(0.17, 0.24) if ToolModels.glb_exists("hedge_sprig") else _rng.randf_range(0.28, 0.45)
 			var bx := dir.cross(Vector3.FORWARD if absf(dir.z) < 0.9 else Vector3.RIGHT).normalized()
-			stem.transform = Transform3D(Basis(bx, dir, bx.cross(dir).normalized()), dir * stem_len * 0.5)
-			for j in 3:
-				var t := 0.45 + 0.27 * j
-				ToolModels.ball(node, 0.09, ToolModels.HEDGE_LIGHT.lerp(Color("#93AD55"), _rng.randf()),
-					dir * stem_len * t + Vector3(_rng.randf_range(-0.05, 0.05), 0.0, _rng.randf_range(-0.05, 0.05)),
-					Vector3(1.2, 0.7, 1.0), &"foliage")
+			var basis := Basis(bx, dir, bx.cross(dir).normalized())
+			var sprig := ToolModels.hedge_sprig(stem_len, _rng.randf() * TAU)
+			if sprig != null:
+				var holder := Node3D.new()
+				holder.basis = basis
+				holder.add_child(sprig)
+				node.add_child(holder)
+			else:
+				var stem := ToolModels.cyl(node, 0.008, stem_len, ToolModels.WOOD_DARK, Vector3.ZERO)
+				stem.transform = Transform3D(basis, dir * stem_len * 0.5)
+				for j in 3:
+					var t := 0.45 + 0.27 * j
+					ToolModels.ball(node, 0.09, ToolModels.HEDGE_LIGHT.lerp(Color("#93AD55"), _rng.randf()),
+						dir * stem_len * t + Vector3(_rng.randf_range(-0.05, 0.05), 0.0, _rng.randf_range(-0.05, 0.05)),
+						Vector3(1.2, 0.7, 1.0), &"foliage")
 			sprigs.append({"node": node, "cut": false, "tip": dir * stem_len * 0.7})
 	GameState.set_target(id, sprigs.size())
 

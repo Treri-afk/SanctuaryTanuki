@@ -61,9 +61,9 @@ func _collect_maples(world: Node) -> void:
 	if props:
 		for c in props.get_children():
 			var nm := String(c.name)
-			if c is Node3D and (nm.contains("Maple") or nm == "Shinboku"):
+			if c is Node3D and nm.contains("Maple"):   # le shinboku est un cèdre : pas de feuilles d'érable
 				var n3 := c as Node3D
-				_maples.append(Vector4(n3.position.x, n3.position.y, n3.position.z, n3.scale.x * (1.3 if nm == "Shinboku" else 1.0)))
+				_maples.append(Vector4(n3.position.x, n3.position.y, n3.position.z, n3.scale.x))
 
 func _leaf_draw_mesh() -> QuadMesh:
 	var q := QuadMesh.new()

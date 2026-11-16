@@ -1,0 +1,38 @@
+{
+  "name": "tsukimi_table",
+  "triangles": 15740,
+  "dims_xyz_m": [
+    1.205,
+    0.628,
+    1.222
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    -0.043,
+    0.0
+  ],
+  "collisions": [
+    "table-col"
+  ],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "dango": 4320,
+    "susuki_1": 927,
+    "susuki_2": 927,
+    "susuki_3": 927,
+    "kaki_1": 844,
+    "kaki_2": 844,
+    "kaki_3": 844,
+    "chataigne_1": 337,
+    "chataigne_2": 337,
+    "chataigne_3": 337,
+    "table": 2140,
+    "table_cloth": 2956,
+    "table-col": 12
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/tsukimi_table.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/tsukimi_table.png"
+}

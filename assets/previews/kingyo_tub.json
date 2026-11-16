@@ -1,0 +1,33 @@
+{
+  "name": "kingyo_tub",
+  "triangles": 452,
+  "dims_xyz_m": [
+    1.47,
+    0.874,
+    0.312
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "tub_blue",
+    "tub_blue_deep",
+    "tub_wood",
+    "tub_wood_dark"
+  ],
+  "warnings": [],
+  "objects": [
+    "tub"
+  ],
+  "empties": [
+    "water"
+  ],
+  "tris_per_object": {
+    "tub": 452
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/kingyo_tub.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/kingyo_tub.png"
+}

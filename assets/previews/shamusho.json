@@ -1,0 +1,49 @@
+{
+  "name": "shamusho",
+  "triangles": 36260,
+  "dims_xyz_m": [
+    8.1,
+    6.84,
+    5.472
+  ],
+  "min_z": -0.02,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [
+    "shamusho_body-col",
+    "shamusho_counter-col",
+    "shamusho_plinth-col"
+  ],
+  "materials": [
+    "bamboo",
+    "cloth_purple",
+    "cloth_white",
+    "foliage_orange",
+    "interior",
+    "kawara",
+    "kawara_dark",
+    "kawara_ridge",
+    "lacquer_black",
+    "lacquer_red",
+    "metal_gold",
+    "moss",
+    "noren",
+    "noren_mon",
+    "plaster_white",
+    "roof_edge",
+    "sakaki",
+    "shoji_paper",
+    "soffit",
+    "stone",
+    "stone_dark",
+    "wood_dark",
+    "wood_faded",
+    "wood_light",
+    "wood_mid"
+  ],
+  "warnings": [],
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/shamusho.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/shamusho.png"
+}

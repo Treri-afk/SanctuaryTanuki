@@ -1,0 +1,28 @@
+{
+  "name": "festival_board",
+  "triangles": 25323,
+  "dims_xyz_m": [
+    2.83,
+    1.465,
+    2.985
+  ],
+  "min_z": -0.02,
+  "center_xy": [
+    0.0,
+    -0.027
+  ],
+  "collisions": [
+    "board-col"
+  ],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "board": 16798,
+    "board_paint": 8525,
+    "board-col": 12
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/festival_board.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/festival_board.png"
+}

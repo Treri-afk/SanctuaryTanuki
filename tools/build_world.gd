@@ -110,7 +110,7 @@ func _stairs() -> void:
 	_own(stairs, scn)
 	for i in 30:
 		place("stone_step", "Step_%d" % i, Vector3(0, -0.18 * (i + 1) - 0.206, 13.25 + 0.5 * i), 0.0, 1.0, 0.0, stairs)
-	place("torii", "ToriiBottom", Vector3(0, -5.58, 30.4))
+	place("torii", "ToriiBottom", Vector3(0, -5.58, 30.4), 0.0, 1.5)   # à l'échelle du haiden : 5,3 m de haut
 	for sx in [-1.7, 1.7]:
 		place("stone_lantern", "StairLantern_%s" % ("L" if sx < 0 else "R"), Vector3(sx * 1.0, -0.18 * 8 - 0.0 - 0.18, 17.5), 0.0)
 	var body := StaticBody3D.new()
@@ -154,8 +154,9 @@ func _slab_line(prefix: String, a: Vector2, b: Vector2) -> void:
 func _precinct() -> void:
 	var y := 0.0
 	# ---- entrée ----
-	place("torii", "Torii", Vector3(0, y, 11.2))
-	place("shimenawa", "Shimenawa", Vector3(0, 2.6, 11.6))
+	# grand torii d'entrée à l'échelle du haiden (5,3 m) ; la corde sacrée suit (même facteur)
+	place("torii", "Torii", Vector3(0, y, 11.2), 0.0, 1.5)
+	place("shimenawa", "Shimenawa", Vector3(0, 3.9, 11.8), 0.0, 1.5)
 	# ---- enceinte ----
 	_wall_line("WallFront", "x", 9.2, -24.2, 24.2, [[-3.0, 3.0]])
 	_wall_line("WallW", "z", -24.2, -35.2, 9.2, [[1.0, 3.0]])        # porte ouest (sentier de la mare)
@@ -178,6 +179,7 @@ func _precinct() -> void:
 		place("stone_lantern", "Lantern_%d" % i, lp[i])
 	# ---- cour d'entrée : purification, puits, outils ----
 	place("water_basin", "WaterBasin", Vector3(-8.5, y, 3.0), 90.0)
+	place("temizuya", "Temizuya", Vector3(-8.5, y, 3.0), 90.0)       # pavillon couvert au-dessus du bassin
 	place("well", "Well", Vector3(9.0, y, 2.0), -20.0)
 	place("bucket", "Bucket", Vector3(7.6, y, 3.6), 20.0)
 	place("basket", "Basket", Vector3(-6.0, y, 7.0))
@@ -193,24 +195,30 @@ func _precinct() -> void:
 	place("ema_rack", "EmaRack", Vector3(10.5, y, -14.0), -80.0)
 	place("stone_marker", "MarkerCourt", Vector3(-6.5, y, -16.5), 15.0)
 	# suspendues aux cordons de l'avant-toit du pavillon (repères lantern_anchor_l/r du modèle)
-	place("paper_lantern", "PaperLanternA", Vector3(-3.2, 3.08, -19.8), 0.0, 1.3)
-	place("paper_lantern", "PaperLanternB", Vector3(3.2, 3.08, -19.8), 0.0, 1.3)
+	place("paper_lantern_shrine", "PaperLanternA", Vector3(-3.2, 3.08, -19.8), 0.0, 1.3)
+	place("paper_lantern_shrine", "PaperLanternB", Vector3(3.2, 3.08, -19.8), 0.0, 1.3)
 	# ---- salle de thé (est) ----
-	var teahouse := place("hut", "TeaHouse", Vector3(17.5, y, -4.0), -90.0)
+	# salon de thé (teahouse.glb) : le service à thé est posé sur la véranda (repère tea_anchor du modèle)
+	var teahouse := place("teahouse", "TeaHouse", Vector3(18.2, y, -3.5), -90.0)
 	if teahouse:
-		place("tea_set", "TeaSet", Vector3(1.2, 0.42, 2.3), 0.0, 1.0, 0.0, teahouse)
+		var ta: Node3D = teahouse.find_child("tea_anchor", true, false)
+		place("tea_set", "TeaSet", ta.position if ta else Vector3(1.5, 0.68, 2.86), 0.0, 1.0, 0.0, teahouse)
+		var la: Node3D = teahouse.find_child("lantern_anchor", true, false)
+		if la:
+			place("paper_lantern_shrine", "PaperLanternTea", teahouse.transform * la.position)
 	place("bench", "BenchTea", Vector3(12.8, y, -6.8), -90.0)
 	place("woodpile", "WoodpileTea", Vector3(18.0, y, -9.0), -90.0)
-	place("paper_lantern", "PaperLanternTea", Vector3(14.0, 2.4, -1.0))
 	# ---- bureau du sanctuaire (ouest) ----
-	place("hut", "Shamusho", Vector3(-19.0, y, -1.0), 90.0)
+	# bureau du sanctuaire (shamusho.glb) : la boutique ; entre le jardin sec (z < -6) et la porte ouest (z 1..3)
+	place("shamusho", "Shamusho", Vector3(-20.6, y, -2.3), 90.0)
+	place("paper_lantern_shrine", "PaperLanternOffice", Vector3(-17.5, 2.95, -0.85))
 	place("bench", "BenchOffice", Vector3(-14.0, y, 1.8), 90.0)
 	place("woodpile", "WoodpileOffice", Vector3(-19.5, y, 3.8), 90.0)
 	# ---- chemins de dalles qui relient les bâtiments à l'allée ----
 	_slab_line("PathBasin", Vector2(-1.8, 3.0), Vector2(-7.2, 3.0))
 	_slab_line("PathWell", Vector2(1.8, 3.0), Vector2(7.2, 3.0))
-	_slab_line("PathTea", Vector2(1.8, -4.0), Vector2(13.2, -4.0))
-	_slab_line("PathOffice", Vector2(-1.8, -1.0), Vector2(-14.2, -1.0))
+	_slab_line("PathTea", Vector2(1.8, -3.5), Vector2(14.2, -3.5))
+	_slab_line("PathOffice", Vector2(-1.8, -1.0), Vector2(-16.6, -1.0))
 	_slab_line("PathZen", Vector2(-1.8, -10.0), Vector2(-9.0, -10.0))
 	_slab_line("PathEma", Vector2(1.8, -14.0), Vector2(8.5, -14.0))
 	_slab_line("PathPond1", Vector2(-2.3, -17.85), Vector2(-14.0, -17.85))
@@ -236,8 +244,9 @@ func _precinct() -> void:
 	place("stepping_stone", "PondStone_1", Vector3(-15.2, -0.45, -27.6), 50.0)
 	place("stepping_stone", "PondStone_2", Vector3(-13.4, -0.45, -27.0), 90.0)
 	# ---- arbre sacré et fond de cour (nord-est) ----
-	place("maple_tree", "Shinboku", Vector3(15.0, y, -27.0), 30.0, 1.25)
-	place("shimenawa", "ShimenawaTree", Vector3(15.0, 1.1, -26.0), 20.0, 0.55)
+	# shinboku : cèdre géant (24 m) ceint de sa corde sacrée, dans un enclos de bornes (on n'y entre pas)
+	place("shinboku", "Shinboku", Vector3(15.0, y, -27.0), 30.0)
+	_cyl_body("ShinbokuFence", 3.45, 1.2, Vector3(15.0, 0.6, -27.0))
 	place("hokora", "HokoraCourt", Vector3(21.0, y, -32.0), -30.0)
 	place("fox_statue", "FoxCourtA", Vector3(19.7, y, -30.7), -30.0)
 	place("fox_statue", "FoxCourtB", Vector3(22.0, y, -30.4), -30.0)
@@ -272,7 +281,8 @@ func _wilderness() -> void:
 	# ---- sentier nord : torii, sanctuaire de bord de chemin, belvédère ----
 	placeg("stone_lantern", "TrailLantern_N0", -2.4, -43.0)
 	placeg("stone_lantern", "TrailLantern_N1", 2.4, -43.0)
-	placeg("torii_small", "ToriiTrail", -7.0, -52.0, 32.0)
+	_senbon()
+	_inari()
 	placeg("stone_lantern", "TrailLantern_N2", -4.3, -58.5)
 	placeg("hokora", "Hokora", -10.6, -65.0, 50.0)
 	placeg("fox_statue", "FoxA", -9.2, -65.1, 50.0)
@@ -300,8 +310,108 @@ func _wilderness() -> void:
 	placeg("jizo", "JizoPond_0", -55.8, 11.0, 80.0)
 	placeg("jizo", "JizoPond_1", -56.4, 13.0, 70.0)
 	placeg("shrine_cat", "Cat", -58.0, 8.4, 40.0)
+	# shishi-odoshi au bord de la mare : la vasque et la goulotte côté ouest (+Z du modèle), animé par son script
+	var shishi := placeg("shishi_odoshi", "ShishiOdoshi", SHISHI.x, SHISHI.y, -90.0)
+	if shishi:
+		shishi.set_script(load("res://scripts/shishi_odoshi.gd"))
+	_box_body("ShishiBody", Vector3(0.9, 1.0, 2.0), Vector3(SHISHI.x - 0.35, Terrain.height(SHISHI.x, SHISHI.y) + 0.5, SHISHI.y))
 	for i in 5:
 		placeg("bamboo_clump", "PondBamboo_%d" % i, -66.0 - i * 1.5, 4.0 + i * 3.2, i * 40.0)
+
+# ---- sentier nord : le chemin des mille torii (senbon torii) et le petit sanctuaire Inari ----
+## Le tunnel suit le sentier nord de la porte nord jusqu'au sanctuaire Inari (hokora et renards).
+const SENBON_FROM := 1.6            # m après le début du sentier (porte nord)
+const SENBON_TO := Vector2(-7.6, -60.4)
+const SENBON_STEP := 0.72           # écart entre deux torii
+const SENBON_LANTERN_EVERY := 7     # une lanterne de papier tous les 7 torii, accrochée au dépassant de la traverse
+const HOKORA := Vector3(-10.6, 0, -65.0)
+const HOKORA_YAW := 50.0
+const SHISHI := Vector2(-59.9, 7.2)
+
+## Points du sentier nord lissés (Catmull-Rom), tous les ~0,25 m.
+func _trail_curve() -> PackedVector2Array:
+	var raw: Array = Terrain.TRAILS[&"nord"]
+	var p := []
+	for q in raw:
+		p.append(Vector2(q[0], q[1]))
+	var out := PackedVector2Array()
+	for i in p.size() - 1:
+		var p0: Vector2 = p[maxi(i - 1, 0)]
+		var p1: Vector2 = p[i]
+		var p2: Vector2 = p[i + 1]
+		var p3: Vector2 = p[mini(i + 2, p.size() - 1)]
+		var n := maxi(int(p1.distance_to(p2) / 0.25), 2)
+		for k in n:
+			var t := float(k) / n
+			var t2 := t * t
+			var t3 := t2 * t
+			out.append(0.5 * ((2.0 * p1) + (-p0 + p2) * t + (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3) * t2 + (-p0 + 3.0 * p1 - 3.0 * p2 + p3) * t3))
+	out.append(p[p.size() - 1])
+	return out
+
+func _senbon() -> void:
+	var c := _trail_curve()
+	var group := Node3D.new()
+	group.name = "Senbon"
+	_own(group, props)
+	var s := 0.0
+	var next := SENBON_FROM
+	var k := 0
+	for i in c.size() - 1:
+		var a := c[i]
+		var b := c[i + 1]
+		var seg := a.distance_to(b)
+		while next <= s + seg:
+			var p := a.lerp(b, (next - s) / seg)
+			if p.distance_to(SENBON_TO) < 0.4:
+				return
+			var dir := (b - a).normalized()
+			var yaw := rad_to_deg(atan2(dir.x, dir.y))
+			var t := place("torii_senbon", "Senbon_%d" % k, Vector3(p.x, Terrain.height(p.x, p.y), p.y), yaw, 1.0, 0.0, group)
+			if t and k % SENBON_LANTERN_EVERY == 3:
+				var side := 1.0 if (k / SENBON_LANTERN_EVERY) % 2 == 0 else -1.0
+				place("paper_lantern_shrine", "PaperLanternSenbon_%d" % k, t.transform * Vector3(side * 1.1, 2.18, 0.0), yaw, 0.75)
+			k += 1
+			next += SENBON_STEP
+		s += seg
+
+## Petit sanctuaire Inari : la hokora et ses deux renards (déjà là), un torii devant, des torii miniatures offerts.
+func _inari() -> void:
+	var y := deg_to_rad(HOKORA_YAW)
+	var fwd := Vector2(sin(y), cos(y))
+	var right := Vector2(cos(y), -sin(y))
+	var h := Vector2(HOKORA.x, HOKORA.z)
+	var tp := h + fwd * 2.5
+	var torii := placeg("torii_senbon", "InariTorii", tp.x, tp.y, HOKORA_YAW, 0.9)
+	if torii:
+		place("paper_lantern_shrine", "PaperLanternInariL", torii.transform * Vector3(-1.1, 2.18, 0.0), HOKORA_YAW, 0.75)
+		place("paper_lantern_shrine", "PaperLanternInariR", torii.transform * Vector3(1.1, 2.18, 0.0), HOKORA_YAW, 0.75)
+	# torii offerts : petits, serrés de chaque côté et derrière la hokora, un peu de travers
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 9
+	var spots := []
+	for side in [-1.0, 1.0]:
+		for j in 5:
+			spots.append(Vector2(side * rng.randf_range(1.05, 1.75), rng.randf_range(-0.7, 0.45)))
+	for j in 5:
+		spots.append(Vector2(rng.randf_range(-0.9, 0.9), rng.randf_range(-1.5, -0.9)))
+	for j in spots.size():
+		var o: Vector2 = spots[j]
+		var p := h + right * o.x + fwd * o.y
+		placeg("torii_senbon", "InariMini_%d" % j, p.x, p.y, HOKORA_YAW + rng.randf_range(-14.0, 14.0), rng.randf_range(0.14, 0.3))
+
+func _cyl_body(n: String, radius: float, height: float, center: Vector3) -> void:
+	var body := StaticBody3D.new()
+	body.name = n
+	_own(body, scn)
+	var cs := CollisionShape3D.new()
+	cs.name = "Shape"
+	var sh := CylinderShape3D.new()
+	sh.radius = radius
+	sh.height = height
+	cs.shape = sh
+	cs.position = center
+	_own(cs, body)
 
 func _box_body(n: String, size: Vector3, center: Vector3) -> void:
 	var body := StaticBody3D.new()

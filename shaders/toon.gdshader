@@ -7,6 +7,8 @@ uniform vec4 albedo : source_color = vec4(0.8, 0.8, 0.8, 1.0);
 uniform bool use_vertex_color = false;   // la couleur de sommet REMPLACE l'albedo (terrain)
 uniform bool use_vertex_tint = false;    // la couleur de sommet MULTIPLIE l'albedo (occlusion des modeles)
 uniform float wind_sway = 0.0;           // 0 = rigide, 1 = feuillage
+uniform float cloth_wave = 0.0;          // 1 = etoffe qui ondule au vent (banderoles ; UV = position sur l'etoffe)
+uniform float cloth_width = 0.6;         // largeur de l'etoffe (m), pour la pente des plis
 uniform float color_jitter = 0.0;        // variation de teinte d'un arbre a l'autre (0 a 1)
 uniform vec4 glow_color : source_color = vec4(1.0, 0.52, 0.20, 1.0);
 instance uniform float glow = 0.0;       // papiers (shoji, lanternes) eclaires de l'interieur le soir
@@ -20,6 +22,10 @@ void vertex() {
 	vec3 origin = MODEL_MATRIX[3].xyz;
 	if (wind_sway > 0.0) {
 		VERTEX += wind_offset(VERTEX, origin, TIME) * wind_sway;
+	}
+	if (cloth_wave > 0.0) {
+		VERTEX += cloth_offset(UV, origin, normalize(MODEL_MATRIX[0].xyz), normalize(MODEL_MATRIX[2].xyz),
+			cloth_width, TIME, NORMAL) * cloth_wave;
 	}
 	if (color_jitter > 0.0) {
 		vec2 k = floor(origin.xz * 2.0);

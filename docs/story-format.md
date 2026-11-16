@@ -10,7 +10,7 @@ On peut aussi l'éditer à la main.
 {
   "format": "gardien-story",
   "version": 1,
-  "title": "Gardien de sanctuaire — automne",
+  "title": "Tanuki Sanctuary — automne",
   "settings": {
     "visits_per_day": [2, 3],      // nombre de visites tirées chaque jour (min, max)
     "first_visit_delay": [25, 50], // secondes avant le premier visiteur
@@ -47,7 +47,7 @@ Une visite = un personnage qui monte au sanctuaire et le dialogue qu'on a avec l
 | Clé | Rôle |
 |---|---|
 | `id` | identifiant unique |
-| `kind` | `day` (visite de jour, par défaut) ou `night` (événement de nuit, voir plus bas) |
+| `kind` | `day` (visite de jour, par défaut), `night` (événement de nuit) ou `festival` (soirée de fête), voir plus bas |
 | `character` | personnage qui vient |
 | `title` | titre (éditeur seulement) |
 | `day_min`, `day_max` | jours où elle peut avoir lieu (0 = pas de limite) |
@@ -84,6 +84,22 @@ au hasard entre ceux de même priorité (`settings.night_chance` : probabilité 
 `actor` choisit la créature qui sort de l'ombre avant le dialogue : `renard`, `tanuki`, `chat` ou `""` (aucune :
 souvenir, narration). `spot` et `wish` sont ignorés.
 
+### Fête (Tsukimi, fin de la démo)
+
+`settings.demo_days` : durée de la démo (5). `settings.visits_per_day_by_day` : nombre de visites de certains jours
+(`{"3": [3, 3], "4": [3, 3]}` : la veille de la fête est chargée). Le bloc `festival` décrit la fête
+(voir `scripts/festival.gd`) :
+
+| Champ | Rôle |
+|---|---|
+| `day`, `announce_flag` | Jour de la fête (5) ; drapeau qui l'annonce (posé par la lettre de Tanaka le jour 2) |
+| `preparations` | `{id, label, target}` ou `{id, label, needs: {objet: nombre}}` : `lanternes`, `nobori`, `offrandes`, `invitations` |
+| `guests` | personnage → visite `kind: festival` jouée quand on le salue le soir de la fête |
+| `finale`, `epilogue` | visites `festival` jouées après la cloche (la pleine lune) ; l'épilogue seulement si ses conditions sont vraies |
+
+Un invité vient s'il a le drapeau `invite_<personnage>` (posé par un choix de dialogue), ou s'il connaît le
+sanctuaire et que son affection est d'au moins 4. Les visites `festival` ne passent jamais dans la journée.
+
 ### Noeuds de dialogue
 
 Tous les noeuds ont `type`, et `x`, `y` (position dans l'éditeur).
@@ -106,7 +122,10 @@ Tous les noeuds ont `type`, et `x`, `y` (position dans l'éditeur).
 { "type": "visited", "visit": "kenta_j2", "is": true }
 { "type": "item", "item": "kaki", "op": ">=", "value": 1 }   // le joueur porte l'objet
 { "type": "coins", "op": ">=", "value": 5 }
+{ "type": "festival", "prep": "lanternes", "op": ">=", "value": 6 }   // préparatifs de la fête
 ```
+`prep` : `lanternes`, `nobori`, `offrandes` (objets déposés), `offrandes.dango` (un objet précis), `invitations`,
+ou `""` (nombre de préparatifs terminés).
 `op` : `>=`, `<=`, `>`, `<`, `==`, `!=`.
 
 ### Effets

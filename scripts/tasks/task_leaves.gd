@@ -23,6 +23,7 @@ var total := 0
 var gust_timer := 45.0
 var _rng := RandomNumberGenerator.new()
 var _told_gust := false
+var light := false          # premier jour guidé : seulement les plaques de l'allée près de l'entrée
 
 func setup() -> void:
 	var lp: Node3D = game.world.get_node_or_null("LeafPatches")
@@ -54,6 +55,32 @@ func setup() -> void:
 func hint() -> String:
 	return "Feuilles : balai près de l'entrée, puis clic maintenu en marchant pour pousser un tas jusqu'à un panier."
 
+## Pour le guide du premier jour : vrai si l'on pousse un tas déjà fourni.
+func pushing_pile() -> bool:
+	return pushed != null and int((pushed as Dictionary)["n"]) >= 6
+
+## Pour le guide : le panier le plus proche si l'on pousse un tas, sinon la feuille au sol la plus proche
+## (ou un tas abandonné). null s'il ne reste rien.
+func guide_target(from: Vector3) -> Variant:
+	if pushing_pile():
+		var bb: Variant = null
+		for b in baskets:
+			if bb == null or b.global_position.distance_to(from) < (bb as Vector3).distance_to(from):
+				bb = b.global_position
+		return bb
+	var best: Variant = null
+	for f in flakes:
+		if f["state"] == GROUND:
+			var fp: Vector3 = f["pos"]
+			if best == null or fp.distance_to(from) < (best as Vector3).distance_to(from):
+				best = fp
+	if best == null:
+		for p in piles:
+			if not is_same(p, pushed) and int(p["n"]) > 0:
+				best = p["pos"]
+				break
+	return best
+
 func clear() -> void:
 	for p in piles:
 		if is_instance_valid(p["node"]):
@@ -65,7 +92,13 @@ func clear() -> void:
 
 func begin(_day: int) -> void:
 	_rng.randomize()
-	for c in centers:
+	var used := centers
+	if light:
+		# les plaques les plus proches de l'entrée (le balai et un panier sont là)
+		used = centers.duplicate()
+		used.sort_custom(func(a: Vector3, b: Vector3): return a.distance_to(Vector3(0, 0, 6)) < b.distance_to(Vector3(0, 0, 6)))
+		used = used.slice(0, 4)
+	for c in used:
 		for k in PER_PATCH:
 			for attempt in 6:
 				var a := _rng.randf() * TAU

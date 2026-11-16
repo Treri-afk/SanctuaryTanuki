@@ -1,0 +1,43 @@
+{
+  "name": "hedge_a",
+  "triangles": 7138,
+  "dims_xyz_m": [
+    3.983,
+    0.934,
+    1.024
+  ],
+  "min_z": -0.002,
+  "center_xy": [
+    -0.009,
+    -0.005
+  ],
+  "collisions": [
+    "hedge-col"
+  ],
+  "materials": [
+    "hedge_amber",
+    "hedge_core",
+    "hedge_deep",
+    "hedge_light",
+    "hedge_mid",
+    "hedge_rust",
+    "hedge_sun",
+    "wood_dark"
+  ],
+  "warnings": [],
+  "objects": [
+    "foliage",
+    "hedge-col",
+    "leaves",
+    "stems"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "foliage": 2056,
+    "leaves": 4664,
+    "stems": 418,
+    "hedge-col": 12
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/hedge_a.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/hedge_a.png"
+}

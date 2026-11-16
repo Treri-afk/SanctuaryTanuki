@@ -1,12 +1,12 @@
 {
   "name": "paper_lantern",
-  "triangles": 1456,
+  "triangles": 5073,
   "dims_xyz_m": [
-    0.391,
-    0.395,
-    0.598
+    0.34,
+    0.346,
+    0.576
   ],
-  "min_z": -0.6,
+  "min_z": -0.578,
   "center_xy": [
     0.0,
     0.0
@@ -15,8 +15,8 @@
   "materials": [
     "lacquer_black",
     "metal",
-    "paper",
-    "wood_dark"
+    "metal_gold",
+    "paper"
   ],
   "warnings": [],
   "max_z": -0.002,
@@ -27,8 +27,8 @@
     "hang_point"
   ],
   "tris_per_object": {
-    "paper_lantern": 1456
+    "paper_lantern": 5073
   },
-  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\paper_lantern.glb",
-  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\paper_lantern.png"
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/paper_lantern.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/paper_lantern.png"
 }

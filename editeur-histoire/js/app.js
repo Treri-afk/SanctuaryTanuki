@@ -137,6 +137,7 @@
         let k = v.day_min && v.day_max && v.day_min === v.day_max ? "Jour " + v.day_min
           : v.day_min || v.day_max ? `Jours ${v.day_min || "…"} à ${v.day_max || "…"}` : "N'importe quel jour";
         if (v.kind === "night") k = "🌙 Nuits — " + k.toLowerCase();
+        if (v.kind === "festival") k = "🎑 Soirée de fête — " + k.toLowerCase();
         if (!days.has(k)) days.set(k, []);
         days.get(k).push(v);
       }
@@ -374,14 +375,15 @@
     conds.forEach((c, i) => {
       const row = document.createElement("div");
       row.className = "row";
-      const type = select(c, "type", [["affection", "Affection"], ["flag", "Drapeau"], ["day", "Jour"], ["visited", "Visite jouée"], ["item", "Possède l'objet"], ["coins", "Pièces"]], "none");
+      const type = select(c, "type", [["affection", "Affection"], ["flag", "Drapeau"], ["day", "Jour"], ["visited", "Visite jouée"], ["item", "Possède l'objet"], ["coins", "Pièces"], ["festival", "Préparatifs de la fête"]], "none");
       type.addEventListener("change", () => {
         const t = c.type;
         for (const k of Object.keys(c)) delete c[k];
         Object.assign(c, t === "affection" ? { type: t, character: app.story.characters[0] ? app.story.characters[0].id : "", op: ">=", value: 3 }
           : t === "flag" ? { type: t, flag: "", is: true } : t === "day" ? { type: t, op: ">=", value: 2 }
           : t === "item" ? { type: t, item: (app.story.items[0] || {}).id || "", op: ">=", value: 1 }
-          : t === "coins" ? { type: t, op: ">=", value: 5 } : { type: t, visit: "", is: true });
+          : t === "coins" ? { type: t, op: ">=", value: 5 }
+          : t === "festival" ? { type: t, prep: "", op: ">=", value: 2 } : { type: t, visit: "", is: true });
         commit("all");
       });
       row.appendChild(type);
@@ -395,6 +397,10 @@
         row.appendChild(input(c, "flag", { list: "flagList", placeholder: "nom_du_drapeau" }));
       } else if (c.type === "item") {
         row.appendChild(select(c, "item", app.story.items.map((i) => [i.id, i.name])));
+        row.appendChild(select(c, "op", GS.OPS.map((o) => [o, o])));
+        const n = input(c, "value", { type: "number" }); n.className = "num"; row.appendChild(n);
+      } else if (c.type === "festival") {
+        row.appendChild(select(c, "prep", Object.entries(GS.PREPS)));
         row.appendChild(select(c, "op", GS.OPS.map((o) => [o, o])));
         const n = input(c, "value", { type: "number" }); n.className = "num"; row.appendChild(n);
       } else if (c.type === "coins") {
@@ -478,8 +484,10 @@
       commit("all");
     });
     field(f, "Identifiant", idIn, "Utilisé par les conditions « visite jouée ».");
-    const kind = select(v, "kind", [["day", "Visite de jour"], ["night", "Événement de nuit (après la cloche)"]], "all");
-    field(f, "Type", kind, v.kind === "night" ? "Un seul par nuit : le plus prioritaire parmi ceux qui sont possibles ce jour-là." : "");
+    const kind = select(v, "kind", [["day", "Visite de jour"], ["night", "Événement de nuit (après la cloche)"],
+      ["festival", "Soirée de fête (Tsukimi)"]], "all");
+    field(f, "Type", kind, v.kind === "night" ? "Un seul par nuit : le plus prioritaire parmi ceux qui sont possibles ce jour-là."
+      : v.kind === "festival" ? "Joué le soir de la fête : un invité qu'on salue (bloc « festival » → guests), la finale ou l'épilogue. Les jours et la priorité ne servent pas." : "");
     if (v.kind === "night") {
       field(f, "Apparition", select(v, "actor", Object.entries(GS.ACTORS), "side"), "La créature sort de l'ombre et s'arrête devant le joueur avant le dialogue.");
     } else {

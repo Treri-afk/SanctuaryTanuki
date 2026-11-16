@@ -1,0 +1,30 @@
+{
+  "name": "poi",
+  "triangles": 832,
+  "dims_xyz_m": [
+    0.106,
+    0.185,
+    0.025
+  ],
+  "min_z": -0.005,
+  "center_xy": [
+    0.0,
+    0.04
+  ],
+  "collisions": [],
+  "materials": [
+    "poi_frame",
+    "poi_frame_shade",
+    "poi_handle_red"
+  ],
+  "warnings": [],
+  "objects": [
+    "poi"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "poi": 832
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/poi.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/poi.png"
+}

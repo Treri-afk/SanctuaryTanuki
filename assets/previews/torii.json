@@ -1,31 +1,29 @@
 {
   "name": "torii",
-  "triangles": 4178,
+  "triangles": 1752,
   "dims_xyz_m": [
-    4.1,
-    0.83,
-    3.535
+    4.44,
+    0.889,
+    3.512
   ],
-  "min_z": -0.018,
+  "min_z": -0.002,
   "center_xy": [
     0.0,
-    0.02
+    -0.003
   ],
   "collisions": [
-    "pillar_-1-col",
-    "pillar_1-col"
+    "pillar_l-col",
+    "pillar_r-col"
   ],
   "materials": [
-    "lacquer_black",
-    "lacquer_red",
-    "metal_gold",
-    "moss",
-    "stone",
-    "stone_dark",
-    "wood_dark",
-    "wood_faded"
+    "tree_vcol"
   ],
   "warnings": [],
-  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\torii.glb",
-  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\torii.png"
+  "tris_per_object": {
+    "torii": 1752,
+    "pillar_l-col": 12,
+    "pillar_r-col": 12
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/torii.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/torii.png"
 }

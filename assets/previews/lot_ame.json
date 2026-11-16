@@ -1,0 +1,27 @@
+{
+  "name": "lot_ame",
+  "triangles": 92,
+  "dims_xyz_m": [
+    0.071,
+    0.04,
+    0.112
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    -0.004
+  ],
+  "collisions": [],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [
+    "triangles 92 hors budget (100, 4000)",
+    "axe Y : 0.04 m au lieu de ~0.03 m"
+  ],
+  "tris_per_object": {
+    "ame": 92
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/lot_ame.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/lot_ame.png"
+}

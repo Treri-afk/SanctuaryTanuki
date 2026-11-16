@@ -1,0 +1,24 @@
+{
+  "name": "hashi",
+  "triangles": 64,
+  "dims_xyz_m": [
+    0.032,
+    0.212,
+    0.075
+  ],
+  "min_z": -0.001,
+  "center_xy": [
+    0.0,
+    0.105
+  ],
+  "collisions": [],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "hashi": 64
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/hashi.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/hashi.png"
+}

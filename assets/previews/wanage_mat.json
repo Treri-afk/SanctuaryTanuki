@@ -1,0 +1,24 @@
+{
+  "name": "wanage_mat",
+  "triangles": 216,
+  "dims_xyz_m": [
+    1.79,
+    1.49,
+    0.028
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "mat": 216
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/wanage_mat.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/wanage_mat.png"
+}

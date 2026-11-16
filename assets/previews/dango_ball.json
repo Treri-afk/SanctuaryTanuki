@@ -1,0 +1,24 @@
+{
+  "name": "dango_ball",
+  "triangles": 320,
+  "dims_xyz_m": [
+    0.039,
+    0.039,
+    0.037
+  ],
+  "min_z": -0.018,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "ball": 320
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/dango_ball.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/dango_ball.png"
+}

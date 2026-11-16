@@ -1,0 +1,31 @@
+{
+  "name": "yatai_kingyo",
+  "triangles": 2443,
+  "dims_xyz_m": [
+    2.64,
+    1.736,
+    2.364
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    -0.148
+  ],
+  "collisions": [
+    "back-col",
+    "postL-col",
+    "postR-col"
+  ],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "booth": 2443,
+    "back-col": 12,
+    "postL-col": 12,
+    "postR-col": 12
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/yatai_kingyo.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/yatai_kingyo.png"
+}

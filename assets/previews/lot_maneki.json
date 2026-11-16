@@ -1,0 +1,24 @@
+{
+  "name": "lot_maneki",
+  "triangles": 656,
+  "dims_xyz_m": [
+    0.09,
+    0.078,
+    0.153
+  ],
+  "min_z": -0.001,
+  "center_xy": [
+    0.005,
+    -0.003
+  ],
+  "collisions": [],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "maneki": 656
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/lot_maneki.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/lot_maneki.png"
+}

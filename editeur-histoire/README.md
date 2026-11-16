@@ -1,4 +1,4 @@
-# Éditeur d'histoire — Gardien de sanctuaire
+# Éditeur d'histoire — Tanuki Sanctuary
 
 Application web locale, sans installation, pour écrire l'histoire du jeu : personnages, visites, répliques, choix,
 affection et conditions. Elle lit et écrit le fichier du jeu `data/story/story.json` (à la racine du dépôt), dont le format est décrit dans
