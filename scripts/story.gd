@@ -112,7 +112,19 @@ static func check(conds: Variant) -> bool:
 			"coins":
 				if not _cmp(float(GameState.coins), String(c.get("op", ">=")), float(c.get("value", 1))):
 					return false
+			"festival":
+				# préparatifs de la fête (scripts/festival.gd) : prep "" = nombre de préparatifs terminés
+				if not _cmp(float(Festival.prep_value(String(c.get("prep", "")))), String(c.get("op", ">=")), float(c.get("value", 1))):
+					return false
 	return true
+
+## Visite par son identifiant ({} si absente).
+static func find_visit(id: String) -> Dictionary:
+	ensure_loaded()
+	for v in data.get("visits", []):
+		if String(v.get("id", "")) == id:
+			return v
+	return {}
 
 ## Applique des effets ; retourne les changements d'affection [{character, delta}].
 static func apply(effects: Variant) -> Array:
@@ -131,7 +143,10 @@ static func apply(effects: Variant) -> Array:
 			"item":
 				var di := int(e.get("delta", 1))
 				var iid := String(e.get("item", ""))
-				if di > 0:
+				if Decor.ITEMS.has(iid):
+					if di > 0:
+						Decor.give(iid, di)     # objet de décoration : il rejoint la réserve à placer, pas les poches
+				elif di > 0:
 					GameState.add_item(iid, di)
 				elif di < 0:
 					GameState.remove_item(iid, mini(-di, GameState.item_count(iid)))
@@ -224,8 +239,8 @@ static func visits_for_day(day: int, rng: RandomNumberGenerator) -> Array:
 	ensure_loaded()
 	var eligible := []
 	for v in data.get("visits", []):
-		if String(v.get("kind", "day")) == "night":
-			continue
+		if String(v.get("kind", "day")) != "day":
+			continue   # nuits et soirée de fête : jouées à part
 		var dmin := int(v.get("day_min", 0))
 		var dmax := int(v.get("day_max", 0))
 		if dmin > 0 and day < dmin:
@@ -242,6 +257,9 @@ static func visits_for_day(day: int, rng: RandomNumberGenerator) -> Array:
 	eligible.shuffle()
 	eligible.sort_custom(func(a, b): return int(a.get("priority", 0)) > int(b.get("priority", 0)))
 	var r := setting_range("visits_per_day", Vector2(2, 3))
+	var by_day: Dictionary = settings().get("visits_per_day_by_day", {})
+	if by_day.has(str(day)) and by_day[str(day)] is Array and (by_day[str(day)] as Array).size() == 2:
+		r = Vector2(float(by_day[str(day)][0]), float(by_day[str(day)][1]))   # jours chargés (veille de fête)
 	var want := rng.randi_range(int(r.x), int(r.y))
 	var chosen := []
 	var seen := {}

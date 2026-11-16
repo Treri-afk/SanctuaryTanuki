@@ -1,4 +1,4 @@
-# Gardien de sanctuaire
+# Tanuki Sanctuary
 
 Nov 12, 2026 · @paul
 

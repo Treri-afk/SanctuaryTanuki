@@ -1,0 +1,29 @@
+{
+  "name": "torii_senbon",
+  "triangles": 1480,
+  "dims_xyz_m": [
+    2.58,
+    0.334,
+    2.83
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    -0.001
+  ],
+  "collisions": [
+    "pillar_l-col",
+    "pillar_r-col"
+  ],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "torii": 1480,
+    "pillar_l-col": 12,
+    "pillar_r-col": 12
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/torii_senbon.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/torii_senbon.png"
+}

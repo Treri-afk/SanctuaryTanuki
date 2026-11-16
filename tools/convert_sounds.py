@@ -40,6 +40,9 @@ SOUNDS = {
     "woodpecker":   ("Justsoundeffects - Forests of Norway/BIRDMisc_Green Woodpeckers Calling On Lakeshore Far Away_JSE_FoN.wav", {"start": 2.0, "dur": 7.0, "fade": 1.5}),
     "woodpecker_2": ("Justsoundeffects - Forests of Norway/BIRDMisc_Green Woodpeckers Calling On Lakeshore Far Away_JSE_FoN.wav", {"start": 15.0, "dur": 7.0, "fade": 1.5}),
     "basin_drips":  ("InMotionAudio - Cave Design/WATRDrip_SingleDripDesign05_InMotionAudio_CaveDesign.wav", {"fade": 0.5}),
+    "leaves":       ("Sonic Bat - Videogame Foley Essentials Vol. II/SBvfe2_Dry Tree Branches Contact 024.wav", {"peak": (0.04, 0.55), "fade": 0.25}),
+    "ui_click":     ("Rogue Waves - Kawaii UI/UIClick_Operating System UI Cursor_RogueWaves_KawaiiUI.wav", {}),
+    "tick":         ("Rogue Waves - Kawaii UI/UIClick_Hand Pop UI Diminished 1_RogueWaves_KawaiiUI.wav", {}),
     # ---- ambiances (enchaînées en fondu croisé par scripts/ambience.gd)
     "amb_morning":  ("Justsoundeffects - Forests of Norway/AMBForst_Morning Small Birch Forest Willow Warbler Singing Many Insects Humming_JSE_FoN_Quad.wav", {"amb": True, "start": 20, "dur": 80}),
     "amb_day":      ("Justsoundeffects - Forest Ambiences/AMBForst_Spring Noon Deciduous Forest Gentle Wind Leaves Rustling Blackbird Raven in Background_JSE_FA.wav", {"amb": True, "start": 6, "dur": 80}),
@@ -49,6 +52,8 @@ SOUNDS = {
     "amb_forest":   ("InMotionAudio - The Forest/AMBForst_Forest08_InMotionAudio_TheForestSamples.wav", {"amb": True, "start": 10, "dur": 80}),
     "amb_wind":     ("Justsoundeffects - Forests of Norway/WINDVege_Mixed Forest Wind Blowing Through Birches Beeches And Spruces Tree Trunk Squeaking_JSE_FoN_Quad.wav", {"amb": True, "start": 10, "dur": 80}),
     "amb_stream":   ("Nick McMahan - Cascadia Flowing Water/WATRFlow_Stream Small Alpine Loop_Cascadia FW.wav", {"amb": True, "start": 10, "dur": 60, "mono": True}),
+    "amb_room":     ("Systematic Sound - General Ambience Series - Quiet Rooms 01/AMBRoom_Quiet Room Flat C Livingroom 02_SYSO_SYSO0013.wav", {"amb": True, "start": 20, "dur": 60}),
+    "amb_meadow":   ("Systematic Sound - General Ambience Series - Rural Countryside 01/AMBRurl_Field Wheat Dry Sizzle Insects Wind Soft_SYSO_SYSO011.wav", {"amb": True, "start": 15, "dur": 70}),
     "amb_falls":    ("Nick McMahan - Cascadia Flowing Water/WATRFlow_Creek Rocky Distant Falls Loop_Cascadia FW.wav", {"amb": True, "start": 10, "dur": 60, "mono": True}),
 }
 

@@ -1,0 +1,38 @@
+{
+  "name": "bamboo_tall",
+  "triangles": 4840,
+  "dims_xyz_m": [
+    4.831,
+    4.271,
+    11.543
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.035,
+    -0.148
+  ],
+  "collisions": [
+    "bamboo_tall-col"
+  ],
+  "materials": [
+    "bamboo_dark",
+    "bamboo_green",
+    "bamboo_leaf",
+    "bamboo_node",
+    "bamboo_old"
+  ],
+  "warnings": [],
+  "objects": [
+    "bamboo_tall-col",
+    "leaves",
+    "stalks"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "stalks": 2200,
+    "leaves": 2640,
+    "bamboo_tall-col": 12
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/bamboo_tall.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/bamboo_tall.png"
+}

@@ -6,6 +6,8 @@ render_mode world_vertex_coords, cull_front, unshaded, depth_draw_opaque, shadow
 uniform vec4 outline_color : source_color = vec4(0.17, 0.11, 0.15, 1.0);
 uniform float thickness = 0.014;       // conserve pour compatibilite : sert d'echelle (0.014 = 1,4 px a 720p)
 uniform float wind_sway = 0.0;
+uniform float cloth_wave = 0.0;
+uniform float cloth_width = 0.6;
 
 #include "res://shaders/wind.gdshaderinc"
 
@@ -14,7 +16,12 @@ void vertex() {
 	if (wind_sway > 0.0) {
 		VERTEX += wind_offset(VERTEX, origin, TIME) * wind_sway;
 	}
-	vec3 n = normalize(NORMAL);
+	vec3 nn = NORMAL;
+	if (cloth_wave > 0.0) {
+		VERTEX += cloth_offset(UV, origin, normalize(MODEL_MATRIX[0].xyz), normalize(MODEL_MATRIX[2].xyz),
+			cloth_width, TIME, nn) * cloth_wave;
+	}
+	vec3 n = normalize(nn);
 	vec4 clip = PROJECTION_MATRIX * VIEW_MATRIX * vec4(VERTEX, 1.0);
 	vec4 clip_n = PROJECTION_MATRIX * VIEW_MATRIX * vec4(VERTEX + n * 0.05, 1.0);
 	vec2 sn = clip_n.xy / clip_n.w - clip.xy / clip.w;

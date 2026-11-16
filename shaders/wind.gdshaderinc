@@ -36,3 +36,29 @@ vec3 wind_offset(vec3 wp, vec3 origin, float t) {
 	off += vec3(sin(t * 6.3 + q.x + q.y), sin(t * 7.9 + q.y + q.z) * 0.6, sin(t * 5.7 + q.z + q.x)) * fl;
 	return off;
 }
+
+// Etoffe au vent (banderoles nobori). uv : position sur l'etoffe (u = 0 a la hampe -> 1 au bord libre,
+// v = 0 en haut -> 1 en bas). ax_x : direction monde de la hampe vers le bord libre ; ax_n : normale de l'etoffe.
+// Des vagues partent de la hampe et filent vers le bord libre ; le tissu est tenu a la hampe et par la traverse du
+// haut, il bouge surtout au bord libre et vers le bas. Renvoie le deplacement ; n recoit la normale inclinee.
+vec3 cloth_offset(vec2 uv, vec3 origin, vec3 ax_x, vec3 ax_n, float width, float t, inout vec3 n) {
+	float ws = clamp(wind_strength, 0.0, 2.4);
+	float ph = wind_hash(floor(origin.xz * 3.0)) * 6.2831;
+	float u = clamp(uv.x, 0.0, 1.0);
+	float v = clamp(uv.y, 0.0, 1.0);
+	float top = smoothstep(0.0, 0.12, v);                           // bord du haut cousu sur la traverse
+	float w = pow(u, 1.15) * (0.3 + 0.7 * v) * top;
+	float amp = 0.07 + 0.07 * ws;
+	float sp = 3.2 + 1.2 * ws;
+	float a1 = 5.5 * u + 2.2 * v - sp * t + ph;
+	float a2 = 10.0 * u - 1.6 * v - sp * 1.55 * t + ph * 1.9;
+	float a3 = 2.0 * v - t * 0.9 + ph * 0.7;                       // lente respiration de toute l'etoffe
+	float s = sin(a1) * 0.7 + sin(a2) * 0.2 + sin(a3) * 0.5;
+	float ds = cos(a1) * 5.5 * 0.7 + cos(a2) * 10.0 * 0.2;
+	float dw = 1.15 * pow(max(u, 1e-3), 0.15) * (0.3 + 0.7 * v) * top;
+	float slope = amp * (w * ds + dw * s) / width;                   // pente selon la largeur (par metre)
+	float sg = dot(n, ax_n) >= 0.0 ? 1.0 : -1.0;
+	n = normalize(n - ax_x * slope * sg);
+	// le bord libre se rapproche un peu de la hampe quand le tissu ondule (il ne s'etire pas)
+	return ax_n * (amp * w * s) - ax_x * (amp * w * abs(s) * 0.25);
+}

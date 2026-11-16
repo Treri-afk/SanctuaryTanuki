@@ -30,6 +30,7 @@ var _atmo: Node
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_migrate_old_data()
 	for bus in ["Ambiance", "Effets"]:
 		if AudioServer.get_bus_index(bus) == -1:
 			AudioServer.add_bus()
@@ -43,6 +44,26 @@ func _ready() -> void:
 	_apply_audio()
 	if not testing():
 		_apply_window()
+
+## Le jeu s'appelait « Gardien de sanctuaire » : ses données (réglages, sauvegardes) étaient rangées par Godot
+## dans app_userdata/Gardien de sanctuaire. Le projet a maintenant son propre dossier, fixe (TanukiSanctuary,
+## voir project.godot), qui ne dépend plus du nom affiché. Au premier lancement, on y recopie les anciennes
+## données ; l'ancien dossier n'est pas touché.
+static func _migrate_old_data() -> void:
+	if FileAccess.file_exists(PATH) or DirAccess.dir_exists_absolute("user://saves"):
+		return
+	var old := OS.get_data_dir().path_join("Godot/app_userdata/Gardien de sanctuaire")
+	if not DirAccess.dir_exists_absolute(old):
+		return
+	if FileAccess.file_exists(old.path_join("settings.cfg")):
+		DirAccess.copy_absolute(old.path_join("settings.cfg"), ProjectSettings.globalize_path(PATH))
+	var saves := old.path_join("saves")
+	if DirAccess.dir_exists_absolute(saves):
+		DirAccess.make_dir_recursive_absolute("user://saves")
+		for f in DirAccess.get_files_at(saves):
+			if f.ends_with(".save"):
+				DirAccess.copy_absolute(saves.path_join(f), ProjectSettings.globalize_path("user://saves/" + f))
+	print("Données de « Gardien de sanctuaire » reprises dans ", OS.get_user_data_dir())
 
 ## Lancement en mode test (--shot, --autoplay, --perf...) : réglages par défaut, rien n'est écrit.
 static func testing() -> bool:

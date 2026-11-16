@@ -136,8 +136,32 @@ static func hill(x: float, z: float) -> float:
 		var w := smoothstep(FLAT_X, FLAT_X + 10.0, absf(x))
 		h = lerpf(stair_line(z), h, w)
 		if z > 40.0:
-			h += 0.08 * (z - 40.0)
-	return h
+			h += 0.08 * (z - 40.0) * (1.0 - valley_w(x))
+	return h - valley_drop(x, z)
+
+# ---- vallée du village (sud) : au-delà du palier du bas, le fond tombe jusqu'au village (scripts/village.gd) ----
+const VALLEY_FLOOR := -30.0     # niveau du fond de vallée, où est bâti le village
+const VALLEY_Z0 := 38.0         # début de la descente (bord du palier : les visiteurs arrivent de là)
+const VALLEY_Z1 := 132.0        # pied de la montagne
+
+## Poids de la vallée selon x : 1 au fond, 0 sur les flancs boisés.
+static func valley_w(x: float) -> float:
+	return 1.0 - smoothstep(26.0, 85.0, absf(x))
+
+## Descente due à la vallée : forte juste après le palier (le sanctuaire domine), douce au pied.
+static func valley_drop(x: float, z: float) -> float:
+	if z <= VALLEY_Z0:
+		return 0.0
+	var t := clampf((z - VALLEY_Z0) / (VALLEY_Z1 - VALLEY_Z0), 0.0, 1.0)
+	var k := 1.0 - pow(1.0 - t, 2.6)
+	k = lerpf(t * 2.6, k, smoothstep(0.0, 0.08, t))   # le bord du palier tombe franchement : on voit la vallée par-dessus
+	return (LANDING_Y - VALLEY_FLOOR) * clampf(k, 0.0, 1.0) * valley_w(x)
+
+## Vrai si un arbre haut de `top` mètres en (x, z) cacherait le village vu depuis le haut de l'escalier.
+static func hides_village(x: float, z: float, top: float) -> bool:
+	if z < 24.0 or absf(x) > 14.0 + 0.32 * (z - 24.0):
+		return false
+	return Village.blocks_view(x, z, height(x, z) + top)
 
 # ---- plans d'eau aux rives organiques ----
 
@@ -256,6 +280,7 @@ static func _eval(x: float, z: float) -> Vector3:
 		var dxl := maxf(absf(x) - (2.0 if z < 30.0 else 9.0), 0.0)
 		var dzl := maxf(z - 38.0, 0.0)
 		amp *= smoothstep(0.5, 7.0, sqrt(dxl * dxl + dzl * dzl))
+	amp *= 1.0 - smoothstep(VALLEY_Z1 - 20.0, VALLEY_Z1, z) * valley_w(x)   # fond de vallée lisse : il rejoint le sol du village
 	var h := hill(x, z) + _noise.get_noise_2d(x, z) * amp
 	var wh := 99.0
 	var sdd := sd
@@ -385,6 +410,9 @@ func _ready() -> void:
 	_build_water()
 	_build_precinct_pond()
 	_build_ridges()
+	var village := Village.new()
+	village.name = "Village"
+	add_child(village)
 	if OS.get_cmdline_user_args().has("--deep") or OS.get_cmdline_user_args().has("--cpu"):
 		print("BOOT terrain : %d ms" % ((Time.get_ticks_usec() - t0) / 1000))
 
@@ -488,6 +516,10 @@ func _build_ridges() -> void:
 			var r: float = radii[k]
 			var nv := n.get_noise_1d(float(i) * 0.35 + k * 40.0)
 			var hh: float = peaks[k] * (0.55 + 0.45 * nv) + 18.0 * sin(a * 3.0 + k)
+			if k < 3:   # brèche au sud : les crêtes deviennent les collines boisées de la vallée du village
+				var notch := 1.0 - smoothstep(0.2, 0.55, absf(angle_difference(a, PI * 0.5)))
+				var low: float = [VALLEY_FLOOR - 26.0, VALLEY_FLOOR - 36.0, VALLEY_FLOOR - 46.0][k] + 6.0 * nv
+				hh = lerpf(hh, low, notch)
 			verts.append(Vector3(cos(a) * r, -250.0, sin(a) * r))
 			uvs.append(Vector2(float(i) / seg, 0.0))
 			verts.append(Vector3(cos(a) * r, hh, sin(a) * r))

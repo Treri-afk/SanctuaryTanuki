@@ -1,0 +1,32 @@
+{
+  "name": "kingyo_kuro",
+  "triangles": 2328,
+  "dims_xyz_m": [
+    0.042,
+    0.091,
+    0.035
+  ],
+  "min_z": -0.014,
+  "center_xy": [
+    0.0,
+    0.015
+  ],
+  "collisions": [],
+  "materials": [
+    "kg_black",
+    "kg_black_fin",
+    "kg_eye"
+  ],
+  "warnings": [],
+  "objects": [
+    "body",
+    "tail"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "body": 1964,
+    "tail": 364
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/kingyo_kuro.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/kingyo_kuro.png"
+}

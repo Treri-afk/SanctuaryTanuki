@@ -5,7 +5,7 @@ extends RefCounted
 ## Ne doit dépendre d'aucun autoload (utilisé aussi par les scripts d'outils lancés avec --script).
 ##
 ## API stable :
-##   Toon.kind_of(nom_du_mesh, nom_du_modele) -> &"hard" | &"foliage" | &"small" | &"water"
+##   Toon.kind_of(nom_du_mesh, nom_du_modele) -> &"hard" | &"foliage" | &"small" | &"water" | &"cloth"
 ##   Toon.material(couleur, kind)            -> matériau partagé (mis en cache)
 ##   Toon.water_material()                   -> matériau des plans d'eau (ruisseau, mare, étang, bassin)
 ##   Toon.surface_material(mesh, i, kind)    -> matériau pour la surface i d'un mesh importé (gère la teinte de sommet)
@@ -35,8 +35,11 @@ static func kind_of(mesh_name: String, model: String = "") -> StringName:
 	# feuilles mortes posées au sol : elles ne bougent pas au vent
 	if m.begins_with("leaf_patch") or m.begins_with("leaf_pile") or n.begins_with("leaf_patch") or n.begins_with("leaf_pile"):
 		return &"small"
-	if n.contains("foliage") or n.contains("leaves") or n.contains("blades"):
+	if n.contains("foliage") or n.contains("leaves") or n.contains("blades") or n.begins_with("susuki") or n.begins_with("tanzaku"):
 		return &"foliage"
+	# étoffe des banderoles (tools/blender/festival.py) : ondule au vent, UV = position sur l'étoffe
+	if n.begins_with("banner_cloth"):
+		return &"cloth"
 	if m.begins_with("fern") or n.contains("moss"):
 		return &"small"
 	return &"hard"
@@ -63,6 +66,11 @@ static func material(color: Color, kind: StringName = &"hard", tinted: bool = fa
 			(m.next_pass as ShaderMaterial).set_shader_parameter("wind_sway", 1.0)
 	elif kind == &"small":
 		m.set_shader_parameter("rim_strength", 0.15)
+	elif kind == &"cloth":
+		m.set_shader_parameter("cloth_wave", 1.0)
+		m.set_shader_parameter("translucency", 0.3)
+		if m.next_pass:
+			(m.next_pass as ShaderMaterial).set_shader_parameter("cloth_wave", 1.0)
 	_cache[key] = m
 	return m
 
@@ -96,6 +104,16 @@ static func _new_material(color: Color, outline_thickness: float, tinted: bool) 
 		m.set_meta("outline", o)
 		if not screen_outlines:
 			m.next_pass = o
+	return m
+
+## Matériau toon dont la couleur vient des sommets (modèles repeints dans Blender : Mochi...).
+static func vertex_color_material(outline_thickness: float = 0.014) -> ShaderMaterial:
+	var key := "vcol_%s" % outline_thickness
+	if _cache.has(key):
+		return _cache[key]
+	var m := _new_material(Color.WHITE, outline_thickness, false)
+	m.set_shader_parameter("use_vertex_color", true)
+	_cache[key] = m
 	return m
 
 static func water_material() -> ShaderMaterial:

@@ -1,0 +1,24 @@
+{
+  "name": "sanbo",
+  "triangles": 219,
+  "dims_xyz_m": [
+    0.27,
+    0.27,
+    0.174
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "sanbo": 219
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/sanbo.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/sanbo.png"
+}

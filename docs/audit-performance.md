@@ -1,4 +1,4 @@
-# Audit de performance — Gardien de sanctuaire
+# Audit de performance — Tanuki Sanctuary
 
 Mesuré le 14/11/2026 sur un Mac M1 (Metal, Forward+), fenêtre 1280 × 720, qualité « Moyenne », v-sync coupée.
 Outils (à relancer après chaque correction) :
@@ -167,3 +167,19 @@ Ce qui pèse encore, mesuré après le lot 1 : la résolution (rendu à 50 % : �
 
 Chaque lot se vérifie avec `-- --perf`, `-- --deep` et `-- --groups`, avant et après, sur la même machine
 reposée.
+
+## Arbres et torii refaits (un matériau par modèle)
+
+Les arbres (érables, cèdres, pin) et les torii ont été refaits (`tools/blender/tree_util.py`, `torii_util.py`) avec
+les couleurs portées par les sommets : **un seul matériau par objet** (tronc, feuillage) au lieu d'un par teinte.
+C'est P2.2 appliqué aux arbres. Mesuré (`--perf --quick --tasks=lanternes,cloche`, mêmes vues) :
+
+| | avant | après |
+|---|---|---|
+| Appels de dessin (escalier / allée / lisière) | 2 507 / 2 002 / 2 402 | 1 773 / 1 456 / 1 720 (**−30 %**) |
+| Triangles à l'image | 1 423k / 1 258k / 1 579k | 1 564k / 1 365k / 1 719k (+9 %) |
+| Triangles d'arbres sur la carte | 2,83 M | 2,96 M |
+
+Le cœur des masses de feuillage est un icosaèdre de 20 triangles : il est caché sous les touffes et ses normales
+sont imposées (celles de l'enveloppe de la couronne), plus de facettes ne se verraient pas. Le temps par image
+n'a pas pu être comparé proprement (machine chaude, autres instances de Godot ouvertes pendant les mesures).

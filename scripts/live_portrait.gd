@@ -16,8 +16,21 @@ const EXPR_MAP := {
 	"surpris": "surprised",
 	"fache": "angry",
 	"calme": "relaxed",
+	"pensif": "relaxed",
+	"inquiet": "sad",
+	"gene": "relaxed",
+	"penaud": "sad",
+	"curieux": "surprised",
+	"essouffle": "surprised",
 }
-## Hauteur cadrée (mètres) : portrait en buste, du haut de la tête au milieu du ventre.
+## Expressions de l'histoire qui ont leur propre pose (sinon : la pose de l'expression VRM).
+const EXPR_POSE := {
+	"pensif": "pensif",
+	"inquiet": "inquiet",
+	"gene": "gene",
+}
+## Hauteur cadrée (mètres) pour un personnage de 1,30 m : portrait en buste, du haut de la tête
+## au milieu du ventre. Proportionnelle à la taille du personnage.
 const FRAME_HEIGHT := 0.64
 ## Durée du fondu entre deux expressions, et vitesse de passage d'une pose à l'autre.
 const EXPR_FADE := 0.22
@@ -30,7 +43,27 @@ const MOUTH_DAMP := 0.8
 ## bras gauche Z négatif = descend le long du corps, Y négatif = part vers l'avant ;
 ## avant-bras gauche Y négatif = plie le coude vers l'avant.
 ## Le côté droit est le miroir du gauche (X identique, Y et Z opposés) : on ne décrit que la gauche.
+## Pour une pose asymétrique, une clé « Right... » remplace le miroir ; ses valeurs s'écrivent
+## comme pour le bras gauche (elles sont retournées automatiquement).
 const POSES := {
+	"pensif": {   # tête inclinée et un peu baissée, mains jointes devant (les manches larges supportent mal les bras levés)
+		"Spine": Vector3(1, 0, 0), "Neck": Vector3(3, 0, 0), "Head": Vector3(5, 0, -9),
+		"LeftShoulder": Vector3(0, 0, 0),
+		"LeftUpperArm": Vector3(0, -24, -74), "LeftLowerArm": Vector3(0, -52, 0), "LeftHand": Vector3(0, -8, 0),
+	},
+	"inquiet": {   # tête un peu basse, une main qui serre l'autre bras devant soi
+		"Spine": Vector3(4, 0, 0), "Neck": Vector3(3, 0, 0), "Head": Vector3(7, 0, 3),
+		"LeftShoulder": Vector3(0, -6, -2),
+		"LeftUpperArm": Vector3(0, -26, -74), "LeftLowerArm": Vector3(0, -70, 0), "LeftHand": Vector3(0, -8, 0),
+		"RightUpperArm": Vector3(0, -10, -76), "RightLowerArm": Vector3(0, -30, 0), "RightHand": Vector3(0, 0, 0),
+	},
+	"gene": {   # sourire gêné : tête penchée, main droite qui se gratte la nuque
+		"Spine": Vector3(2, 0, 0), "Neck": Vector3(2, 0, 0), "Head": Vector3(6, 0, -8),
+		"LeftShoulder": Vector3(0, 0, 0),
+		"LeftUpperArm": Vector3(0, -6, -72), "LeftLowerArm": Vector3(0, -14, 0), "LeftHand": Vector3(0, 0, 0),
+		"RightShoulder": Vector3(0, 0, 8),
+		"RightUpperArm": Vector3(0, -50, 35), "RightLowerArm": Vector3(0, 11, 128), "RightHand": Vector3(0, 0, 10),
+	},
 	"neutral": {
 		"Spine": Vector3(0, 0, 0), "Neck": Vector3(0, 0, 0), "Head": Vector3(0, 0, 0),
 		"LeftShoulder": Vector3(0, 0, 0),
@@ -72,6 +105,8 @@ var _expr_shapes := {}       # nom d'expression VRM -> [[MeshInstance3D, index, 
 var _all_shapes := []        # [MeshInstance3D, index] touchés par au moins une expression
 var _weights := {}           # expression d'émotion -> poids courant (0..1)
 var _target := "neutral"
+var _pose_name := "neutral"
+var _stoop := 0.0
 var _bones := {}             # nom d'os (droite et gauche) -> index
 var _rest := {}              # index -> base globale au repos
 var _pose_now := {}          # index -> Quaternion courant (repère du personnage)
@@ -87,6 +122,7 @@ static func has_model(id: String) -> bool:
 ## Construit le portrait de ce personnage. À appeler une fois, avant d'ajouter le nœud à la scène.
 func setup(id: String) -> void:
 	var cfg: Dictionary = VISITOR.MODELS[id]
+	_stoop = float(cfg.get("stoop", 0.0))
 	stretch = true
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_vp = SubViewport.new()
@@ -135,8 +171,9 @@ func setup(id: String) -> void:
 	var cam := Camera3D.new()
 	cam.projection = Camera3D.PROJECTION_ORTHOGONAL
 	cam.keep_aspect = Camera3D.KEEP_HEIGHT
-	cam.size = FRAME_HEIGHT
-	cam.position = Vector3(0, top + 0.13 - FRAME_HEIGHT * 0.5, 3.0)   # marge : la couette dépasse quand elle lève la tête
+	var frame := FRAME_HEIGHT * top / 1.3
+	cam.size = frame
+	cam.position = Vector3(0, top + 0.2 * frame - frame * 0.5, 3.0)   # marge : la couette dépasse quand elle lève la tête
 	_vp.add_child(cam)
 	cam.current = true
 
@@ -145,6 +182,7 @@ func set_expression(expr: String) -> void:
 	_target = String(EXPR_MAP.get(expr, "neutral"))
 	if not _expr_shapes.has(_target):
 		_target = "neutral"
+	_pose_name = String(EXPR_POSE.get(expr, _target))
 
 func _add_bone(n: String) -> void:
 	var i := _skel.find_bone(n)
@@ -211,7 +249,7 @@ func _process(delta: float) -> void:
 	var mouth_goal := (0.25 + 0.55 * absf(sin(_t * 13.0)) * (0.6 + 0.4 * sin(_t * 5.3))) if talking else 0.0
 	_mouth = lerpf(_mouth, mouth_goal, minf(1.0, delta * 18.0))
 	_apply_shapes()
-	_apply_pose(POSES.get(_target, POSES["neutral"]), minf(1.0, delta * POSE_SPEED))
+	_apply_pose(POSES.get(_pose_name, POSES["neutral"]), minf(1.0, delta * POSE_SPEED))
 
 func _apply_shapes() -> void:
 	var acc := {}
@@ -244,9 +282,11 @@ func _apply_pose(pose: Dictionary, k: float) -> void:
 		var i: int = _bones[n]
 		var right := String(n).begins_with("Right")
 		var src := String(n).replace("Right", "Left")
-		var e: Vector3 = pose.get(src, POSES["neutral"].get(src, Vector3.ZERO))
+		var key := String(n) if pose.has(String(n)) else src   # « Right... » explicite : pose asymétrique
+		var e: Vector3 = pose.get(key, POSES["neutral"].get(src, Vector3.ZERO))
 		if right:
 			e = Vector3(e.x, -e.y, -e.z)
+		e.x += float(HumanoidAnimator.STOOP.get(String(n), 0.0)) * _stoop
 		match String(n):
 			"Chest": e += Vector3(-1.2 * breath, 0, 0)
 			"UpperChest": e += Vector3(-0.8 * breath, 0, 0)

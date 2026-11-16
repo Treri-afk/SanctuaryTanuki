@@ -24,15 +24,19 @@ const SCALES := {
 	"fallen_log": [0.8, 1.3],
 }
 
+## Hauteur des modèles à l'échelle 1 (m) : un arbre qui cacherait le village de la vallée n'est pas planté.
+const TREE_HEIGHTS := {"cedar_tree": 16.0, "cedar_tree_b": 12.0, "pine_tree": 9.0, "maple_small": 5.0, "maple_red": 5.8,
+	"bamboo_clump": 7.0}
+
 ## Arbres de l'enceinte posés par tools/build_world.gd : x, z, érable ?, échelle.
 const COURT_TREES := [
 	[-20.5, 4.5, true, 1.1], [-19.0, -30.5, true, 1.0], [21.5, 6.0, true, 1.0], [20.0, -20.0, true, 1.1],
-	[-12.0, 5.5, true, 0.85], [15.0, -27.0, true, 1.5], [-22.5, -32.0, false, 0.8], [23.0, -34.0, false, 0.75],
+	[-12.0, 5.5, true, 0.85], [15.0, -27.0, false, 1.8], [-22.5, -32.0, false, 0.8], [23.0, -34.0, false, 0.75],
 ]
 ## Objets posés par tools/build_world.gd hors des allées : x, z, rayon (ni herbe ni décor dessous).
 const PROPS := [
 	[-2.4, -43.0, 0.7], [2.4, -43.0, 0.7], [-7.0, -52.0, 1.9], [-4.3, -58.5, 0.7], [-10.6, -65.0, 1.4],
-	[-9.2, -65.1, 0.5], [-10.4, -63.7, 0.5], [-3.8, -63.0, 0.5], [11.0, -83.0, 0.5], [14.0, -84.0, 1.3],
+	[-9.2, -65.1, 0.5], [-10.4, -63.7, 0.5], [-10.6, -65.0, 2.6], [-8.6, -63.4, 1.6], [-59.9, 7.2, 1.4], [-3.8, -63.0, 0.5], [11.0, -83.0, 0.5], [14.0, -84.0, 1.3],
 	[10.2, -86.5, 0.7], [17.8, -86.5, 0.7], [19.5, -82.0, 1.5], [36.0, -6.5, 0.7], [42.0, -10.0, 0.5],
 	[49.0, -10.4, 0.7], [63.5, -16.0, 4.2], [62.5, -20.8, 1.6], [58.0, -13.0, 1.3], [57.0, -20.5, 1.7],
 	[-33.0, 5.8, 0.7], [-44.0, 4.5, 3.0], [-56.0, 6.0, 0.5], [-59.5, 14.5, 0.45], [-61.0, 15.8, 0.45],
@@ -42,7 +46,7 @@ const PROPS := [
 	[-4.6, 8.0, 0.5], [-12.0, 8.2, 0.5], [-13.4, 8.4, 0.5], [-6.0, 7.0, 0.6], [7.0, 8.7, 0.7], [7.0, -33.0, 0.5],
 	[19.7, -30.7, 0.5], [22.0, -30.4, 0.5], [21.0, -32.0, 1.0], [-2.2, 11.2, 0.6], [2.2, 11.2, 0.6],
 	[0.0, -35.2, 1.6], [-24.2, 2.0, 1.6], [24.2, -8.0, 1.6], [-21.5, -7.0, 0.7], [-5.0, -31.5, 1.6],
-	[21.5, 0.5, 1.2], [-22.0, -22.0, 0.9], [5.5, -32.2, 0.6], [15.0, -27.0, 0.9], [-9.5, -29.0, 0.5],
+	[21.5, 0.5, 1.2], [-22.0, -22.0, 0.9], [5.5, -32.2, 0.6], [15.0, -27.0, 3.6], [-9.5, -29.0, 0.5],
 	[-6.5, -16.5, 0.5], [10.5, -14.0, 1.6], [-16.0, -17.2, 1.2], [-15.0, -20.4, 1.2],
 ]
 const TRAIL_LANTERNS := [[-2.4, -43.0], [2.4, -43.0], [-4.3, -58.5], [36.0, -6.5], [49.0, -10.4], [-33.0, 5.8],
@@ -78,6 +82,8 @@ func _ready() -> void:
 	_noise.fractal_octaves = 2
 	var t0 := Time.get_ticks_usec()
 	_scatter_big()
+	_scatter_valley()
+	_scatter_bamboo_grove()
 	_build_mask()
 	_scatter_small()
 	_apply_mask()
@@ -161,6 +167,8 @@ func _scatter_big() -> void:
 			if model == "":
 				continue
 			var s := _rand_scale(model)
+			if Terrain.hides_village(x, z, float(TREE_HEIGHTS.get(model, 6.0)) * s) or in_grove(x, z):
+				continue
 			var y := Terrain.height(x, z) - 0.1
 			_add(model, Vector3(x, y, z), _rng.randf() * TAU, s)
 			var kind := 1
@@ -173,6 +181,76 @@ func _scatter_big() -> void:
 			_trees.append([x, z, kind, s])
 			if _in_play_area(x, z) and (model.begins_with("cedar") or model.begins_with("pine") or model.begins_with("maple") or model.begins_with("stump")):
 				_collision_trees.append([Vector3(x, y, z), 0.5 * s])
+
+## Bambouseraie de l'ouest : de la porte ouest à la mare, le long du sentier, et tout autour de la mare.
+## Les arbres ordinaires n'y poussent pas (_scatter_big) ; _scatter_bamboo_grove la remplit de grands bambous serrés.
+const GROVE_WIDTH := 13.0      # de part et d'autre du sentier
+const GROVE_POND_R := 17.0     # autour de la mare
+
+static func in_grove(x: float, z: float) -> bool:
+	if x > -27.0:
+		return false
+	var d := Terrain._nearest(Terrain.TRAILS[&"ouest"], x, z).x
+	return d < GROVE_WIDTH or Vector2(x - Terrain.POND.x, z - Terrain.POND.y).length() < GROVE_POND_R
+
+func _scatter_bamboo_grove() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 777
+	var cell := 2.3
+	var x := -90.0
+	while x < -26.0:
+		var z := -16.0
+		while z < 32.0:
+			var px := x + rng.randf() * cell
+			var pz := z + rng.randf() * cell
+			z += cell
+			var s := rng.randf_range(0.8, 1.15)
+			var yaw := rng.randf() * TAU
+			var r := rng.randf()
+			if not in_grove(px, pz) or Terrain.keep_clear(px, pz, 0.3) or _near_prop(px, pz, 0.9):
+				continue
+			if Vector2(px - Terrain.POND.x, pz - Terrain.POND.y).length() < Terrain.POND.z + 1.6:
+				continue
+			# en bordure de bambouseraie, quelques trouées
+			var d := Terrain._nearest(Terrain.TRAILS[&"ouest"], px, pz).x
+			var edge := minf(GROVE_WIDTH - d, GROVE_POND_R - Vector2(px - Terrain.POND.x, pz - Terrain.POND.y).length())
+			if r < 0.12 or (edge < 3.0 and r < 0.4):
+				continue
+			var y := Terrain.height(px, pz) - 0.1
+			_add("bamboo_tall", Vector3(px, y, pz), yaw, s)
+			_trees.append([px, pz, 3, s])
+			if _in_play_area(px, pz):
+				_collision_trees.append([Vector3(px, y, pz), 0.75 * s])
+			# jeunes pousses au bord du sentier
+			if d < 6.0 and rng.randf() < 0.5:
+				var q := Vector2(px, pz) + Vector2.from_angle(rng.randf() * TAU) * 1.2
+				if not Terrain.keep_clear(q.x, q.y, 0.2):
+					_add("bamboo_clump", Vector3(q.x, Terrain.height(q.x, q.y) - 0.1, q.y), rng.randf() * TAU, rng.randf_range(0.6, 0.9))
+		x += cell
+
+## Flancs de la vallée du village (au sud, au-delà de AREA, jusqu'au bord du maillage) : sans arbres, les pentes
+## seraient nues. Tirage à part, pour ne pas changer le reste de la forêt. Rien qui cacherait le village.
+func _scatter_valley() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4242
+	var cell := 6.0
+	var x := -150.0
+	while x < 150.0:
+		var z := 30.0
+		while z < 150.0:
+			var px := x + rng.randf() * cell
+			var pz := z + rng.randf() * cell
+			z += cell
+			var r := rng.randf()
+			var model := "cedar_tree" if r < 0.42 else ("cedar_tree_b" if r < 0.62 else ("pine_tree" if r < 0.72 else ("maple_red" if r < 0.87 else "maple_small")))
+			var s := rng.randf_range(0.9, 1.3)
+			var yaw := rng.randf() * TAU
+			if Vector2(px, pz).length() <= AREA - 2.0 or rng.randf() < 0.35:
+				continue
+			if Terrain.hides_village(px, pz, float(TREE_HEIGHTS.get(model, 6.0)) * s):
+				continue
+			_add(model, Vector3(px, Terrain.height(px, pz) - 0.1, pz), yaw, s)
+		x += cell
 
 # ---------------------------------------------------------------- masque du sol
 

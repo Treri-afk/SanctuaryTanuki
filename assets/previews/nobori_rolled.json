@@ -1,0 +1,26 @@
+{
+  "name": "nobori_rolled",
+  "triangles": 904,
+  "dims_xyz_m": [
+    0.125,
+    0.125,
+    1.66
+  ],
+  "min_z": -0.78,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [
+    "origine pas au sol (min z = -0.780)"
+  ],
+  "tris_per_object": {
+    "rolled": 904
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/nobori_rolled.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/nobori_rolled.png"
+}

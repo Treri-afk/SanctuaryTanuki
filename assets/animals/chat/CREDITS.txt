@@ -1,0 +1,7 @@
+Mochi (mochi.glb) est dérivé de :
+  « Toon Cat FREE » par Omabuarts Studio — https://sketchfab.com/omabuarts
+  https://sketchfab.com/3d-models/toon-cat-free-b2bd1ee7858444bda366110a2d960386
+  Licence CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+Modifications : pelage repeint (blanc à taches rousses), animations ajoutées (repos, assis, couché, caressé),
+marche ré-échantillonnée — voir tools/blender/mochi.py.
+À créditer dans le jeu (écran des crédits).

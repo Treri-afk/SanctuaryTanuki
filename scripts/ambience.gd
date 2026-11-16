@@ -2,7 +2,8 @@ class_name Ambience
 extends Node
 ## Ambiance sonore : fonds de forêt selon le moment du jour, forêt profonde hors de l'enceinte, vent qui suit
 ## les bourrasques, ruisseau et cascade qui suivent le joueur le long du cours d'eau, gouttes au bassin des
-## ablutions, pics-verts lointains de temps en temps. Les fichiers viennent de assets/sounds/amb_*.mp3
+## ablutions, pics-verts lointains de temps en temps, insectes des herbes sèches dans la prairie du belvédère.
+## Dans le salon de thé, le dehors s'étouffe et l'on entend le calme d'une pièce. Les fichiers viennent de assets/sounds/amb_*.mp3
 ## (tools/convert_sounds.py) ; chaque boucle est jouée sur deux lecteurs qui se relaient en fondu croisé
 ## (les extraits ont des fondus de 2,5 s à chaque bout), on n'entend donc jamais de raccord.
 ## Pendant un dialogue, tout baisse un peu.
@@ -17,6 +18,9 @@ var _t := 0.0
 var _sprinkle := 40.0
 var _streams: Array = []             # échantillons du ruisseau [Vector3, chute]
 var _rng := RandomNumberGenerator.new()
+var _tea: Node3D                     # salon de thé (intérieur : dehors étouffé, calme de la pièce)
+var _in := 0.0                       # 0 dehors, 1 dedans (glisse doucement)
+const MEADOW := Rect2(-3.0, -93.0, 35.0, 40.0)   # prairie dégagée devant le belvédère (comme Forest._view_clear)
 
 ## Une boucle : deux lecteurs (2D ou 3D) qui se relaient, volume qui glisse vers une cible.
 class Bed:
@@ -80,12 +84,22 @@ func setup(g: Node3D) -> void:
 	_add("amb_stream", true, 7.0, 60.0)
 	_add("amb_falls", true, 9.0, 80.0)
 	_add("basin_drips", true, 1.2, 12.0)
+	_add("amb_room", false)
+	_add("amb_meadow", false)
+	_tea = game.props.get_node_or_null("TeaHouse")
 	for smp in Terrain.stream_samples():
 		var p2: Vector2 = smp[0]
 		_streams.append([Vector3(p2.x, float(smp[2]) + 0.2, p2.y), bool(smp[4])])
 	var basin: Node3D = game.props.get_node_or_null("WaterBasin")
 	if basin and _beds.has("basin_drips"):
 		(_beds["basin_drips"] as Bed).place(basin.global_position + Vector3(0, 0.8, 0))
+
+## Le joueur est-il dans le salon de thé (plancher surélevé, entre les murs) ?
+func _indoors(p: Vector3) -> bool:
+	if _tea == null:
+		return false
+	var l := _tea.to_local(p)
+	return absf(l.x) < 3.5 and l.z > -3.0 and l.z < 1.6 and l.y > 0.3
 
 func _add(n: String, positional: bool, unit := 6.0, max_d := 70.0) -> void:
 	for ext in [".mp3", ".ogg", ".wav"]:
@@ -132,7 +146,21 @@ func _process(delta: float) -> void:
 	_vol("amb_stream", -6.0)
 	_vol("amb_falls", -8.0)
 	_vol("basin_drips", -10.0 if ph != GameState.Phase.NIGHT else -16.0)
-	# 5. pendant un dialogue, l'ambiance baisse ; la nuit, tout est plus calme
+	# 5. prairie du belvédère : insectes des herbes sèches l'après-midi et le soir
+	var md := Vector2(maxf(maxf(MEADOW.position.x - p.x, p.x - MEADOW.end.x), 0.0), maxf(maxf(MEADOW.position.y - p.z, p.z - MEADOW.end.y), 0.0)).length()
+	var mf := 1.0 - clampf(md / 18.0, 0.0, 1.0)
+	var insects := ph == GameState.Phase.VISIT or ph == GameState.Phase.EVENING
+	_vol("amb_meadow", lerpf(-40.0, -15.0, mf) if insects and mf > 0.0 else SILENT)
+	# 6. dans le salon de thé : le dehors s'étouffe, le calme de la pièce monte
+	_in = move_toward(_in, 1.0 if _indoors(p) else 0.0, delta * 1.2)
+	if _in > 0.0:
+		for n in _beds:
+			if n != "amb_room":
+				var b: Bed = _beds[n]
+				if b.target > SILENT:
+					b.target -= 11.0 * _in
+	_vol("amb_room", lerpf(-34.0, -17.0, _in) if _in > 0.01 else SILENT)
+	# 7. pendant un dialogue, l'ambiance baisse ; la nuit, tout est plus calme
 	var duck := -7.0 if game.vn.visible else 0.0
 	if get_tree().paused:
 		duck = -9.0

@@ -22,7 +22,7 @@ const TRANSITION := 7.0
 ## sun : [élévation°, azimut°] ; azimut 0 = soleil au sud (+Z), 90 = à l'est (+X), -90 = à l'ouest.
 const PHASES := [
 	{   # matin frais et brumeux : soleil bas à l'est, lumière pâle, ombres bleues, brume dans les creux
-		"sun": Vector2(17.0, 68.0), "sun_color": Color(1.0, 0.89, 0.72), "sun_energy": 1.8,
+		"moon": 0.0, "sun": Vector2(17.0, 68.0), "sun_color": Color(1.0, 0.89, 0.72), "sun_energy": 1.8,
 		"amb": Color(0.56, 0.63, 0.78), "amb_e": 0.76,
 		"zenith": Color(0.36, 0.56, 0.80), "horizon": Color(0.82, 0.87, 0.90), "haze": Color(0.84, 0.88, 0.93),
 		"ground": Color(0.50, 0.55, 0.58), "glow_col": Color(1.0, 0.86, 0.66), "sun_glow": 0.75,
@@ -35,7 +35,7 @@ const PHASES := [
 		"line": Color(0.34, 0.30, 0.40), "shafts": 0.55,
 	},
 	{   # après-midi doré : lumière chaude et franche, ciel profond, nuages blancs
-		"sun": Vector2(30.0, -32.0), "sun_color": Color(1.0, 0.85, 0.64), "sun_energy": 1.85,
+		"moon": 0.0, "sun": Vector2(30.0, -32.0), "sun_color": Color(1.0, 0.85, 0.64), "sun_energy": 1.85,
 		"amb": Color(0.50, 0.57, 0.76), "amb_e": 0.70,
 		"zenith": Color(0.26, 0.47, 0.80), "horizon": Color(0.86, 0.84, 0.76), "haze": Color(0.93, 0.85, 0.72),
 		"ground": Color(0.45, 0.43, 0.44), "glow_col": Color(1.0, 0.80, 0.52), "sun_glow": 0.8,
@@ -48,7 +48,7 @@ const PHASES := [
 		"line": Color(0.36, 0.26, 0.32), "shafts": 0.25,
 	},
 	{   # soir violet et orangé : soleil couchant à l'ouest, ciel mauve, brume rose, lanternes et papiers allumés
-		"sun": Vector2(5.5, -84.0), "sun_color": Color(1.0, 0.56, 0.30), "sun_energy": 1.7,
+		"moon": 0.0, "sun": Vector2(5.5, -84.0), "sun_color": Color(1.0, 0.56, 0.30), "sun_energy": 1.7,
 		"amb": Color(0.50, 0.44, 0.70), "amb_e": 0.72,
 		"zenith": Color(0.20, 0.20, 0.46), "horizon": Color(0.92, 0.58, 0.48), "haze": Color(0.74, 0.56, 0.66),
 		"ground": Color(0.30, 0.26, 0.36), "glow_col": Color(1.0, 0.56, 0.30), "sun_glow": 1.0,
@@ -61,7 +61,7 @@ const PHASES := [
 		"line": Color(0.32, 0.24, 0.36), "shafts": 0.45,
 	},
 	{   # nuit : clair de lune bleu, ciel d'encre, lanternes et papiers allumés, lucioles
-		"sun": Vector2(38.0, 150.0), "sun_color": Color(0.62, 0.72, 1.0), "sun_energy": 0.42,
+		"moon": 1.0, "sun": Vector2(38.0, 150.0), "sun_color": Color(0.62, 0.72, 1.0), "sun_energy": 0.42,
 		"amb": Color(0.22, 0.26, 0.46), "amb_e": 0.6,
 		"zenith": Color(0.03, 0.05, 0.14), "horizon": Color(0.15, 0.18, 0.33), "haze": Color(0.15, 0.17, 0.29),
 		"ground": Color(0.06, 0.06, 0.10), "glow_col": Color(0.76, 0.84, 1.0), "sun_glow": 0.35,
@@ -92,7 +92,11 @@ var _gust := 0.0                 # enveloppe de bourrasque
 var wind_strength := 1.0         # force du vent du moment (lue par l'ambiance sonore)
 var _gust_force := 1.0
 var _ridges: Array[ShaderMaterial] = []
+var _village: Village            # village de la vallée (terrain.gd) : mêmes couleurs de phase que les crêtes
 var _papers: Array = []          # [MeshInstance3D, intensité]
+## Pleine lune de la fête (scripts/festival.gd) : plus basse, plus grande, au-dessus du pavillon.
+var full_moon := false
+const FULL_MOON_POS := Vector2(27.0, 152.0)   # élévation, azimut (degrés)
 var _wind_noise := FastNoiseLite.new()
 
 func _ready() -> void:
@@ -237,6 +241,7 @@ func _setup_shafts() -> void:
 func _find_ridges(world: Node) -> void:
 	if not world.has_node("Terrain"):
 		return
+	_village = world.get_node_or_null("Terrain/Village") as Village
 	for c in world.get_node("Terrain").get_children():
 		if c is MeshInstance3D and String(c.name).begins_with("Ridge"):
 			var m := (c as MeshInstance3D).mesh.surface_get_material(0)
@@ -288,6 +293,23 @@ func _dress_flame(n: MeshInstance3D) -> void:
 	n.add_child(halo)
 
 # ------------------------------------------------------------------ API
+## Ajoute des papiers éclairés le soir (lanternes posées en cours de partie : fête de Tsukimi).
+func add_papers(n: Node, amount: float) -> void:
+	var paper: float = _cur.get("paper", 0.0)
+	for mi in n.find_children("*", "MeshInstance3D", true, false):
+		_papers.append([mi, amount])
+		(mi as GeometryInstance3D).set_instance_shader_parameter("glow", paper * amount)
+
+## Pleine lune de la fête : plus grande et plus basse, nuages écartés (appliqué tout de suite).
+func set_full_moon(on: bool) -> void:
+	full_moon = on
+	_apply(_cur)
+
+## Direction de la lune (vers le ciel), telle que la nuit la place.
+func moon_direction() -> Vector3:
+	var sv: Vector2 = PHASES[3]["sun"]
+	return _sun_dir(FULL_MOON_POS if full_moon else sv)
+
 func gust(strength: float = 1.0) -> void:
 	_gust = 1.0
 	_gust_force = clampf(strength, 0.2, 3.0)
@@ -339,7 +361,11 @@ func _sun_dir(sv: Vector2) -> Vector3:
 
 func _apply(c: Dictionary) -> void:
 	# soleil : direction depuis l'élévation et l'azimut (le noeud regarde vers -Z)
-	var to_sun := _sun_dir(c["sun"])
+	var mv: float = c.get("moon", 0.0)
+	var sv: Vector2 = c["sun"]
+	if full_moon:
+		sv = sv.lerp(FULL_MOON_POS, mv)
+	var to_sun := _sun_dir(sv)
 	sun.global_basis = Basis.looking_at(-to_sun, Vector3.UP if absf(to_sun.y) < 0.99 else Vector3.FORWARD)
 	sun.light_color = c["sun_color"]
 	sun.light_energy = c["sun_energy"]
@@ -371,12 +397,16 @@ func _apply(c: Dictionary) -> void:
 	sky_mat.set_shader_parameter("sun_glow", c["sun_glow"])
 	sky_mat.set_shader_parameter("cloud_lit", c["cloud_lit"])
 	sky_mat.set_shader_parameter("cloud_shade", c["cloud_shade"])
-	sky_mat.set_shader_parameter("cloud_cover", c["cloud_cover"])
+	sky_mat.set_shader_parameter("cloud_cover", c["cloud_cover"] * (1.0 - 0.6 * mv if full_moon else 1.0))
+	sky_mat.set_shader_parameter("moon", mv)
+	sky_mat.set_shader_parameter("moon_size", 3.4 if full_moon else 1.9)
 	for m in _ridges:
 		m.set_shader_parameter("haze_color", haze)
 		m.set_shader_parameter("phase_tint", c["ridge_tint"])
 		m.set_shader_parameter("sun_color", c["sun_color"])
 		m.set_shader_parameter("sun_dir", to_sun)
+	if _village:
+		_village.apply_atmo(c, to_sun)
 	if shaft_mat:
 		shaft_mat.set_shader_parameter("sun_dir", to_sun)
 		shaft_mat.set_shader_parameter("shaft_color", c["glow_col"])

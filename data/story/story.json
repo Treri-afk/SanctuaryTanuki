@@ -1,7 +1,7 @@
 {
   "format": "gardien-story",
   "version": 1,
-  "title": "Gardien de sanctuaire — automne",
+  "title": "Tanuki Sanctuary — automne",
   "settings": {
     "visits_per_day": [
       2,
@@ -18,7 +18,18 @@
     "start_coins": 5,
     "visitor_patience": 150,
     "night_chance": 1.0,
-    "harvest_per_day": 12
+    "harvest_per_day": 12,
+    "demo_days": 5,
+    "visits_per_day_by_day": {
+      "3": [
+        3,
+        3
+      ],
+      "4": [
+        3,
+        3
+      ]
+    }
   },
   "spots": [
     "offrandes",
@@ -42,7 +53,7 @@
       ],
       "affection_start": 0,
       "affection_max": 10,
-      "notes": "Veuve. Montait chaque automne avec son mari. Son fils veut qu'elle parte en ville.",
+      "notes": "Veuve. Montait chaque automne avec son mari, ne manquait jamais Tsukimi. Son fils vient la chercher pour la ville après la pleine lune.",
       "coins": 3,
       "gifts": {
         "feuille": "love",
@@ -68,7 +79,7 @@
       ],
       "affection_start": 0,
       "affection_max": 10,
-      "notes": "Lycéen du village. Examen d'entrée à l'université dans trois jours.",
+      "notes": "Lycéen du village. Examen d'entrée à l'université le jour 4 ; vient dire le résultat en sortant.",
       "coins": 1,
       "gifts": {
         "plume": "love",
@@ -590,7 +601,7 @@
           "type": "line",
           "speaker": "etudiant",
           "expr": "inquiet",
-          "text": "Pardon, je ne dérange pas ? Je suis monté en courant depuis le village... j'ai un examen dans trois jours.",
+          "text": "Pardon, je ne dérange pas ? Je suis monté en courant depuis le village... j'ai un examen après-demain.",
           "next": "n2",
           "effects": [],
           "x": 60,
@@ -840,8 +851,8 @@
       "id": "tanaka_j2",
       "character": "facteur",
       "title": "Pour la vue",
-      "day_min": 2,
-      "day_max": 3,
+      "day_min": 3,
+      "day_max": 4,
       "priority": 2,
       "once": true,
       "spot": "torii",
@@ -930,13 +941,13 @@
     {
       "id": "fumiko_j3",
       "character": "vieille_dame",
-      "title": "Une dernière fois",
+      "title": "Les lanternes de Seiji",
       "day_min": 3,
-      "day_max": 3,
+      "day_max": 4,
       "priority": 10,
       "once": true,
       "spot": "offrandes",
-      "wish": "Merci d'avoir veillé sur ce lieu.",
+      "wish": "Une dernière lune sur la montagne.",
       "conditions": [
         {
           "type": "flag",
@@ -950,7 +961,7 @@
           "type": "line",
           "speaker": "vieille_dame",
           "expr": "sourire",
-          "text": "Me voilà. Vous voyez ? Mes jambes m'ont portée jusqu'ici, une dernière fois.",
+          "text": "Me voilà. Mes jambes m'ont portée jusqu'ici, encore une fois. Et on dit en bas que le sanctuaire fera Tsukimi !",
           "next": "n2",
           "effects": [],
           "x": 60,
@@ -992,39 +1003,54 @@
           "text": "J'ai relu mon ema, l'autre jour, en redescendant. Je m'étais promis de ne pas pleurer.",
           "next": "n4",
           "effects": [],
-          "x": 720,
-          "y": 250
+          "x": 1050,
+          "y": 90
         },
         "n4": {
           "type": "line",
           "speaker": "vieille_dame",
-          "expr": "triste",
-          "text": "Mon fils veut que je vienne vivre en ville, chez lui. C'est loin, la ville. Il n'y a pas de montagne.",
+          "expr": "neutre",
+          "text": "Mon mari et moi, on ne manquait jamais la fête de la lune. Seiji accrochait ses lanternes de papier tout le long de l'allée. On aurait dit un chemin vers le ciel.",
           "next": "n5",
           "effects": [],
-          "x": 1050,
-          "y": 90
+          "x": 1380,
+          "y": 60
         },
         "n5": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "triste",
+          "text": "Mon fils vient me chercher après la pleine lune. Je vais vivre en ville, chez lui. Il n'y a pas de montagne, là-bas.",
+          "next": "n6",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        },
+        "n6": {
           "type": "choice",
           "speaker": "gardien",
           "text": "",
           "choices": [
             {
-              "text": "Je veillerai sur ce lieu pour vous deux.",
-              "next": "n6",
+              "text": "Alors venez voir la lune ici, une dernière fois. Vous êtes invitée.",
+              "next": "n7a",
               "effects": [
                 {
                   "type": "affection",
                   "character": "vieille_dame",
                   "delta": 2
+                },
+                {
+                  "type": "flag",
+                  "flag": "invite_vieille_dame",
+                  "value": true
                 }
               ],
               "conditions": []
             },
             {
               "text": "La montagne se souviendra de vous. Vous l'avez dit vous-même.",
-              "next": "n6",
+              "next": "n7b",
               "effects": [
                 {
                   "type": "affection",
@@ -1035,33 +1061,33 @@
               "conditions": []
             }
           ],
-          "x": 1380,
+          "x": 2040,
           "y": 60
         },
-        "n6": {
+        "n7a": {
           "type": "line",
           "speaker": "vieille_dame",
           "expr": "sourire",
-          "text": "Alors je peux redescendre tranquille. Merci d'avoir pris soin de nous.",
-          "next": "n7",
+          "text": "Une dernière Tsukimi ici... Oui. Oui, je viendrai. Et je vous apporterai quelque chose.",
+          "next": "fin",
           "effects": [],
-          "x": 1710,
+          "x": 2370,
           "y": 90
         },
-        "n7": {
+        "n7b": {
           "type": "line",
           "speaker": "vieille_dame",
           "expr": "neutre",
-          "text": "Sonnez la cloche pour moi, ce soir. Doucement.",
+          "text": "C'est vrai. Je l'ai dit. Sonnez la cloche pour moi, un de ces soirs. Doucement.",
           "next": "fin",
           "effects": [],
-          "x": 2040,
+          "x": 2700,
           "y": 60
         },
         "fin": {
           "type": "end",
           "effects": [],
-          "x": 2370,
+          "x": 3030,
           "y": 90
         }
       }
@@ -1070,9 +1096,9 @@
       "id": "kenta_j3",
       "character": "etudiant",
       "title": "Le résultat",
-      "day_min": 3,
-      "day_max": 3,
-      "priority": 8,
+      "day_min": 4,
+      "day_max": 4,
+      "priority": 9,
       "once": true,
       "spot": "ema",
       "wish": "",
@@ -1089,7 +1115,7 @@
           "type": "line",
           "speaker": "etudiant",
           "expr": "neutre",
-          "text": "C'est moi ! Je vous avais promis de revenir.",
+          "text": "C'est moi ! Je sors de l'examen, je suis monté directement. Je vous avais promis de revenir.",
           "next": "n2",
           "effects": [],
           "x": 60,
@@ -1182,7 +1208,7 @@
           "speaker": "etudiant",
           "expr": "sourire",
           "text": "Compter les marches... Oui. Je crois que je reviendrai.",
-          "next": "fin",
+          "next": "n7",
           "effects": [],
           "x": 1710,
           "y": 90
@@ -1192,7 +1218,7 @@
           "speaker": "etudiant",
           "expr": "neutre",
           "text": "Respirer, d'abord. Puis... je ne sais pas. C'est la première fois que ça ne me fait pas peur.",
-          "next": "fin",
+          "next": "n7",
           "effects": [],
           "x": 1710,
           "y": 280
@@ -1200,8 +1226,70 @@
         "fin": {
           "type": "end",
           "effects": [],
+          "x": 3400,
+          "y": 60
+        },
+        "n7": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "neutre",
+          "text": "Au fait... il paraît que le sanctuaire fait Tsukimi, demain soir ? Tout le village en parle.",
+          "next": "n8",
+          "effects": [],
           "x": 2040,
           "y": 60
+        },
+        "n8": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Venez ! Et si vous m'aidiez à servir le thé ?",
+              "next": "n9a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "etudiant",
+                  "delta": 1
+                },
+                {
+                  "type": "flag",
+                  "flag": "invite_etudiant",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Si vous avez le temps.",
+              "next": "n9b",
+              "effects": [],
+              "conditions": []
+            }
+          ],
+          "x": 2370,
+          "y": 250
+        },
+        "n9a": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "sourire",
+          "text": "Moi ? Servir le thé ? ... D'accord. Je m'entraîne ce soir. Trois fois.",
+          "next": "fin",
+          "effects": [],
+          "x": 2700,
+          "y": 60
+        },
+        "n9b": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "neutre",
+          "text": "J'ai tout le temps, maintenant ! Enfin... jusqu'aux résultats.",
+          "next": "fin",
+          "effects": [],
+          "x": 3030,
+          "y": 250
         }
       }
     },
@@ -1210,7 +1298,7 @@
       "character": "fillette",
       "title": "Mochi est rentré",
       "day_min": 3,
-      "day_max": 3,
+      "day_max": 4,
       "priority": 7,
       "once": true,
       "spot": "etang",
@@ -1320,8 +1408,8 @@
           "type": "line",
           "speaker": "fillette",
           "expr": "sourire",
-          "text": "À bientôt ! Je reviendrai avec Mochi, s'il veut bien.",
-          "next": "fin",
+          "text": "Maman dit qu'il y aura des dango à la fête de la lune. C'est vrai ?",
+          "next": "n7",
           "effects": [],
           "x": 1710,
           "y": 90
@@ -1329,8 +1417,60 @@
         "fin": {
           "type": "end",
           "effects": [],
+          "x": 2700,
+          "y": 60
+        },
+        "n7": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "C'est vrai. Viens avec Mochi, je t'invite.",
+              "next": "n8a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "fillette",
+                  "delta": 1
+                },
+                {
+                  "type": "flag",
+                  "flag": "invite_fillette",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Si tes parents sont d'accord.",
+              "next": "n8b",
+              "effects": [],
+              "conditions": []
+            }
+          ],
           "x": 2040,
           "y": 60
+        },
+        "n8a": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "sourire",
+          "text": "Avec Mochi ! Je ferai des lapins en origami. Il paraît qu'il y a un lapin sur la lune, vous le saviez ?",
+          "next": "fin",
+          "effects": [],
+          "x": 2370,
+          "y": 60
+        },
+        "n8b": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "surpris",
+          "text": "Je vais leur demander tout de suite !",
+          "next": "fin",
+          "effects": [],
+          "x": 2370,
+          "y": 250
         }
       }
     },
@@ -1339,7 +1479,7 @@
       "character": "moine",
       "title": "Avant les neiges",
       "day_min": 3,
-      "day_max": 3,
+      "day_max": 4,
       "priority": 5,
       "once": true,
       "spot": "arbre",
@@ -1351,7 +1491,7 @@
           "type": "line",
           "speaker": "moine",
           "expr": "neutre",
-          "text": "Je repars vers le col. Les premières neiges ne vont plus tarder.",
+          "text": "Je devais repartir vers le col. Mais on m'a dit, au village, que le sanctuaire fêterait la lune cette année.",
           "next": "n2",
           "effects": [],
           "x": 60,
@@ -1411,8 +1551,25 @@
           "text": "",
           "choices": [
             {
+              "text": "Restez pour Tsukimi. Seiji aurait aimé que vous meniez la prière.",
+              "next": "n6a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "moine",
+                  "delta": 1
+                },
+                {
+                  "type": "flag",
+                  "flag": "invite_moine",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
               "text": "Je commence à comprendre ce qu'il voulait dire.",
-              "next": "n6",
+              "next": "n6b",
               "effects": [
                 {
                   "type": "affection",
@@ -1421,38 +1578,36 @@
                 }
               ],
               "conditions": []
-            },
-            {
-              "text": "Revenez au printemps.",
-              "next": "n6",
-              "effects": [
-                {
-                  "type": "affection",
-                  "character": "moine",
-                  "delta": 1
-                }
-              ],
-              "conditions": []
             }
           ],
           "x": 1380,
           "y": 60
-        },
-        "n6": {
-          "type": "line",
-          "speaker": "moine",
-          "expr": "sourire",
-          "text": "Au printemps, alors. Prenez soin de l'arbre.",
-          "next": "fin",
-          "effects": [],
-          "x": 1710,
-          "y": 90
         },
         "fin": {
           "type": "end",
           "effects": [],
           "x": 2040,
           "y": 60
+        },
+        "n6a": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "sourire",
+          "text": "La prière à la lune... Il y a bien longtemps. Soit. Les neiges attendront un soir de plus.",
+          "next": "fin",
+          "effects": [],
+          "x": 1710,
+          "y": 60
+        },
+        "n6b": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "sourire",
+          "text": "Alors vous n'avez plus besoin de moi. Prenez soin de l'arbre.",
+          "next": "fin",
+          "effects": [],
+          "x": 1710,
+          "y": 250
         }
       }
     },
@@ -1568,7 +1723,7 @@
       "character": "renard",
       "title": "Le renard sort de l'ombre",
       "day_min": 2,
-      "day_max": 3,
+      "day_max": 4,
       "priority": 8,
       "once": true,
       "actor": "renard",
@@ -1685,7 +1840,7 @@
       "character": "renard",
       "title": "Un ema très ancien",
       "day_min": 2,
-      "day_max": 3,
+      "day_max": 4,
       "priority": 7,
       "once": true,
       "actor": "renard",
@@ -1799,7 +1954,7 @@
       "character": "tanuki",
       "title": "Le voleur d'offrandes",
       "day_min": 2,
-      "day_max": 3,
+      "day_max": 4,
       "priority": 7,
       "once": true,
       "actor": "tanuki",
@@ -1905,7 +2060,7 @@
       "character": "tanuki",
       "title": "Le tanuki penaud",
       "day_min": 3,
-      "day_max": 3,
+      "day_max": 4,
       "priority": 9,
       "once": true,
       "actor": "tanuki",
@@ -2006,7 +2161,7 @@
       "character": "narrateur",
       "title": "Le chat de la mare",
       "day_min": 2,
-      "day_max": 3,
+      "day_max": 4,
       "priority": 2,
       "once": true,
       "actor": "chat",
@@ -2085,8 +2240,8 @@
       "kind": "night",
       "character": "narrateur",
       "title": "Une lanterne sur les marches",
-      "day_min": 3,
-      "day_max": 3,
+      "day_min": 5,
+      "day_max": 5,
       "priority": 9,
       "once": true,
       "actor": "",
@@ -2094,8 +2249,8 @@
       "wish": "",
       "conditions": [
         {
-          "type": "visited",
-          "visit": "fumiko_j3",
+          "type": "flag",
+          "flag": "invite_vieille_dame",
           "is": true
         }
       ],
@@ -2105,7 +2260,7 @@
           "type": "line",
           "speaker": "narrateur",
           "expr": "neutre",
-          "text": "En redescendant l'allée, vous trouvez une petite lanterne de papier posée sur la dernière marche.",
+          "text": "Plus tard, en raccompagnant les derniers invités, vous trouvez une petite lanterne de papier posée sur la dernière marche.",
           "next": "n2",
           "effects": [],
           "x": 60,
@@ -2136,6 +2291,1355 @@
           "effects": [],
           "x": 1050,
           "y": 90
+        }
+      }
+    },
+    {
+      "id": "tanaka_lettre",
+      "character": "facteur",
+      "title": "La lettre du village",
+      "day_min": 2,
+      "day_max": 2,
+      "priority": 12,
+      "once": true,
+      "spot": "torii",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "essouffle",
+          "text": "Encore moi. Ne faites pas cette tête : c'est une bonne nouvelle, pour une fois.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Il vous tend une feuille pliée en quatre, tamponnée du sceau rouge de l'association du village.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "Le village demande si le sanctuaire fera Tsukimi, cette année. La fête de la lune. La pleine lune tombe dans trois jours.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n4": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "Du temps de Seiji, tout le monde montait, le soir. Des lanternes jusqu'en bas des marches, des dango, du thé. Ça fait des années que personne n'ose plus demander.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n5": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Dites-leur que le sanctuaire les attend.",
+              "next": "n6a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "facteur",
+                  "delta": 2
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Je ne sais pas si je serai prêt... mais je vais essayer.",
+              "next": "n6b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "facteur",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 1380,
+          "y": 60
+        },
+        "n6a": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "sourire",
+          "text": "Hm. Je savais que vous diriez ça. J'ai déjà prévenu la moitié de la vallée.",
+          "next": "n7",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        },
+        "n6b": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "Personne ne vous demande la perfection. Des lanternes allumées et une porte ouverte, c'est tout.",
+          "next": "n7",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        },
+        "n7": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Un petit calendrier est épinglé à la lettre. Le cinquième jour est entouré à l'encre rouge, une lune dessinée à côté.",
+          "next": "n8",
+          "effects": [
+            {
+              "type": "flag",
+              "flag": "fete_annoncee",
+              "value": true
+            }
+          ],
+          "x": 2370,
+          "y": 90
+        },
+        "n8": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "Il y a un vieux tableau, près du tronc à offrandes. Seiji y notait tout ce qu'il fallait préparer. Les lanternes et les banderoles sont dans les caisses, à côté.",
+          "next": "fin",
+          "effects": [],
+          "x": 2700,
+          "y": 60
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 3030,
+          "y": 90
+        }
+      }
+    },
+    {
+      "id": "hina_lapin",
+      "character": "fillette",
+      "title": "Un lapin sur la lune",
+      "day_min": 4,
+      "day_max": 4,
+      "priority": 6,
+      "once": true,
+      "spot": "etang",
+      "wish": "",
+      "conditions": [
+        {
+          "type": "visited",
+          "visit": "hina_j3",
+          "is": false
+        },
+        {
+          "type": "affection",
+          "character": "fillette",
+          "op": "<",
+          "value": 2
+        }
+      ],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "sourire",
+          "text": "Gardien ! Mochi est rentré tout seul, avec de la mousse plein les pattes. Il était sûrement ici !",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "neutre",
+          "text": "Et demain, c'est la fête de la lune. Maman dit qu'il y a un lapin dessus, qui fait des mochi. Comme Mochi ! Enfin, Mochi ne fait rien du tout.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Viens voir la lune ici, avec Mochi. Je t'invite.",
+              "next": "n4a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "fillette",
+                  "delta": 2
+                },
+                {
+                  "type": "flag",
+                  "flag": "invite_fillette",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Demande à tes parents de t'amener.",
+              "next": "n4b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "fillette",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4a": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "surpris",
+          "text": "Promis ! Je plierai des lapins en papier pour toutes les lanternes.",
+          "next": "fin",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4b": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "sourire",
+          "text": "Ils diront oui. Ils disent toujours oui quand c'est pour la lune.",
+          "next": "fin",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        }
+      }
+    },
+    {
+      "id": "tanaka_vallee",
+      "character": "facteur",
+      "title": "Toute la vallée",
+      "day_min": 4,
+      "day_max": 4,
+      "priority": 9,
+      "once": true,
+      "spot": "torii",
+      "wish": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "flag": "fete_annoncee",
+          "is": true
+        }
+      ],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "essouffle",
+          "text": "J'ai monté les marches deux fois aujourd'hui. En bas, on n'arrête pas de me demander : « Alors, c'est vrai ? Le sanctuaire fait Tsukimi ? »",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "festival",
+                  "prep": "",
+                  "op": ">=",
+                  "value": 2
+                }
+              ],
+              "next": "n3a"
+            }
+          ],
+          "else": "n3b",
+          "x": 390,
+          "y": 90
+        },
+        "n3a": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "sourire",
+          "text": "J'ai vu les préparatifs, en montant. Ça m'a fait drôle. Comme avant.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n3b": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "Il reste du travail, hein. Bah. Le village ne vient pas pour juger. Il vient pour la lune.",
+          "next": "n4",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "Je ne suis pas un homme de fête, moi. Mais je monterai les anciens en fin d'après-midi. On a une charrette, et des bras.",
+          "next": "n5",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        },
+        "n5": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Venez en invité, pas en facteur. Ce soir-là, pas de courrier.",
+              "next": "n6a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "facteur",
+                  "delta": 2
+                },
+                {
+                  "type": "flag",
+                  "flag": "invite_facteur",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Merci. Le village a de la chance de vous avoir.",
+              "next": "n6b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "facteur",
+                  "delta": 1
+                },
+                {
+                  "type": "flag",
+                  "flag": "invite_facteur",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 1710,
+          "y": 90
+        },
+        "n6a": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "Pas de courrier... Hm. Je ne saurai pas quoi faire de mes mains.",
+          "next": "fin",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        },
+        "n6b": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "sourire",
+          "text": "Bah. Ne le dites pas trop fort.",
+          "next": "fin",
+          "effects": [],
+          "x": 2370,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2700,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "tanuki_lanterne",
+      "kind": "night",
+      "character": "tanuki",
+      "title": "Le tanuki et la lanterne",
+      "day_min": 4,
+      "day_max": 4,
+      "priority": 9,
+      "once": true,
+      "spot": "offrandes",
+      "wish": "",
+      "conditions": [
+        {
+          "type": "visited",
+          "visit": "tanuki_1",
+          "is": true
+        }
+      ],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Un froissement de papier, du côté des caisses de la fête.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Le tanuki a enfilé une lanterne de papier sur sa tête. Il tourne en rond, aveugle et très digne.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "La lui retirer doucement.",
+              "next": "n4a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "tanuki",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Éclater de rire.",
+              "next": "n4b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "tanuki",
+                  "delta": 2
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4a": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Il cligne des yeux, vexé. Puis il s'assoit à côté de vous et regarde la lune presque ronde.",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4b": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Il se fige, puis se met à rire aussi, à sa façon : un drôle de petit couinement.",
+          "next": "n5",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        },
+        "n5": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Demain, la lune sera pleine.",
+          "next": "fin",
+          "effects": [
+            {
+              "type": "flag",
+              "flag": "tanuki_lanterne",
+              "value": true
+            }
+          ],
+          "x": 1710,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        }
+      },
+      "actor": "tanuki"
+    },
+    {
+      "id": "veille_lune",
+      "kind": "night",
+      "character": "narrateur",
+      "title": "La veille de la pleine lune",
+      "day_min": 4,
+      "day_max": 4,
+      "priority": 4,
+      "once": true,
+      "spot": "offrandes",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "La lune est presque ronde au-dessus du pavillon.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "gardien",
+          "expr": "neutre",
+          "text": "Demain, le sanctuaire sera plein de monde. Pour la première fois depuis Seiji.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Respirer lentement.",
+              "next": "n4",
+              "effects": [],
+              "conditions": []
+            },
+            {
+              "text": "Compter ce qu'il reste à préparer.",
+              "next": "n4",
+              "effects": [],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Quelque part dans les cèdres, le renard glapit. Deux fois, cette fois.",
+          "next": "fin",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        }
+      },
+      "actor": ""
+    },
+    {
+      "id": "fete_vieille_dame",
+      "kind": "festival",
+      "character": "vieille_dame",
+      "title": "Une dernière lune",
+      "day_min": 5,
+      "day_max": 5,
+      "priority": 5,
+      "once": true,
+      "spot": "offrandes",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "festival",
+                  "prep": "lanternes",
+                  "op": ">=",
+                  "value": 6
+                }
+              ],
+              "next": "n2a"
+            }
+          ],
+          "else": "n2b",
+          "x": 60,
+          "y": 60
+        },
+        "n2a": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "surpris",
+          "text": "Les lanternes de Seiji, tout le long de l'allée... Comme avant. Exactement comme avant.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n2b": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "sourire",
+          "text": "Quelques lanternes, c'est assez. Mon mari disait que la lune n'a besoin de personne pour briller.",
+          "next": "n3",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n3": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "neutre",
+          "text": "J'ai apporté la lanterne de notre maison. Celle qu'il allumait pour Tsukimi. Je ne peux pas l'emporter en ville... Gardez-la ici, voulez-vous ?",
+          "next": "n4",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Je l'allumerai chaque année.",
+              "next": "n5",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "vieille_dame",
+                  "delta": 2
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Elle aura sa place près du tronc à offrandes.",
+              "next": "n5",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "vieille_dame",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 1380,
+          "y": 60
+        },
+        "n5": {
+          "type": "line",
+          "speaker": "vieille_dame",
+          "expr": "sourire",
+          "text": "Alors une part de nous restera sur la montagne. C'est tout ce que je voulais.",
+          "next": "fin",
+          "effects": [
+            {
+              "type": "flag",
+              "flag": "lanterne_fumiko",
+              "value": true
+            }
+          ],
+          "x": 1710,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "fete_fillette",
+      "kind": "festival",
+      "character": "fillette",
+      "title": "Le lapin de la lune",
+      "day_min": 5,
+      "day_max": 5,
+      "priority": 5,
+      "once": true,
+      "spot": "etang",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "surpris",
+          "text": "Gardien ! Regardez, Mochi est venu aussi ! Il voulait voir la lune.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "sourire",
+          "text": "J'ai plié des lapins en origami. Un pour chaque lanterne ! Enfin... presque.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "festival",
+                  "prep": "offrandes.dango",
+                  "op": ">=",
+                  "value": 1
+                }
+              ],
+              "next": "n4a"
+            }
+          ],
+          "else": "n4b",
+          "x": 720,
+          "y": 60
+        },
+        "n4a": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "surpris",
+          "text": "Et il y a des dango sur la table ! Maman, il y a des dango !",
+          "next": "n5",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4b": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "triste",
+          "text": "Il n'y a pas de dango... Ce n'est pas grave. On regardera la lune quand même.",
+          "next": "n5",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        },
+        "n5": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Tu vois le lapin, sur la lune ?",
+              "next": "n6a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "fillette",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Accroche un de tes lapins au présentoir.",
+              "next": "n6b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "fillette",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 1710,
+          "y": 90
+        },
+        "n6a": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "sourire",
+          "text": "Oui ! Il a des grandes oreilles. Mochi, lui, il ne regarde que les dango.",
+          "next": "fin",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        },
+        "n6b": {
+          "type": "line",
+          "speaker": "fillette",
+          "expr": "sourire",
+          "text": "Comme ça, les dieux le verront. Et la lune aussi !",
+          "next": "fin",
+          "effects": [],
+          "x": 2370,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2700,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "fete_etudiant",
+      "kind": "festival",
+      "character": "etudiant",
+      "title": "Le thé de la lune",
+      "day_min": 5,
+      "day_max": 5,
+      "priority": 5,
+      "once": true,
+      "spot": "the",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "flag",
+                  "flag": "invite_etudiant",
+                  "is": true
+                }
+              ],
+              "next": "n2a"
+            }
+          ],
+          "else": "n2b",
+          "x": 60,
+          "y": 60
+        },
+        "n2a": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "gene",
+          "text": "Je me suis entraîné ! Trois fois ! Le moine a goûté et il a dit que mon thé était « honnête ». C'est bien, honnête ?",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n2b": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "sourire",
+          "text": "Je suis venu quand même. Tout le village montait, je ne pouvais pas rester en bas.",
+          "next": "n3",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n3": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "neutre",
+          "text": "Ce soir, je ne pense ni à l'examen, ni aux résultats. Juste à la lune.",
+          "next": "n4",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "C'est le plus beau des vœux.",
+              "next": "n5",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "etudiant",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Et aux trois cent trente marches ?",
+              "next": "n5",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "etudiant",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 1380,
+          "y": 60
+        },
+        "n5": {
+          "type": "line",
+          "speaker": "etudiant",
+          "expr": "sourire",
+          "text": "Trois cent trente et une, en fait. J'ai recompté en montant, ce soir.",
+          "next": "fin",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "fete_moine",
+      "kind": "festival",
+      "character": "moine",
+      "title": "La prière à la lune",
+      "day_min": 5,
+      "day_max": 5,
+      "priority": 5,
+      "once": true,
+      "spot": "arbre",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "pensif",
+          "text": "La lune de Tsukimi n'est pas la plus ronde de l'année, vous savez. C'est celle qu'on regarde le plus.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "neutre",
+          "text": "Seiji disait que c'est le regard des gens qui la rend pleine.",
+          "next": "n3",
+          "effects": [],
+          "x": 390,
+          "y": 90
+        },
+        "n3": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Voulez-vous mener la prière ?",
+              "next": "n4a",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "moine",
+                  "delta": 1
+                },
+                {
+                  "type": "flag",
+                  "flag": "priere_soen",
+                  "value": true
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Restez jusqu'au printemps.",
+              "next": "n4b",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "moine",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 720,
+          "y": 60
+        },
+        "n4a": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "sourire",
+          "text": "Avec joie. Quand vous sonnerez la cloche, je commencerai.",
+          "next": "fin",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4b": {
+          "type": "line",
+          "speaker": "moine",
+          "expr": "sourire",
+          "text": "On verra. Ce sont les neiges qui décident, pas moi.",
+          "next": "fin",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        }
+      }
+    },
+    {
+      "id": "fete_facteur",
+      "kind": "festival",
+      "character": "facteur",
+      "title": "Pas de courrier ce soir",
+      "day_min": 5,
+      "day_max": 5,
+      "priority": 5,
+      "once": true,
+      "spot": "torii",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "sourire",
+          "text": "Pas de sacoche, ce soir. Je ne sais pas quoi faire de mes mains, je vous l'avais dit.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "festival",
+                  "prep": "nobori",
+                  "op": ">=",
+                  "value": 4
+                }
+              ],
+              "next": "n3a"
+            }
+          ],
+          "else": "n3b",
+          "x": 390,
+          "y": 90
+        },
+        "n3a": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "J'ai monté la vieille madame Ueda dans la charrette. Elle a pleuré en voyant les banderoles au torii. Moi aussi, un peu. Ne le répétez pas.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n3b": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "neutre",
+          "text": "Les gens sont contents. Vraiment. Un sanctuaire allumé, c'est tout ce qu'ils demandaient.",
+          "next": "n4",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4": {
+          "type": "choice",
+          "speaker": "gardien",
+          "text": "",
+          "choices": [
+            {
+              "text": "Votre secret est bien gardé.",
+              "next": "n5",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "facteur",
+                  "delta": 1
+                }
+              ],
+              "conditions": []
+            },
+            {
+              "text": "Merci d'avoir fait monter tout le monde.",
+              "next": "n5",
+              "effects": [
+                {
+                  "type": "affection",
+                  "character": "facteur",
+                  "delta": 2
+                }
+              ],
+              "conditions": []
+            }
+          ],
+          "x": 1380,
+          "y": 60
+        },
+        "n5": {
+          "type": "line",
+          "speaker": "facteur",
+          "expr": "sourire",
+          "text": "Bah. Les jambes, ça s'entretient.",
+          "next": "fin",
+          "effects": [],
+          "x": 1710,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        }
+      }
+    },
+    {
+      "id": "fete_finale",
+      "kind": "festival",
+      "character": "narrateur",
+      "title": "La lune de Tsukimi",
+      "day_min": 5,
+      "day_max": 5,
+      "priority": 5,
+      "once": true,
+      "spot": "offrandes",
+      "wish": "",
+      "conditions": [],
+      "start": "n1",
+      "nodes": {
+        "n1": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "La cloche résonne. Les conversations se taisent une à une.",
+          "next": "n2",
+          "effects": [],
+          "x": 60,
+          "y": 60
+        },
+        "n2": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "flag",
+                  "flag": "priere_soen",
+                  "is": true
+                }
+              ],
+              "next": "n3a"
+            }
+          ],
+          "else": "n3b",
+          "x": 390,
+          "y": 90
+        },
+        "n3a": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Sōen s'avance devant la table d'offrandes. Sa prière est lente, pour la lune et pour tous ceux qui l'ont regardée d'ici avant nous.",
+          "next": "n4",
+          "effects": [],
+          "x": 720,
+          "y": 60
+        },
+        "n3b": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Personne ne dit rien. Il n'y a rien à dire.",
+          "next": "n4",
+          "effects": [],
+          "x": 1050,
+          "y": 90
+        },
+        "n4": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Au-dessus du pavillon, la lune est pleine, pâle et immense.",
+          "next": "n5",
+          "effects": [],
+          "x": 1380,
+          "y": 60
+        },
+        "n5": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "visited",
+                  "visit": "renard_2",
+                  "is": true
+                }
+              ],
+              "next": "n6a"
+            },
+            {
+              "conditions": [
+                {
+                  "type": "visited",
+                  "visit": "renard_1",
+                  "is": true
+                }
+              ],
+              "next": "n6b"
+            }
+          ],
+          "else": "n7",
+          "x": 1710,
+          "y": 90
+        },
+        "n6a": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "À l'orée des cèdres, le renard est assis. Il regarde la lune, lui aussi. Il ne s'enfuit pas.",
+          "next": "n7",
+          "effects": [],
+          "x": 2040,
+          "y": 60
+        },
+        "n6b": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Deux yeux brillent un instant à l'orée des cèdres, puis s'éteignent.",
+          "next": "n7",
+          "effects": [],
+          "x": 2370,
+          "y": 90
+        },
+        "n7": {
+          "type": "branch",
+          "rules": [
+            {
+              "conditions": [
+                {
+                  "type": "flag",
+                  "flag": "tanuki_lanterne",
+                  "is": true
+                }
+              ],
+              "next": "n8"
+            }
+          ],
+          "else": "n9",
+          "x": 2700,
+          "y": 60
+        },
+        "n8": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "Un dango disparaît de la table. Personne n'a rien vu. Sauf vous.",
+          "next": "n9",
+          "effects": [],
+          "x": 3030,
+          "y": 90
+        },
+        "n9": {
+          "type": "line",
+          "speaker": "gardien",
+          "expr": "neutre",
+          "text": "Seiji... Le sanctuaire a fêté la lune, cette année.",
+          "next": "n10",
+          "effects": [],
+          "x": 3360,
+          "y": 60
+        },
+        "n10": {
+          "type": "line",
+          "speaker": "narrateur",
+          "expr": "neutre",
+          "text": "« La montagne a besoin de quelqu'un qui reste. » Ce soir, elle a eu tout un village.",
+          "next": "fin",
+          "effects": [],
+          "x": 3690,
+          "y": 90
+        },
+        "fin": {
+          "type": "end",
+          "effects": [],
+          "x": 4020,
+          "y": 60
         }
       }
     }
@@ -2234,6 +3738,135 @@
         "belvedere"
       ],
       "weight": 3
+    },
+    {
+      "id": "susuki",
+      "name": "Épi de susuki",
+      "description": "Herbe argentée de l'automne. On en met dans un vase pour la lune.",
+      "color": "#D8CFB8",
+      "shape": "susuki",
+      "zones": [
+        "belvedere",
+        "mare",
+        "sentier"
+      ],
+      "weight": 3
+    },
+    {
+      "id": "kingyo",
+      "name": "Poisson rouge",
+      "description": "Un petit poisson rouge dans un sachet d'eau, gagné à la fête. Il faudra lui trouver un bocal.",
+      "color": "#E2552A",
+      "shape": "galet",
+      "zones": [],
+      "weight": 0
+    },
+    {
+      "id": "ame",
+      "name": "Caramels",
+      "description": "Une boîte de caramels au lait, avec une lune dessinée dessus.",
+      "color": "#E8C34A",
+      "shape": "galet",
+      "zones": [],
+      "weight": 0
+    },
+    {
+      "id": "tanuki_fig",
+      "name": "Petit tanuki",
+      "description": "Un tanuki de terre cuite, chapeau de paille et gourde de saké. Il porte bonheur aux commerces.",
+      "color": "#8A5E3E",
+      "shape": "galet",
+      "zones": [],
+      "weight": 0
+    },
+    {
+      "id": "kokeshi",
+      "name": "Kokeshi",
+      "description": "Une poupée de bois peinte de fleurs rouges, au sourire tranquille.",
+      "color": "#E8D2A6",
+      "shape": "galet",
+      "zones": [],
+      "weight": 0
+    },
+    {
+      "id": "maneki",
+      "name": "Maneki-neko",
+      "description": "Un chat blanc qui lève la patte pour appeler la chance.",
+      "color": "#F6F2EA",
+      "shape": "galet",
+      "zones": [],
+      "weight": 0
+    },
+    {
+      "id": "daruma",
+      "name": "Daruma",
+      "description": "Un daruma rouge, un seul œil peint. On peint l'autre quand le vœu se réalise.",
+      "color": "#C93A26",
+      "shape": "galet",
+      "zones": [],
+      "weight": 0
+    },
+    {
+      "id": "omen",
+      "name": "Masque de renard",
+      "description": "Un masque de kitsune blanc aux traits rouges, comme ceux des fêtes de village.",
+      "color": "#F3EEE4",
+      "shape": "galet",
+      "zones": [],
+      "weight": 0
+    },
+    {
+      "id": "furin",
+      "name": "Furin de verre",
+      "description": "Une clochette de verre peinte. Au moindre souffle, elle chante l'été qui s'en va.",
+      "color": "#CFE3EA",
+      "shape": "galet",
+      "zones": [],
+      "weight": 0
     }
-  ]
+  ],
+  "festival": {
+    "id": "tsukimi",
+    "name": "Tsukimi",
+    "subtitle": "la fête de la lune",
+    "day": 5,
+    "announce_day": 2,
+    "announce_flag": "fete_annoncee",
+    "preparations": [
+      {
+        "id": "lanternes",
+        "label": "Lanternes de papier dans l'allée",
+        "target": 8
+      },
+      {
+        "id": "nobori",
+        "label": "Banderoles au torii",
+        "target": 4
+      },
+      {
+        "id": "offrandes",
+        "label": "Table d'offrandes à la lune",
+        "needs": {
+          "kaki": 3,
+          "chataigne": 3,
+          "susuki": 3,
+          "dango": 1
+        }
+      },
+      {
+        "id": "invitations",
+        "label": "Inviter les visiteurs",
+        "target": 3
+      }
+    ],
+    "guests": {
+      "vieille_dame": "fete_vieille_dame",
+      "fillette": "fete_fillette",
+      "etudiant": "fete_etudiant",
+      "moine": "fete_moine",
+      "facteur": "fete_facteur"
+    },
+    "finale": "fete_finale",
+    "epilogue": "fumiko_lanterne"
+  }
 }

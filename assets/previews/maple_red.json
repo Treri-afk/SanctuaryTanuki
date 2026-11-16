@@ -1,39 +1,28 @@
 {
   "name": "maple_red",
-  "triangles": 2372,
+  "triangles": 2365,
   "dims_xyz_m": [
-    3.393,
-    2.828,
-    6.185
+    3.518,
+    3.642,
+    5.768
   ],
   "min_z": 0.0,
   "center_xy": [
-    -0.035,
-    -0.032
+    0.083,
+    0.112
   ],
   "collisions": [
     "trunk-col"
   ],
   "materials": [
-    "bark_cedar",
-    "foliage_deep",
-    "foliage_light",
-    "foliage_orange",
-    "foliage_red",
-    "moss"
+    "tree_vcol"
   ],
   "warnings": [],
-  "objects": [
-    "foliage",
-    "trunk",
-    "trunk-col"
-  ],
-  "empties": [],
   "tris_per_object": {
-    "trunk": 452,
-    "foliage": 1920,
+    "trunk": 763,
+    "foliage": 1602,
     "trunk-col": 36
   },
-  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\maple_red.glb",
-  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\maple_red.png"
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/maple_red.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/maple_red.png"
 }

@@ -1,0 +1,24 @@
+{
+  "name": "wanage_ring",
+  "triangles": 640,
+  "dims_xyz_m": [
+    0.171,
+    0.171,
+    0.023
+  ],
+  "min_z": -0.011,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "ring": 640
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/wanage_ring.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/wanage_ring.png"
+}

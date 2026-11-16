@@ -23,7 +23,7 @@ const FILE_GAIN := {
 	"pickup": -8.0, "putdown": -7.0, "hammer": -5.0, "snip": -8.0, "slash": -6.0, "coin": -13.0,
 	"bell": -5.0, "paper": -10.0, "paper_crumple": -10.0, "door_slide": -9.0, "cat": -8.0,
 	"match_strike": -12.0, "plop": -12.0, "drip": -14.0, "water_draw": -9.0, "rope": -10.0, "tea": -12.0,
-	"pour_loop": -10.0, "woodpecker": -6.0, "basin_drips": -6.0,
+	"pour_loop": -10.0, "woodpecker": -6.0, "basin_drips": -6.0, "leaves": -11.0, "ui_click": -16.0, "tick": -15.0,
 }
 ## Autres noms appelés par le jeu pour un même son (créature de la nuit « chat »...).
 const ALIASES := {"chat": "cat", "flame": "match_strike"}
@@ -162,6 +162,8 @@ func _build() -> void:
 	_add(&"slash", -10.0, _swoosh)
 	_add(&"leaves", -14.0, _rustle)
 	_add(&"sweep", -16.0, _rustle)
+	# shishi-odoshi : « toc » creux du bambou sur la pierre (remplacé par assets/sounds/shishi.wav s'il existe)
+	_add(&"shishi", -7.0, func(v): return _knock(v, 610.0, 0.16, 0.35))
 
 func _add(sound: StringName, gain: float, gen: Callable) -> void:
 	var list: Array = []

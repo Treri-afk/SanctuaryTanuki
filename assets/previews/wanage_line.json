@@ -1,0 +1,26 @@
+{
+  "name": "wanage_line",
+  "triangles": 315,
+  "dims_xyz_m": [
+    1.625,
+    0.024,
+    0.165
+  ],
+  "min_z": -0.03,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [
+    "origine pas au sol (min z = -0.030)"
+  ],
+  "tris_per_object": {
+    "line": 315
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/wanage_line.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/wanage_line.png"
+}

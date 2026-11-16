@@ -1,37 +1,31 @@
 {
   "name": "cedar_tree",
-  "triangles": 2596,
+  "triangles": 2636,
   "dims_xyz_m": [
-    5.114,
-    4.299,
-    16.0
+    6.296,
+    5.819,
+    16.001
   ],
   "min_z": 0.0,
   "center_xy": [
-    0.248,
-    0.048
+    0.118,
+    -0.295
   ],
   "collisions": [
     "trunk-col"
   ],
   "materials": [
-    "bark_cedar",
-    "foliage_deep_green",
-    "foliage_green",
-    "foliage_green_light"
+    "tree_vcol"
   ],
-  "warnings": [],
-  "objects": [
-    "foliage",
-    "trunk",
-    "trunk-col"
+  "warnings": [
+    "axe X : 6.30 m au lieu de ~4.6 m",
+    "axe Y : 5.82 m au lieu de ~4.6 m"
   ],
-  "empties": [],
   "tris_per_object": {
-    "trunk": 396,
-    "foliage": 2200,
+    "trunk": 628,
+    "foliage": 2008,
     "trunk-col": 36
   },
-  "glb": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\models\\cedar_tree.glb",
-  "preview": "C:\\Users\\PA54F\\Documents\\programme\\gardien-sanctuaire\\assets\\previews\\cedar_tree.png"
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/cedar_tree.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/cedar_tree.png"
 }

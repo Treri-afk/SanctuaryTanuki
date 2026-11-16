@@ -13,6 +13,10 @@ func run(game: Node3D) -> void:
 	var inside := p.global_position
 	print("WALK entrée : x=%.2f y=%.2f (plancher à 0,68 ; intérieur si x > %.2f)" % [inside.x, inside.y, th.global_position.x - 1.75])
 	print("WALK %s on entre dans le salon de thé" % ["ok" if inside.y > 0.55 and inside.x > th.global_position.x - 1.75 else "ÉCHEC"])
+	var amb: Ambience = game.get("ambience")
+	if amb:
+		await game.get_tree().create_timer(1.2).timeout
+		print("WALK %s ambiance d'intérieur dans le salon (dedans=%.2f)" % ["ok" if amb.get("_in") > 0.5 else "ÉCHEC", amb.get("_in")])
 	# contre le mur du fond : on ne doit pas le traverser
 	await _walk(p, inside, -90.0, 3.0)
 	print("WALK %s le mur du fond arrête (x=%.2f, mur à %.2f)" % ["ok" if p.global_position.x < th.global_position.x + 3.1 else "ÉCHEC", p.global_position.x, th.global_position.x + 3.1])
@@ -20,7 +24,24 @@ func run(game: Node3D) -> void:
 	await _walk(p, th.global_position + Vector3(-5.6, 0.0, 2.4), -90.0, 3.0)
 	print("WALK %s le shoji fermé bloque (x=%.2f)" % ["ok" if p.global_position.x < th.global_position.x - 1.6 else "ÉCHEC", p.global_position.x])
 	# sous chaque petit torii (portes de l'enceinte, sentier) : la traverse basse doit passer au-dessus de la caméra
-	for n in ["ToriiWest", "ToriiEast", "ToriiBack", "ToriiTrail", "Torii", "ToriiBottom"]:
+	# chemin des mille torii : on le remonte d'un bout à l'autre sans rester coincé entre les piliers
+	p.global_position = Vector3(0.0, Terrain.walk_y(0.0, -37.4) + 0.05, -37.4)
+	p.velocity = Vector3.ZERO
+	p.input_enabled = true
+	var goals := [Vector2(0, -41), Vector2(-4, -47), Vector2(-9, -55), Vector2(-7.6, -60.4)]
+	Input.action_press("move_forward")
+	var t0 := Time.get_ticks_msec()
+	for gpt in goals:
+		while Vector2(p.global_position.x, p.global_position.z).distance_to(gpt) > 0.9 and Time.get_ticks_msec() - t0 < 30000:
+			var d: Vector2 = gpt - Vector2(p.global_position.x, p.global_position.z)
+			p.rotation_degrees.y = rad_to_deg(atan2(-d.x, -d.y))
+			await get_tree().physics_frame
+	Input.action_release("move_forward")
+	var end := Vector2(p.global_position.x, p.global_position.z)
+	print("WALK %s tunnel de torii traversé en %.1f s (arrivée %.1f, %.1f)" % ["ok" if end.distance_to(goals[-1]) < 1.2 else "ÉCHEC",
+		(Time.get_ticks_msec() - t0) / 1000.0, end.x, end.y])
+	await get_tree().create_timer(0.3).timeout
+	for n in ["ToriiWest", "ToriiEast", "ToriiBack", "Senbon/Senbon_0", "Senbon/Senbon_40", "Torii", "ToriiBottom"]:
 		var t: Node3D = game.props.get_node_or_null(n)
 		if t == null:
 			continue

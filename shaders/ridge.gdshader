@@ -57,7 +57,8 @@ void fragment() {
 	base *= mix(0.82, 1.0, 1.0 - facing * (1.0 - low_sun));
 	vec3 col = mix(base, haze_color.rgb, clamp(far_k * 0.7 * haze_amount + 0.08, 0.0, 1.0));
 	// pied dans la brume
-	float h01 = clamp((v_wp.y + 20.0) / max(top_y + 20.0, 1.0), 0.0, 1.0);
+	float foot_y = min(-20.0, top_y - 40.0);   // crêtes abaissées (brèche du village) : pied plus bas
+	float h01 = clamp((v_wp.y - foot_y) / max(top_y - foot_y, 1.0), 0.0, 1.0);
 	float foot = 1.0 - smoothstep(0.0, 0.9, h01);
 	col = mix(col, haze_color.rgb, clamp(foot * haze_amount, 0.0, 1.0));
 	ALBEDO = col;

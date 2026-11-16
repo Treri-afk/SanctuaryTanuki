@@ -281,12 +281,22 @@ func _tea_time() -> void:
 
 # ---------------------------------------------------------------- chat
 func _setup_cat() -> void:
-	var cat: Node3D = props.get_node_or_null("Cat")
-	if cat == null:
+	var spot: Node3D = props.get_node_or_null("Cat")
+	if spot == null:
 		return
-	game._make(cat, Vector3(0.8, 0.7, 0.8), Vector3(0, 0.3, 0),
+	# Mochi animé (scripts/cat.gd) prend la place du modèle posé dans la scène (qui ne sert plus que de repère)
+	var cat := Cat.new()
+	cat.name = "Mochi"
+	cat.behave = true
+	props.add_child(cat)
+	cat.global_transform = spot.global_transform
+	spot.visible = false
+	for b in spot.find_children("*", "CollisionObject3D", true, false):
+		b.queue_free()
+	game._make(cat, Vector3(0.7, 0.6, 0.7), Vector3(0, 0.25, 0),
 		func() -> String: return "E : Caresser le chat",
 		func(_p):
+			cat.pet()
 			cat_pets += 1
 			GameState.set_flag(&"chat_vu")
 			Sfx.play(&"cat", cat.global_position + Vector3(0, 0.3, 0), -4.0)

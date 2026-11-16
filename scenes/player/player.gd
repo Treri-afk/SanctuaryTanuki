@@ -1,7 +1,7 @@
 extends CharacterBody3D
 ## Joueur à la première personne : ZQSD (AZERTY) / WASD + souris, interaction par rayon, outil en main.
 ## E ou clic gauche : interagir. Clic maintenu : geste de l'outil (balayer, tirer, verser, tailler, trancher).
-## R : reposer l'outil. Espace (saut) et F (vol libre) : outils de test uniquement.
+## R : reposer l'outil. B : décorer (scripts/decor.gd). Espace (saut) et F (vol libre) : outils de test uniquement.
 
 signal tool_changed
 
@@ -33,6 +33,9 @@ var prompt_text := ""
 var mouse_delta := Vector2.ZERO
 var action: StringName = &""    # pose de l'outil pour cette image (sweep, pour, pull, snip, hold), remise à zéro à chaque image
 var spilling := false
+var placing := false            # mode décoration (scripts/decor.gd) : le clic et E servent au placement
+var placing_prompt := ""
+var seated := false             # assis sur un banc posé (scripts/decor.gd) : ni marche ni gravité
 
 var _press_time := -10.0
 var _flash_text := ""
@@ -79,7 +82,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_ESCAPE:
 			pass                        # Échap : menu pause (scenes/ui/menus.gd)
-		elif not input_enabled:
+		elif not input_enabled or placing:
 			return
 		elif event.keycode == KEY_E:
 			_interact()
@@ -93,7 +96,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 			if input_enabled:
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		elif input_enabled:
+		elif input_enabled and not placing:
 			_press_time = Time.get_ticks_msec() * 0.001
 			_interact()
 
@@ -103,7 +106,7 @@ func _interact() -> void:
 
 ## Clic gauche maintenu (jeu actif, souris capturée).
 func lmb_down() -> bool:
-	return input_enabled and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+	return input_enabled and not placing and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 
 ## Clic maintenu qui ne vise aucune zone à geste : sert aux gestes libres (pousser les feuilles au balai).
 func lmb_free() -> bool:
@@ -121,6 +124,12 @@ func _physics_process(delta: float) -> void:
 	_look_rate = Vector2.ZERO if look_locked else mouse_delta * mouse_sensitivity / maxf(delta, 0.0001)
 	_update_target()
 	_update_hold(delta)
+	if seated:
+		velocity = Vector3.ZERO
+		_animate_hand(delta)
+		action = &""
+		mouse_delta = Vector2.ZERO
+		return
 	var speed := walk_speed * (0.93 if bucket_full else 1.0)
 	var dir := Vector2.ZERO
 	if input_enabled and not move_locked:
@@ -158,6 +167,10 @@ func _physics_process(delta: float) -> void:
 	mouse_delta = Vector2.ZERO
 
 func _update_target() -> void:
+	if placing:
+		target = null
+		prompt_text = placing_prompt
+		return
 	ray.force_raycast_update()
 	var c := ray.get_collider()
 	target = c as Interactable if c is Interactable else null
@@ -330,8 +343,12 @@ const HAND_POSES := {
 	&"shears": [Vector3(0.12, -0.42, -0.42), Vector3(-68, 0, 0)],
 	&"sickle": [Vector3(0.3, -0.36, -0.45), Vector3(-45, 15, -12)],
 	&"leaf_pile": [Vector3(-0.28, -0.45, -0.75), Vector3(-10, 0, 0)],
+	&"chochin": [Vector3(0.26, -0.12, -0.6), Vector3(0, 30, 0)],
+	&"nobori": [Vector3(0.32, -0.45, -0.7), Vector3(-25, 0, -20)],
 }
 const HAND_MODELS := {&"match": "match_box"}
+## Ce qu'on porte (carry) -> modèle en main ; par défaut un tas de feuilles.
+const CARRY_MODELS := {&"chochin": "paper_lantern", &"nobori": "nobori_rolled"}
 
 func _clear_hand() -> void:
 	for c in hand.get_children():
@@ -406,7 +423,8 @@ func _rebuild_hand() -> void:
 			_drops.position = _water_base
 			hand.add_child(_drops)
 	if carry != &"":
-		_add_hand_model("leaf_pile", HAND_POSES[&"leaf_pile"])
+		var cm: String = CARRY_MODELS.get(carry, "leaf_pile")
+		_add_hand_model(cm, HAND_POSES.get(carry, HAND_POSES[&"leaf_pile"]))
 
 func _add_hand_model(model: String, pose: Array) -> void:
 	var n: Node3D = null

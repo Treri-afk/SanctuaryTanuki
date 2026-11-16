@@ -311,6 +311,16 @@ static func item(shape: String, col: Color) -> Node3D:
 				var pet := cyl(n, 0.004, 0.08, col, Vector3(cos(a2) * 0.03, 0.24, sin(a2) * 0.03), Vector3.ZERO, 0.002, 4)
 				pet.rotation = Vector3(sin(a2) * 0.9, 0.0, -cos(a2) * 0.9)
 			ball(n, 0.015, col.darkened(0.2), Vector3(0, 0.225, 0))
+		"susuki":
+			# épi de susuki : tige fine, plumet argenté qui retombe
+			cyl(n, 0.004, 0.3, Color("#9A9060"), Vector3(0, 0.15, 0), Vector3(0, 0, 8), -1.0, 4)
+			for k in 4:
+				var pl := ball(n, 0.022 - k * 0.003, col, Vector3(0.025 + k * 0.018, 0.3 - k * 0.035, 0), Vector3(0.8, 1.8, 0.8))
+				pl.rotation.z = -0.5 - k * 0.15
+		"dango":
+			for k in 3:
+				ball(n, 0.022, col, Vector3(0, 0.02 + k * 0.038, 0))
+			cyl(n, 0.003, 0.15, Color("#C9A06A"), Vector3(0, 0.06, 0), Vector3.ZERO, -1.0, 4)
 		"pomme_pin":
 			ball(n, 0.035, col, Vector3(0, 0.04, 0), Vector3(1.0, 1.4, 1.0))
 			for k in 3:

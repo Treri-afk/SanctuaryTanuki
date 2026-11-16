@@ -1,0 +1,24 @@
+{
+  "name": "lot_daruma",
+  "triangles": 568,
+  "dims_xyz_m": [
+    0.116,
+    0.119,
+    0.13
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.0,
+    -0.001
+  ],
+  "collisions": [],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "daruma": 568
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/lot_daruma.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/lot_daruma.png"
+}

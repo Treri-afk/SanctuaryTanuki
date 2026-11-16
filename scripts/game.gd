@@ -57,6 +57,8 @@ var zen_last := Vector3.INF
 var zen_mat: ShaderMaterial
 var guide: Guide
 var shop: Shop
+var festival: Festival
+var decor: Decor
 var menus: Menus
 const BASE_MOUSE := 0.0022
 var ambience: Ambience
@@ -67,12 +69,13 @@ func _ready() -> void:
 	randomize()
 	props = world.get_node("Props")
 	atmosphere = world.get_node("Atmosphere")
+	_collect_floor(props)   # avant le regroupement : on lit encore chaque dalle séparément
 	# lot 1 de l'audit de performance (docs/audit-performance.md)
 	var batched := RenderBudget.batch(props, ["Wall"]) + RenderBudget.batch(props, ["Slab", "Path", "Step"])
 	var trimmed := RenderBudget.trim_shadows(world)
 	get_tree().node_added.connect(func(n: Node):
 		if n is MeshInstance3D:
-			RenderBudget.trim_one.call_deferred(n))
+			_trim_later.call_deferred(n))
 	if OS.get_cmdline_user_args().has("--deep") or OS.get_cmdline_user_args().has("--groups"):
 		print("BOOT allègements : %d pièces regroupées, %d ombres coupées" % [batched, trimmed])
 	hud.player = player
@@ -102,6 +105,14 @@ func _ready() -> void:
 	shop.name = "Shop"
 	add_child(shop)
 	shop.setup(self)
+	festival = Festival.new()
+	festival.name = "Festival"
+	add_child(festival)
+	festival.setup(self)
+	decor = Decor.new()
+	decor.name = "Decor"
+	add_child(decor)
+	decor.setup(self)
 	guide = Guide.new()
 	guide.name = "Guide"
 	add_child(guide)
@@ -137,7 +148,27 @@ func _ready() -> void:
 			start_day = maxi(1, int(a.trim_prefix("--day=")))
 		elif a.begins_with("--visit="):
 			force_visit = a.trim_prefix("--visit=")
+	var stand := ""
+	for a in args:
+		if a.begins_with("--stand="):
+			stand = a.trim_prefix("--stand=")
+	var fete_soir := args.has("--fete-soir")   # test : soirée de la fête directement (préparatifs faits, invités là)
+	if args.has("--fete") or args.has("--fete-prete") or fete_soir or stand != "":
+		festival.debug_setup_day(args.has("--fete-prete") or fete_soir or stand != "")   # test : jour de la fête, annoncée, tout le monde invité, rien de préparé
+		start_day = Festival.day()
 	_start_day(start_day)
+	for a in args:
+		if a.begins_with("--phase="):   # test : godot --path . -- --phase=3 (0 matin, 1 après-midi, 2 soir, 3 nuit)
+			var ph := clampi(int(a.trim_prefix("--phase=")), 0, 3)
+			await get_tree().create_timer(3.2).timeout
+			GameState.set_phase(ph)
+			_apply_lighting(ph, true)
+			if ph >= 2:
+				for i in lanterns.size():
+					_light(i)
+	if fete_soir:
+		await get_tree().create_timer(3.2).timeout   # laisse finir le carton du matin
+		await festival.open_festival()
 	if force_visit != "":
 		Story.ensure_loaded()
 		for v in Story.data.get("visits", []):
@@ -145,6 +176,45 @@ func _ready() -> void:
 				visit_queue = [v]
 				visit_timer = 2.0
 				break
+	if stand != "":
+		# test d'un stand : godot --path . -- --stand=kingyo [--standshot=fichier.png]
+		var shot := ""
+		for a in args:
+			if a.begins_with("--standshot="):
+				shot = a.trim_prefix("--standshot=")
+		var rules_shot := ""
+		for a in args:
+			if a.begins_with("--rulesshot="):
+				rules_shot = a.trim_prefix("--rulesshot=")
+		var st: StallGame = await festival.debug_stand(stand, (shot != "" or args.has("--standtest")) and rules_shot == "")
+		if rules_shot != "" and st != null:
+			await get_tree().create_timer(2.0).timeout
+			get_viewport().get_texture().get_image().save_png(rules_shot)
+			print("SHOT ", rules_shot)
+			get_tree().quit()
+			return
+		if args.has("--standtest") and st != null:
+			# test : une manche jouée par le jeu lui-même (godot --path . -- --stand=dango --standtest)
+			await get_tree().create_timer(2.6).timeout
+			var res: Variant = await st.call("autoplay_round")
+			print("TEST stand %s : %s  (score %d)" % [stand, str(res), st.last_score if not st.playing else -1])
+			await get_tree().create_timer(2.5).timeout
+			print("TEST stand %s : record %d, souvenirs %s" % [stand, st.best_score(), str(Festival.state().get("souvenirs", {}))])
+			if shot != "":
+				get_viewport().get_texture().get_image().save_png(shot)
+				print("SHOT ", shot)
+			get_tree().quit()
+			return
+		if shot != "" and st != null:
+			await get_tree().create_timer(2.6).timeout
+			if st.has_method("debug_pose"):
+				await st.call("debug_pose")
+			for i in 6:
+				await get_tree().process_frame
+			get_viewport().get_texture().get_image().save_png(shot)
+			print("SHOT ", shot, " fps=", Engine.get_frames_per_second())
+			get_tree().quit()
+		return
 	if args.size() >= 7 and args[0] == "--shot":
 		_debug_shot(args)
 	elif args.size() >= 1 and args[0] == "--autoplay":
@@ -172,6 +242,15 @@ func _ready() -> void:
 		var pa: Node = load("res://tools/perf_audit.gd").new()
 		add_child(pa)
 		pa.run(self)
+	elif args.size() >= 2 and args[0] == "--tool":
+		# outil de test quelconque : godot --path . -- --tool res://tools/x.gd [args...] (le script a run(game, args))
+		var tl: Node = load(args[1]).new()
+		add_child(tl)
+		tl.run(self, args)
+	elif args.size() >= 7 and args[0] == "--cammovie":
+		var cm: Node = load("res://tools/cam_movie.gd").new()
+		add_child(cm)
+		cm.run(self, args)
 	elif args.size() >= 1 and args[0] == "--vndemo":
 		var vd: Node = load("res://tools/vn_demo.gd").new()
 		add_child(vd)
@@ -188,6 +267,10 @@ func _autoplay() -> void:
 	print("AUTOPLAY ===== jour %d" % GameState.day)
 	var log := func(m: String): print("AUTOPLAY ", m)
 	await get_tree().create_timer(4.0).timeout
+	if Festival.is_festival_day(GameState.day):
+		await festival.autoplay_festival()
+		get_tree().quit()
+		return
 	log.call("tâches du matin : %s" % str(GameState.morning))
 	harvest.autoplay(3)
 	koi_pond.autoplay()
@@ -235,6 +318,7 @@ func _autoplay() -> void:
 		await get_tree().create_timer(0.2).timeout
 	log.call("visites jouées aujourd'hui : %d, affection = %s, pièces = %d (reçues %d)" % [talked, str(GameState.affection), GameState.coins, GameState.day_log.get("coins_in", 0)])
 	log.call("soir, flags = %s" % str(GameState.flags))
+	festival.autoplay_prepare()
 	await get_tree().create_timer(2.0).timeout
 	_equip(&"match") if tool_nodes.has(&"match") else null
 	for l in lantern_areas:
@@ -263,6 +347,11 @@ func _autoplay() -> void:
 		_autoplay()
 		return
 	get_tree().quit()
+
+## Ombre coupée pour une pièce ajoutée en cours de partie (si elle existe encore à la fin de l'image).
+func _trim_later(n: Variant) -> void:
+	if is_instance_valid(n):
+		RenderBudget.trim_one(n as Node)
 
 ## Capture d'écran automatique : godot --path . -- --shot x y z yaw pitch fichier.png [phase] [attente]
 func _debug_shot(a: PackedStringArray) -> void:
@@ -316,8 +405,7 @@ func _debug_shot(a: PackedStringArray) -> void:
 			_light(i)
 		var cr: Node3D = ToolModels.creature(a[9])
 		if cr == null:
-			cr = _model("shrine_cat", Color.WHITE)
-			cr.scale = Vector3.ONE * 1.4
+			cr = Cat.new()
 		else:
 			Toon.apply(cr)
 		var px := float(a[1])
@@ -328,6 +416,21 @@ func _debug_shot(a: PackedStringArray) -> void:
 		cr.rotation.y = yaw
 		world.add_child(cr)
 		await get_tree().create_timer(0.5).timeout
+	elif a.size() > 9 and (a[9] == "fete" or a[9] == "calendrier"):
+		# capture des décors de Tsukimi (préparatifs faits) ; calendrier : le tableau ouvert
+		festival.debug_fill()
+		if a.size() > 7 and int(a[7]) == 2:
+			for i in lanterns.size():
+				_light(i)
+		if a[9] == "calendrier":
+			festival.open_board()
+		await get_tree().create_timer(1.5).timeout
+	elif a.size() > 9 and (a[9] == "soiree" or a[9] == "lune"):
+		# capture de la soirée de fête (invités en place) ou de la finale (pleine lune)
+		for i in lanterns.size():
+			_light(i)
+		festival.debug_evening(a[9] == "lune")
+		await get_tree().create_timer(2.0).timeout
 	elif a.size() > 9 and a[9] == "recolte":
 		# capture : on se place devant un objet à ramasser, poches déjà un peu remplies
 		GameState.add_item("kaki", 2)
@@ -632,13 +735,15 @@ func _setup_bell() -> void:
 		func() -> String:
 			if _ending:
 				return ""
+			if festival.active:
+				return festival.bell_prompt()
 			if GameState.phase != Phase.EVENING:
 				return "La cloche sonne le soir"
 			if not GameState.bell_ready():
 				return "Il reste à faire avant de sonner la cloche"
 			return "E : Sonner la cloche",
 		func(_p):
-			if not _ending and GameState.phase == Phase.EVENING and GameState.bell_ready():
+			if not _ending and (festival.active or (GameState.phase == Phase.EVENING and GameState.bell_ready())):
 				_ring_bell())
 
 func _make_bell_sound() -> AudioStreamWAV:
@@ -681,7 +786,10 @@ func _ring_bell() -> void:
 		_bell_sound.play()
 	GameState.add_progress(&"cloche")
 	await get_tree().create_timer(4.5).timeout
-	await _night()
+	if festival.active:
+		await festival.finale()      # la pleine lune se lève : fin de la démo
+	else:
+		await _night()
 	_end_day()
 
 # ---------------------------------------------------------------- nuit
@@ -710,9 +818,7 @@ func _play_night(ev: Dictionary) -> void:
 	if actor_kind != "":
 		creature = ToolModels.creature(actor_kind)
 		if creature == null and actor_kind == "chat":
-			creature = _model("shrine_cat", Color("#EFE6D2"))
-			for b in creature.find_children("*", "CollisionObject3D", true, false):
-				b.queue_free()
+			creature = Cat.new()
 		elif creature != null:
 			Toon.apply(creature)
 	if creature != null:
@@ -729,7 +835,7 @@ func _play_night(ev: Dictionary) -> void:
 		creature.scale = Vector3.ONE * 0.01
 		world.add_child(creature)
 		var tw := creature.create_tween()
-		tw.tween_property(creature, "scale", Vector3.ONE * (1.4 if actor_kind == "chat" else 1.0), 0.8)
+		tw.tween_property(creature, "scale", Vector3.ONE, 0.8)
 		Sfx.play(StringName(actor_kind), creature.position, -4.0)
 		await _creature_walk(creature, stop, 2.2)
 		_face(creature, player.global_position)
@@ -753,8 +859,12 @@ func _play_night(ev: Dictionary) -> void:
 func _face(n: Node3D, target: Vector3) -> void:
 	n.rotation.y = atan2(target.x - n.position.x, target.z - n.position.z)
 
-## Petits bonds réguliers jusqu'au point visé (créatures de la nuit).
+## Petits bonds réguliers jusqu'au point visé (créatures de la nuit) ; le chat marche pour de vrai.
 func _creature_walk(n: Node3D, to: Vector3, speed: float) -> void:
+	if n is Cat:
+		await (n as Cat).walk_to(Vector3(to.x, TERRAIN.walk_y(to.x, to.z), to.z), minf(speed, 0.9), Callable(TERRAIN, "walk_y"))
+		(n as Cat).play("sit")
+		return
 	var from := n.position
 	_face(n, to)
 	var dist := Vector2(to.x - from.x, to.z - from.z).length()
@@ -772,8 +882,9 @@ func _end_day() -> void:
 	await hud.fade_to(1.0, 2.0)
 	var d := GameState.day
 	await hud.show_journal(_journal_page())
-	if d >= GameState.MAX_DAYS:
-		if Settings.testing():
+	if d >= GameState.max_days():
+		var fete_test := OS.get_cmdline_user_args().has("--fete") or OS.get_cmdline_user_args().has("--fete-prete") or OS.get_cmdline_user_args().has("--fete-soir")
+		if Settings.testing() and not fete_test:
 			await hud.show_card("Le sanctuaire est calme.\nFin du prototype — merci d'avoir veillé sur ce lieu.", 5.0)
 			_start_day(1)
 			return
@@ -807,7 +918,8 @@ func _menu_shot(file: String, screen: String) -> void:
 			await get_tree().create_timer(5.0).timeout
 			menus.open_pause()
 		"end":
-			GameState.stats = {"days": 3, "tasks": 11, "visitors": 7, "coins_in": 23, "harvest": 9}
+			GameState.stats = {"days": 5, "tasks": 17, "visitors": 12, "coins_in": 31, "harvest": 14}
+			festival.debug_fill()
 			for w in ["vieille_dame", "moine", "facteur", "fillette"]:
 				GameState.met[w] = true
 			GameState.add_affection("vieille_dame", 5)
@@ -866,6 +978,7 @@ func _demo_summary() -> Dictionary:
 		["Lettres de Seiji lues", "%d / 3" % int(extras.letters_read)],
 		["Carpes dans l'étang", str(GameState.koi.size())],
 	]
+	lines.append_array(festival.summary_lines())
 	var people := []
 	for c in Story.data.get("characters", []):
 		var who := String(c.get("id", ""))
@@ -952,16 +1065,21 @@ func _start_day(d: int) -> void:
 	_visitor_ready_flag = false
 	_evening_pending = false
 	visit_current = {}
-	var morning := _choose_morning()
-	_yesterday = morning.duplicate()
+	var fest_day := Festival.is_festival_day(d)
+	var morning: Array[StringName] = []
+	if not fest_day:
+		morning = _choose_morning()
+	if not fest_day:
+		_yesterday = morning.duplicate()
 	GameState.morning = morning
 	GameState.today = morning.duplicate()
-	GameState.today.append_array([&"lanternes", &"cloche"])
+	if not fest_day:
+		GameState.today.append_array([&"lanternes", &"cloche"])
 	if d == 1:
 		GameState.reset_story()
 	GameState.begin_day(d)
 	_rng.randomize()
-	visit_queue = Story.visits_for_day(d, _rng)
+	visit_queue = [] if fest_day else Story.visits_for_day(d, _rng)
 	var first := Story.setting_range("first_visit_delay", Vector2(30, 60))
 	visit_timer = _rng.randf_range(first.x, first.y)
 	for id in tasks:
@@ -984,17 +1102,24 @@ func _start_day(d: int) -> void:
 	shop.on_day_start()
 	harvest.on_day_start()
 	koi_pond.on_day_start(d)
+	festival.on_day_start()
+	hud.set_objective("", "")
 	_apply_lighting(Phase.MORNING, true)
 	player.global_position = Vector3(0, TERRAIN.walk_y(0.0, 36.0) + 0.05, 36.0)
 	player.rotation = Vector3.ZERO
 	player.velocity = Vector3.ZERO
 	player.head.rotation.x = 0.12
-	await hud.show_card("Jour %d\nAutomne" % d, 1.0)
+	await hud.show_card(_day_card(d), 1.0)
 	player.input_enabled = true
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	hud.fade_to(0.0, 1.6)
 	if guide.active:
 		await guide.welcome()
+		return
+	if fest_day:
+		GameState.set_phase(Phase.VISIT)
+		_apply_lighting(Phase.VISIT, true)
+		festival.begin_festival_day()
 		return
 	var names := PackedStringArray()
 	for id in morning:
@@ -1004,6 +1129,15 @@ func _start_day(d: int) -> void:
 		var h := (tasks[id] as MorningTask).hint()
 		if h != "":
 			Events.toast.emit(h)
+
+## Carton du matin : le jour, la saison, et le compte à rebours de la fête une fois annoncée.
+func _day_card(d: int) -> String:
+	if Festival.is_festival_day(d):
+		return "Jour %d\n%s, %s" % [d, String(Festival.data().get("name", "")), String(Festival.data().get("subtitle", ""))]
+	var left := Festival.days_left(d)
+	if Festival.announced() and left > 0:
+		return "Jour %d\nAutomne\n%s dans %d jour%s" % [d, String(Festival.data().get("name", "")), left, "s" if left > 1 else ""]
+	return "Jour %d\nAutomne" % d
 
 func _on_task_done(id: StringName) -> void:
 	if GameState.morning.has(id) and not _visit_pending and GameState.phase == Phase.MORNING and GameState.morning_done():
@@ -1020,6 +1154,8 @@ func _on_task_done(id: StringName) -> void:
 func _check_evening() -> void:
 	if _evening_pending or _ending or GameState.phase == Phase.EVENING:
 		return
+	if Festival.is_festival_day(GameState.day):
+		return   # jour de fête : le soir tombe quand on ouvre la fête au tableau
 	if not GameState.morning_done() or visitor != null or not visit_queue.is_empty():
 		return
 	_evening_pending = true
@@ -1057,20 +1193,62 @@ func _tick_visits(delta: float) -> void:
 	if visit_timer <= 0.0:
 		_spawn_visit(visit_queue.pop_front())
 
+## Durée (s) d'un virage de visiteur aux angles du chemin.
+const TURN_TIME := 0.35
+
+## Dessus des dalles et pierres de chemin (sans collision) : [Rect2 en x/z, hauteur du dessus].
+## Les visiteurs marchent dessus au lieu de suivre le terrain en dessous.
+var _floor_rects: Array = []
+
+func _collect_floor(root: Node3D) -> void:
+	for c in root.get_children():
+		var nm := String(c.name)
+		if not (nm.begins_with("Slab") or nm.begins_with("Path")):
+			continue
+		for m in (c as Node).find_children("*", "MeshInstance3D", true, false):
+			var mi := m as MeshInstance3D
+			var box: AABB = mi.global_transform * mi.get_aabb()
+			_floor_rects.append([Rect2(box.position.x, box.position.z, box.size.x, box.size.z), box.end.y])
+
+## Hauteur où poser les pieds d'un visiteur : le terrain, ou le dessus d'une dalle s'il y en a une.
+func ground_y(x: float, z: float) -> float:
+	var y := TERRAIN.walk_y(x, z)
+	var p := Vector2(x, z)
+	for r in _floor_rects:
+		if (r[0] as Rect2).has_point(p):
+			y = maxf(y, float(r[1]))
+	return y
+
 func _walk(node: Node3D, pts: Array) -> void:
+	# visiteur avec modèle 3D animé : vraie marche, sans le petit rebond du placeholder
+	var animated: bool = node.has_method("anim_length") and float(node.call("anim_length", "walk")) > 0.0
+	if animated:
+		node.call("play_anim", "walk")
+	var bob := 0.0 if animated else 0.04
+	var speed := 1.7
+	if node.get("walk_speed") != null:
+		speed = maxf(0.2, float(node.get("walk_speed")))
 	for i in range(1, pts.size()):
 		var from: Vector3 = node.position
 		var to: Vector3 = pts[i]
 		var dist := Vector2(to.x - from.x, to.z - from.z).length()
-		var dur := maxf(dist / 1.7, 0.05)
+		var dur := maxf(dist / speed, 0.05)
 		var face := atan2(to.x - from.x, to.z - from.z)
-		node.rotation.y = face
+		var yaw0 := node.rotation.y
+		var turn := minf(TURN_TIME / dur, 1.0)   # part du trajet consacrée à pivoter vers la nouvelle direction
 		var tw := create_tween()
 		tw.tween_method(func(t: float):
 			var x := lerpf(from.x, to.x, t)
 			var z := lerpf(from.z, to.z, t)
-			node.position = Vector3(x, TERRAIN.walk_y(x, z) + absf(sin(t * dist * 2.6)) * 0.04, z), 0.0, 1.0, dur)
+			# hauteur lissée : on monte et descend des dalles sans à-coup
+			var gy := ground_y(x, z) + absf(sin(t * dist * 2.6)) * bob
+			node.position = Vector3(x, lerpf(node.position.y, gy, 0.35) if absf(node.position.y - gy) < 0.5 else gy, z)
+			node.rotation.y = lerp_angle(yaw0, face, smoothstep(0.0, 1.0, t / turn)), 0.0, 1.0, dur)
 		await tw.finished
+		if not is_instance_valid(node):
+			return
+	if animated:
+		node.call("play_anim", "idle")
 
 func _spawn_visit(v: Dictionary) -> void:
 	visit_current = v
@@ -1082,7 +1260,7 @@ func _spawn_visit(v: Dictionary) -> void:
 	visitor.set("color", Story.color_of(who))
 	visitor.set("character_id", who)
 	var start: Vector3 = VISITOR_PATH[0]
-	visitor.position = Vector3(start.x, TERRAIN.walk_y(start.x, start.z), start.z)
+	visitor.position = Vector3(start.x, ground_y(start.x, start.z), start.z)
 	world.add_child(visitor)
 	Events.toast.emit("Quelqu'un monte l'escalier...")
 	# chaque visiteur commence par prier au tronc : il y jette ses pièces, ramassées automatiquement
@@ -1095,7 +1273,13 @@ func _spawn_visit(v: Dictionary) -> void:
 	v_node.rotation.y = PI
 	await get_tree().create_timer(0.8).timeout
 	await _toss_offering(v_node, Story.offering_for(v))
-	await get_tree().create_timer(1.6).timeout
+	# puis il prie (animation de prière si le modèle en a une ; elle revient seule à l'attente)
+	var pray := 0.0
+	if is_instance_valid(v_node) and v_node.has_method("anim_length"):
+		pray = float(v_node.call("anim_length", "pray"))
+		if pray > 0.0:
+			v_node.call("play_anim", "pray")
+	await get_tree().create_timer(maxf(1.6, pray + 0.3)).timeout
 	if not is_instance_valid(v_node):
 		return
 	if (spot[0] as Vector3).distance_to(OFFERING_SPOT) > 0.5:
@@ -1215,6 +1399,7 @@ func _talk() -> void:
 	player.input_enabled = false
 	await vn.play_visit(visit_current)
 	shop.after_visit(String(visit_current.get("character", "")))
+	decor.after_visit(String(visit_current.get("character", "")))
 	GameState.visited[String(visit_current.get("id", ""))] = true
 	(GameState.day_log["visitors"] as Array).append(String(visit_current.get("character", "")))
 	await _offer_gift(String(visit_current.get("character", "")))

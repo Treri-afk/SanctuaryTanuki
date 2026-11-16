@@ -1,0 +1,28 @@
+{
+  "name": "nobori",
+  "triangles": 5196,
+  "dims_xyz_m": [
+    0.896,
+    0.352,
+    3.61
+  ],
+  "min_z": 0.0,
+  "center_xy": [
+    0.271,
+    -0.0
+  ],
+  "collisions": [
+    "banner-col"
+  ],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "banner": 1088,
+    "banner_cloth": 4108,
+    "banner-col": 12
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/nobori.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/nobori.png"
+}

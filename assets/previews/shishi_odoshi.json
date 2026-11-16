@@ -1,0 +1,42 @@
+{
+  "name": "shishi_odoshi",
+  "triangles": 818,
+  "dims_xyz_m": [
+    1.223,
+    1.612,
+    1.1
+  ],
+  "min_z": -0.06,
+  "center_xy": [
+    0.036,
+    -0.336
+  ],
+  "collisions": [],
+  "materials": [
+    "basin_dark",
+    "basin_stone",
+    "moss",
+    "shishi_bamboo",
+    "shishi_node",
+    "shishi_rope",
+    "water"
+  ],
+  "warnings": [
+    "origine pas au sol (min z = -0.060)"
+  ],
+  "objects": [
+    "frame",
+    "stones",
+    "tube",
+    "water"
+  ],
+  "empties": [],
+  "tris_per_object": {
+    "tube": 104,
+    "frame": 240,
+    "stones": 460,
+    "water": 14
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/shishi_odoshi.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/shishi_odoshi.png"
+}

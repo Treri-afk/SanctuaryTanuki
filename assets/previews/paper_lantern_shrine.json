@@ -1,0 +1,34 @@
+{
+  "name": "paper_lantern_shrine",
+  "triangles": 6436,
+  "dims_xyz_m": [
+    0.34,
+    0.347,
+    0.576
+  ],
+  "min_z": -0.578,
+  "center_xy": [
+    0.0,
+    0.0
+  ],
+  "collisions": [],
+  "materials": [
+    "lacquer_black",
+    "metal",
+    "metal_gold",
+    "paper"
+  ],
+  "warnings": [],
+  "max_z": -0.002,
+  "objects": [
+    "paper_lantern"
+  ],
+  "empties": [
+    "hang_point"
+  ],
+  "tris_per_object": {
+    "paper_lantern": 6436
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/paper_lantern_shrine.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/paper_lantern_shrine.png"
+}

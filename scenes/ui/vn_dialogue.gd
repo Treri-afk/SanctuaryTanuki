@@ -14,6 +14,8 @@ var _choices: VBoxContainer
 var _hint: Label
 var _advance := false
 var _typing := false
+var _plate: PanelContainer
+var _plate_sb: StyleBoxFlat
 
 func _ready() -> void:
 	layer = 20
@@ -33,49 +35,63 @@ func _ready() -> void:
 	_portrait_holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.add_child(_portrait_holder)
 
-	var box := PanelContainer.new()
+	# boîte de texte : feuille de washi en bas de l'écran (voir scripts/ui/ui_kit.gd)
+	var box := UIKit.PaperPanel.new(Vector2(40, 18), 14.0, 21.0, Color(0.96, 0.935, 0.87))
 	box.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
 	box.anchor_top = 1.0
-	box.offset_left = 120
-	box.offset_right = -120
-	box.offset_top = -230
-	box.offset_bottom = -36
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.94, 0.90, 0.82, 0.96)
-	sb.border_color = Color("#5A3A26")
-	sb.set_border_width_all(4)
-	sb.set_corner_radius_all(10)
-	sb.content_margin_left = 34
-	sb.content_margin_right = 34
-	sb.content_margin_top = 22
-	sb.content_margin_bottom = 18
-	box.add_theme_stylebox_override("panel", sb)
+	box.offset_left = 110
+	box.offset_right = -110
+	box.offset_top = -250
+	box.offset_bottom = -20
 	_root.add_child(box)
 	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 2)
 	box.add_child(v)
-	_name = Label.new()
-	_name.add_theme_font_size_override("font_size", 26)
-	_name.add_theme_color_override("font_color", Color("#C8442B"))
-	v.add_child(_name)
+	# plaque du nom : étiquette de la couleur du personnage, posée à cheval sur le bord de la feuille
+	_plate = PanelContainer.new()
+	_plate.anchor_top = 1.0
+	_plate.anchor_bottom = 1.0
+	_plate.offset_left = 170
+	_plate.offset_top = -248
+	_plate.offset_bottom = -208
+	_plate.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_plate_sb = StyleBoxFlat.new()
+	_plate_sb.bg_color = UIKit.VERMILION
+	_plate_sb.set_corner_radius_all(3)
+	_plate_sb.content_margin_left = 22
+	_plate_sb.content_margin_right = 22
+	_plate_sb.content_margin_top = 4
+	_plate_sb.content_margin_bottom = 6
+	_plate_sb.shadow_color = Color(0.1, 0.05, 0.02, 0.3)
+	_plate_sb.shadow_size = 4
+	_plate_sb.shadow_offset = Vector2(1, 3)
+	_plate.add_theme_stylebox_override("panel", _plate_sb)
+	_root.add_child(_plate)
+	_name = UIKit.label(_plate, "", "title", 24, Color("#FBF2DE"))
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 14)
+	v.add_child(spacer)
 	_text = RichTextLabel.new()
 	_text.bbcode_enabled = true
 	_text.fit_content = false
 	_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_text.add_theme_font_size_override("normal_font_size", 24)
-	_text.add_theme_color_override("default_color", Color("#2A2024"))
+	_text.add_theme_font_override("normal_font", UIKit.font("body"))
+	_text.add_theme_font_override("italics_font", UIKit.font("italic"))
+	_text.add_theme_font_override("bold_font", UIKit.font("body_bold"))
+	_text.add_theme_font_size_override("normal_font_size", 26)
+	_text.add_theme_font_size_override("italics_font_size", 26)
+	_text.add_theme_constant_override("line_separation", 4)
+	_text.add_theme_color_override("default_color", UIKit.INK)
 	v.add_child(_text)
-	_hint = Label.new()
-	_hint.text = "clic / Espace / E"
-	_hint.add_theme_font_size_override("font_size", 14)
-	_hint.add_theme_color_override("font_color", Color("#8A7A6A"))
+	_hint = UIKit.label(v, "›  clic, Espace ou E", "italic", 15, UIKit.INK_SOFT)
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	v.add_child(_hint)
 
 	_choices = VBoxContainer.new()
 	_choices.set_anchors_preset(Control.PRESET_CENTER)
-	_choices.position = Vector2(-300, -120)
-	_choices.custom_minimum_size = Vector2(600, 0)
-	_choices.add_theme_constant_override("separation", 10)
+	_choices.position = Vector2(-330, -140)
+	_choices.custom_minimum_size = Vector2(660, 0)
+	_choices.add_theme_constant_override("separation", 12)
 	_root.add_child(_choices)
 
 func _input(event: InputEvent) -> void:
@@ -134,8 +150,14 @@ var _last_expr := "neutre"
 func _show_speaker(speaker: String, expr: String) -> void:
 	var is_char := speaker != Story.PLAYER and speaker != Story.NARRATOR
 	_name.text = Story.display_name(speaker)
-	_name.visible = _name.text != ""
-	_text.add_theme_color_override("default_color", Color("#2A2024") if speaker != Story.NARRATOR else Color("#5E5048"))
+	_plate.visible = _name.text != ""
+	_plate_sb.bg_color = UIKit.INK_SOFT if speaker == Story.PLAYER else Story.color_of(speaker).darkened(0.25)
+	if speaker == Story.NARRATOR:
+		_text.add_theme_color_override("default_color", Color("#5E5048"))
+		_text.add_theme_font_override("normal_font", UIKit.font("italic"))
+	else:
+		_text.add_theme_color_override("default_color", UIKit.INK)
+		_text.add_theme_font_override("normal_font", UIKit.font("body"))
 	if is_char and (speaker != _last_char or expr != _last_expr):
 		_last_char = speaker
 		_last_expr = expr
@@ -226,12 +248,10 @@ func choose_gift(who: String, options: Array) -> String:
 func _pop_affection(changes: Array) -> void:
 	for ch in changes:
 		var d := int(ch["delta"])
-		var l := Label.new()
-		l.text = ("♥ +%d  " % d if d > 0 else "♡ %d  " % d) + Story.display_name(String(ch["character"]))
-		l.add_theme_font_size_override("font_size", 26)
-		l.add_theme_color_override("font_color", Color("#E0607A") if d > 0 else Color("#8C8496"))
-		l.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.9))
-		l.add_theme_constant_override("outline_size", 6)
+		var l := UIKit.label(null, ("♥ +%d  " % d if d > 0 else "♡ %d  " % d) + Story.display_name(String(ch["character"])),
+			"title", 28, Color("#D2475E") if d > 0 else Color("#8C8496"))
+		l.add_theme_color_override("font_outline_color", Color("#FBF6EA"))
+		l.add_theme_constant_override("outline_size", 8)
 		l.anchor_left = 1.0
 		l.anchor_right = 1.0
 		l.offset_left = -420
@@ -271,10 +291,8 @@ func _type(text: String) -> void:
 func _choose(choices: Array) -> Dictionary:
 	var state := {"done": false, "chosen": {}}   # un Dictionary : les lambdas ne modifient pas les variables locales capturées
 	for c in choices:
-		var b := Button.new()
-		b.text = String(c.get("text", "..."))
-		b.add_theme_font_size_override("font_size", 22)
-		b.custom_minimum_size = Vector2(600, 52)
+		var b := UIKit.choice_button(String(c.get("text", "...")))
+		b.custom_minimum_size = Vector2(660, 52)
 		b.pressed.connect(func():
 			state["chosen"] = c
 			state["done"] = true)

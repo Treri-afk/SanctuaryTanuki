@@ -8,7 +8,7 @@ extends RefCounted
 ## se sauvegarde pas : c'est voulu, une journée est courte et se rejoue entière.
 ##
 ## Contenu : histoire (affection, drapeaux, visites, ema, liens), pièces, poches, goûts découverts, carpes,
-## réserves de la boutique, lettres lues, découvertes, statistiques de la partie, tâches de la veille.
+## réserves de la boutique, décoration (possédée et posée), lettres lues, découvertes, statistiques de la partie, tâches de la veille.
 
 const SLOTS := 3
 const DIR := "user://saves/"
@@ -16,7 +16,7 @@ const VERSION := 1
 
 ## Champs de GameState sauvegardés tels quels.
 const STATE_FIELDS := ["affection", "flags", "visited", "coins", "ema_log", "missed", "gone", "met", "inventory",
-	"gift_known", "koi", "koi_state", "stock", "stats"]
+	"gift_known", "koi", "koi_state", "stock", "stats", "festival", "decor", "decor_placed"]
 
 ## Dossier des sauvegardes (les tests utilisent un dossier à part pour ne jamais toucher aux vraies parties).
 static func dir() -> String:

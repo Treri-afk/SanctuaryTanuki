@@ -1,4 +1,4 @@
-"""Module commun des scripts Blender de Gardien de sanctuaire.
+"""Module commun des scripts Blender de Tanuki Sanctuary.
 
 Usage dans un script de modele (depuis la racine du projet) :
 

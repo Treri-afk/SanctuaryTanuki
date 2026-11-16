@@ -11,6 +11,7 @@ const PAPER := Color("#EFE6D2")
 const WOOD := Color("#5A3A26")
 const RED := Color("#C8442B")
 const CREAM := Color("#F6EEDC")
+const LOGO := "res://assets/ui/logo.webp"
 
 var game: Node3D
 var title_active := false
@@ -47,48 +48,87 @@ func _ready() -> void:
 
 # ================================================================ style
 func _make_theme() -> Theme:
+	# kit d'interface commun (scripts/ui/ui_kit.gd) : boutons de bois, polices ; plus cases, curseurs, listes
 	var th := Theme.new()
-	var mk := func(bg: Color, border: Color) -> StyleBoxFlat:
-		var sb := StyleBoxFlat.new()
-		sb.bg_color = bg
-		sb.border_color = border
-		sb.set_border_width_all(2)
-		sb.set_corner_radius_all(6)
-		sb.content_margin_left = 22
-		sb.content_margin_right = 22
-		sb.content_margin_top = 8
-		sb.content_margin_bottom = 8
-		return sb
-	th.set_stylebox("normal", "Button", mk.call(WOOD, Color("#3E281A")))
-	th.set_stylebox("hover", "Button", mk.call(Color("#7A4E33"), Color("#E0B26A")))
-	th.set_stylebox("pressed", "Button", mk.call(Color("#3E281A"), Color("#E0B26A")))
-	th.set_stylebox("focus", "Button", mk.call(Color(0, 0, 0, 0), Color("#E0B26A")))
-	th.set_stylebox("disabled", "Button", mk.call(Color("#8C7F70"), Color("#6E6458")))
-	th.set_color("font_color", "Button", CREAM)
-	th.set_color("font_hover_color", "Button", Color.WHITE)
-	th.set_color("font_disabled_color", "Button", Color("#D6CCBC"))
-	th.set_font_size("font_size", "Button", 21)
+	th.merge_with(UIKit.theme())
+	th.set_font_size("font_size", "Button", 20)
 	th.set_color("font_color", "Label", INK)
 	th.set_font_size("font_size", "Label", 18)
+	th.set_font("font", "CheckBox", UIKit.font("body"))
 	th.set_color("font_color", "CheckBox", INK)
+	th.set_color("font_hover_color", "CheckBox", UIKit.VERMILION)
+	th.set_color("font_pressed_color", "CheckBox", INK)
 	th.set_font_size("font_size", "CheckBox", 18)
+	for st in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
+		th.set_stylebox(st, "CheckBox", StyleBoxEmpty.new())
+	th.set_icon("unchecked", "CheckBox", _check_icon(false))
+	th.set_icon("checked", "CheckBox", _check_icon(true))
 	th.set_font_size("font_size", "OptionButton", 18)
+	# curseurs : trait d'encre, partie remplie vermillon, poignée ronde
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color(0.36, 0.25, 0.18, 0.3)
+	track.set_corner_radius_all(3)
+	track.content_margin_top = 3
+	track.content_margin_bottom = 3
+	var fill := track.duplicate() as StyleBoxFlat
+	fill.bg_color = UIKit.VERMILION
+	th.set_stylebox("slider", "HSlider", track)
+	th.set_stylebox("grabber_area", "HSlider", fill)
+	th.set_stylebox("grabber_area_highlight", "HSlider", fill)
+	th.set_icon("grabber", "HSlider", _dot_icon(10, UIKit.LACQUER, UIKit.PAPER))
+	th.set_icon("grabber_highlight", "HSlider", _dot_icon(11, UIKit.VERMILION, UIKit.PAPER))
+	# listes déroulantes : papier
+	var pop := StyleBoxFlat.new()
+	pop.bg_color = UIKit.PAPER
+	pop.border_color = Color(0.36, 0.25, 0.18, 0.6)
+	pop.set_border_width_all(2)
+	pop.set_corner_radius_all(4)
+	pop.content_margin_left = 8
+	pop.content_margin_right = 8
+	pop.content_margin_top = 6
+	pop.content_margin_bottom = 6
+	th.set_stylebox("panel", "PopupMenu", pop)
+	var hov := StyleBoxFlat.new()
+	hov.bg_color = Color(0.75, 0.24, 0.16, 0.18)
+	th.set_stylebox("hover", "PopupMenu", hov)
+	th.set_font("font", "PopupMenu", UIKit.font("body"))
+	th.set_font_size("font_size", "PopupMenu", 18)
+	th.set_color("font_color", "PopupMenu", INK)
+	th.set_color("font_hover_color", "PopupMenu", UIKit.LACQUER)
 	return th
 
-func _paper(w: int) -> PanelContainer:
-	var p := PanelContainer.new()
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = PAPER
-	sb.border_color = WOOD
-	sb.set_border_width_all(4)
-	sb.set_corner_radius_all(8)
-	sb.content_margin_left = 36
-	sb.content_margin_right = 36
-	sb.content_margin_top = 26
-	sb.content_margin_bottom = 26
-	sb.shadow_color = Color(0, 0, 0, 0.4)
-	sb.shadow_size = 16
-	p.add_theme_stylebox_override("panel", sb)
+## Petite image ronde (poignée de curseur).
+func _dot_icon(r: int, col: Color, ring: Color) -> ImageTexture:
+	var n := r * 2 + 4
+	var img := Image.create(n, n, false, Image.FORMAT_RGBA8)
+	var c := Vector2(n / 2.0, n / 2.0)
+	for y in n:
+		for x in n:
+			var d := Vector2(x + 0.5, y + 0.5).distance_to(c)
+			var a := clampf(r + 0.5 - d, 0.0, 1.0)
+			var col2 := ring if d > r - 2.5 else col
+			img.set_pixel(x, y, Color(col2.r, col2.g, col2.b, a))
+	return ImageTexture.create_from_image(img)
+
+## Case à cocher : carré d'encre, rempli de vermillon avec un point clair quand elle est cochée.
+func _check_icon(on: bool) -> ImageTexture:
+	var n := 24
+	var img := Image.create(n, n, false, Image.FORMAT_RGBA8)
+	for y in n:
+		for x in n:
+			var edge := mini(mini(x, y), mini(n - 1 - x, n - 1 - y))
+			var col := Color(0, 0, 0, 0)
+			if edge >= 2 and edge <= 3:
+				col = Color(0.36, 0.25, 0.18, 0.9)
+			elif edge > 3 and on:
+				col = UIKit.VERMILION
+				if Vector2(x + 0.5, y + 0.5).distance_to(Vector2(12, 12)) < 3.5:
+					col = UIKit.PAPER
+			img.set_pixel(x, y, col)
+	return ImageTexture.create_from_image(img)
+
+func _paper(w: int) -> Container:
+	var p := UIKit.PaperPanel.new(Vector2(40, 28), 16.0, float(w % 17))
 	p.custom_minimum_size = Vector2(w, 0)
 	return p
 
@@ -100,12 +140,9 @@ func _center(c: Control) -> void:
 ## wrap_w > 0 : paragraphe qui revient à la ligne dans cette largeur (sinon une seule ligne : indispensable dans
 ## les grilles, où une étiquette à retour automatique n'a aucune largeur et s'écrit lettre par lettre).
 func _label(parent: Node, text: String, size: int, color := INK, outline := 0, wrap_w := 0) -> Label:
-	var l := Label.new()
-	l.text = text
-	l.add_theme_font_size_override("font_size", size)
-	l.add_theme_color_override("font_color", color)
+	var l := UIKit.label(null, text, "title" if size >= 28 else ("body_bold" if outline > 0 else "body"), size, color)
 	if outline > 0:
-		l.add_theme_color_override("font_outline_color", Color(0.1, 0.07, 0.08, 0.9))
+		l.add_theme_color_override("font_outline_color", Color(0.16, 0.1, 0.07, 0.88))
 		l.add_theme_constant_override("outline_size", outline)
 	if wrap_w > 0:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -113,13 +150,10 @@ func _label(parent: Node, text: String, size: int, color := INK, outline := 0, w
 	parent.add_child(l)
 	return l
 
-func _button(parent: Node, text: String, cb: Callable, w := 340) -> Button:
-	var b := Button.new()
-	b.text = text
+func _button(parent: Node, text: String, cb: Callable, w := 340, primary := false) -> Button:
+	var b := UIKit.button(text, primary)
 	b.custom_minimum_size = Vector2(w, 50)
-	b.pressed.connect(func():
-		Sfx.play(&"ui_click")
-		cb.call())
+	b.pressed.connect(func(): cb.call())
 	parent.add_child(b)
 	return b
 
@@ -158,28 +192,41 @@ func show_title() -> void:
 	_title.add_child(veil)
 	var col := VBoxContainer.new()
 	col.set_anchors_preset(Control.PRESET_LEFT_WIDE)
-	col.offset_left = 90
-	col.offset_top = 110
-	col.offset_right = 640
+	col.offset_left = 80
+	col.offset_top = 40
+	col.offset_right = 600
 	col.add_theme_constant_override("separation", 12)
 	_title.add_child(col)
-	_label(col, "Gardien", 72, CREAM, 10)
-	_label(col, "de sanctuaire", 44, Color("#F0D9A8"), 8)
-	_label(col, "Démo  ·  trois jours d'automne", 20, Color("#E6D8BE"), 5)
+	# logo du jeu (assets/ui/logo.webp), tel quel ; repli sur le titre en texte s'il manque
+	if ResourceLoader.exists(LOGO):
+		var logo := TextureRect.new()
+		logo.texture = load(LOGO)
+		logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		logo.custom_minimum_size = Vector2(460, 251)      # 1408 x 768 à l échelle
+		logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		col.add_child(logo)
+	else:
+		_label(col, "Tanuki Sanctuary", 60, CREAM, 10)
+	_label(col, "Démo  ·  cinq jours d'automne, jusqu'à la lune de Tsukimi", 20, Color("#E6D8BE"), 5)
 	var gap := Control.new()
-	gap.custom_minimum_size = Vector2(0, 36)
+	gap.custom_minimum_size = Vector2(0, 14)
 	col.add_child(gap)
 	var last := SaveGame.latest()
 	if last >= 0:
 		var inf := SaveGame.info(last)
-		_button(col, "Continuer  —  jour %d" % int(inf["day"]), func(): _launch_load(last))
-	_button(col, "Nouvelle partie", func(): _slots(true))
+		_button(col, "Continuer  —  jour %d" % int(inf["day"]), func(): _launch_load(last), 340, true)
+	_button(col, "Nouvelle partie", func(): _slots(true), 340, last < 0)
 	var load_b := _button(col, "Charger une partie", func(): _slots(false))
 	load_b.disabled = last < 0
 	_button(col, "Options", func(): _options())
 	_button(col, "Quitter", func(): get_tree().quit())
-	_label(col, "", 10)
-	_label(col, "Z Q S D : marcher   ·   souris : regarder   ·   E ou clic : agir   ·   Échap : pause", 15, Color("#E6D8BE"), 4)
+	# rappel des commandes, ancré en bas de l'écran (sous les boutons, il sortait de l'écran)
+	var keys := _label(_title, "Z Q S D : marcher   ·   souris : regarder   ·   E ou clic : agir   ·   Échap : pause", 15, Color("#E6D8BE"), 4)
+	keys.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	keys.offset_left = 80
+	keys.offset_top = -34
+	keys.offset_bottom = -12
 	# vue de la cour, lumière d'après-midi
 	game.atmosphere.set_phase(GameState.Phase.VISIT, true)
 	GameState.phase = GameState.Phase.VISIT
@@ -227,9 +274,10 @@ func _slots(new_game: bool) -> void:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 14)
 	panel.add_child(v)
-	_label(v, "Nouvelle partie" if new_game else "Charger une partie", 28, RED)
-	_label(v, "Choisissez un emplacement. La partie se sauvegarde chaque soir, après le journal." if new_game
-		else "Vous reprendrez au matin du jour enregistré.", 16, Color("#6A5A50"), 0, 640)
+	UIKit.sheet_header(v, "始" if new_game else "続", "Nouvelle partie" if new_game else "Charger une partie",
+		"Choisissez un emplacement. La partie se sauvegarde chaque soir, après le journal." if new_game
+		else "Vous reprendrez au matin du jour enregistré.")
+	v.add_child(UIKit.BrushRule.new(10))
 	for i in SaveGame.SLOTS:
 		var inf := SaveGame.info(i)
 		var row := HBoxContainer.new()
@@ -290,7 +338,8 @@ func _options() -> void:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 10)
 	panel.add_child(v)
-	_label(v, "Options", 28, RED)
+	UIKit.sheet_header(v, "設定", "Options")
+	v.add_child(UIKit.BrushRule.new(10))
 	var grid := GridContainer.new()
 	grid.columns = 3
 	grid.add_theme_constant_override("h_separation", 18)
@@ -396,9 +445,9 @@ func _pause_panel() -> void:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 12)
 	_pause.add_child(v)
-	_label(v, "Pause", 30, RED)
-	_label(v, "Jour %d — %s" % [GameState.day, GameState.PHASE_NAMES[GameState.phase]], 18, Color("#6A5A50"))
-	_button(v, "Reprendre", func(): close_pause())
+	UIKit.sheet_header(v, "休", "Pause", "Jour %d — %s" % [GameState.day, GameState.PHASE_NAMES[GameState.phase]])
+	v.add_child(UIKit.BrushRule.new(10))
+	_button(v, "Reprendre", func(): close_pause(), 340, true)
 	_button(v, "Options", func(): _options())
 	_button(v, "Retour à l'écran titre", _ask_title)
 	_button(v, "Quitter le jeu", _ask_quit)
@@ -426,7 +475,7 @@ func close_pause() -> void:
 func _set_end_choice(c: String) -> void:
 	_end_choice = c
 
-## Écran de fin : bilan des trois jours, personnes rencontrées, remerciements. Renvoie "title" ou "quit".
+## Écran de fin : bilan des jours de la démo (et des préparatifs de la fête), personnes rencontrées, remerciements. Renvoie "title" ou "quit".
 func show_end(summary: Dictionary) -> String:
 	_end_choice = "waiting"
 	game.hud.visible = false
@@ -436,57 +485,60 @@ func show_end(summary: Dictionary) -> String:
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.modulate.a = 0.0
 	_root.add_child(bg)
+	var sheet := UIKit.PaperPanel.new(Vector2(50, 22), 16.0, 31.0)
+	sheet.custom_minimum_size = Vector2(960, 0)
+	var center0 := CenterContainer.new()
+	center0.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.add_child(center0)
+	center0.add_child(sheet)
 	var box := VBoxContainer.new()
-	box.set_anchors_preset(Control.PRESET_CENTER)
-	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	box.grow_vertical = Control.GROW_DIRECTION_BOTH
-	box.custom_minimum_size = Vector2(900, 0)
-	box.add_theme_constant_override("separation", 6)
-	bg.add_child(box)
-	var t := _label(box, "Fin de la démo", 46, Color("#F0D9A8"), 6)
-	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var st := _label(box, "Trois jours d'automne au sanctuaire", 22, CREAM)
-	st.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 4)
+	sheet.add_child(box)
+	UIKit.sheet_header(box, "月", "Fin de la démo", "Cinq jours d'automne au sanctuaire, jusqu'à la lune de Tsukimi")
+	box.add_child(UIKit.BrushRule.new(10))
 	var sep := Control.new()
 	sep.custom_minimum_size = Vector2(0, 4)
 	box.add_child(sep)
 	var grid := GridContainer.new()
-	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 60)
-	grid.add_theme_constant_override("v_separation", 6)
+	grid.columns = 4               # deux colonnes de bilan côte à côte (avec les préparatifs de la fête)
+	grid.add_theme_constant_override("h_separation", 36)
+	grid.add_theme_constant_override("v_separation", 0)
 	var center := CenterContainer.new()
 	center.add_child(grid)
 	box.add_child(center)
 	for row in summary.get("lines", []):
-		_label(grid, String(row[0]), 20, Color("#D9CBB2"))
-		var vl := _label(grid, String(row[1]), 20, CREAM)
+		_label(grid, String(row[0]), 19, UIKit.INK_SOFT)
+		var vl := UIKit.label(grid, String(row[1]), "hand", 20, INK)
 		vl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	var people: Array = summary.get("people", [])
 	if not people.is_empty():
 		var s2 := Control.new()
 		s2.custom_minimum_size = Vector2(0, 10)
 		box.add_child(s2)
-		var h := _label(box, "Ceux qui sont montés jusqu'ici", 20, Color("#F0D9A8"))
+		var h := UIKit.label(box, "Ceux qui sont montés jusqu'ici", "hand", 20, UIKit.VERMILION)
 		h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		var pc := CenterContainer.new()
 		var pg := GridContainer.new()
-		pg.columns = 2
-		pg.add_theme_constant_override("h_separation", 40)
+		pg.columns = 4
+		pg.add_theme_constant_override("h_separation", 30)
+		pg.add_theme_constant_override("v_separation", 0)
 		pc.add_child(pg)
 		box.add_child(pc)
 		for p in people:
-			_label(pg, String(p[0]), 19, CREAM)
-			_label(pg, String(p[1]), 19, Color("#E07A8C"))
+			_label(pg, String(p[0]), 19, INK)
+			UIKit.label(pg, String(p[1]), "title", 19, Color("#C9405A"))
 	var s3 := Control.new()
 	s3.custom_minimum_size = Vector2(0, 6)
 	box.add_child(s3)
-	var thanks := _label(box, "Merci d'avoir veillé sur ce lieu.\nLa suite de l'automne — et de l'histoire de Seiji — viendra bientôt.", 19, Color("#D9CBB2"), 0, 860)
+	var thanks := UIKit.label(box, "Merci d'avoir veillé sur ce lieu. La suite de l'automne — et de l'histoire de Seiji — viendra bientôt.", "hand", 18, UIKit.INK_SOFT)
+	thanks.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	thanks.custom_minimum_size.x = 860
 	thanks.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 20)
 	box.add_child(row)
-	_button(row, "Retour à l'écran titre", _set_end_choice.bind("title"), 300)
+	_button(row, "Retour à l'écran titre", _set_end_choice.bind("title"), 300, true)
 	_button(row, "Quitter", _set_end_choice.bind("quit"), 200)
 	var tw := create_tween()
 	tw.tween_property(bg, "modulate:a", 1.0, 1.4)

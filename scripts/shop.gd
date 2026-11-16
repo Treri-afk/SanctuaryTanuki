@@ -9,6 +9,7 @@ extends Node
 ##               le lendemain (scripts/koi_pond.gd). Les granulés lancés sont dorés tant qu'il en reste.
 ##   omamori     objet de poche (inventaire) à offrir ; tout le monde l'apprécie (« aime », +1), sauf goût
 ##               contraire écrit dans l'éditeur d'histoire.
+##   déco        les objets de scripts/decor.gd (banc, bonsaï, lanterne...) : ils rejoignent la réserve à poser (B).
 ##   ema_vierge  on y écrit son propre vœu, accroché aussitôt au présentoir (un par jour).
 ##   priere_retour:<personnage>  n'apparaît que pour quelqu'un qui ne monte plus (son ema s'est brisé) :
 ##               il pourra revenir (GameState.bring_back).
@@ -23,6 +24,8 @@ const ITEMS := {
 		"desc": "Amulette brodée, dans son petit sachet de soie. Un cadeau que chacun apprécie."},
 	"ema_vierge": {"name": "Ema vierge", "price": 1, "color": "#C9A06A",
 		"desc": "Une plaquette de bois à votre vœu. Écrivez-le, elle rejoint le présentoir."},
+	"dango": {"name": "Dango de lune", "price": 3, "color": "#F4EFE4", "festival": true,
+		"desc": "Boulettes de riz blanches, empilées pour la lune. Pour la table d'offrandes de Tsukimi."},
 }
 const RETURN_PRICE := 6
 const COUNTER := Vector3(-17.35, 0.0, -3.05)    # devant le comptoir du bureau (si le repère du modèle manque)
@@ -86,6 +89,8 @@ func catalog() -> Array:
 	var rows := []
 	for id in ITEMS:
 		var it: Dictionary = ITEMS[id]
+		if bool(it.get("festival", false)) and not Festival.announced():
+			continue   # vendu seulement quand la fête est annoncée
 		var row := {"id": id, "name": it["name"], "desc": it["desc"], "price": int(it["price"]), "note": "", "ok": true, "why": ""}
 		match id:
 			"encens", "granules":
@@ -94,8 +99,8 @@ func catalog() -> Array:
 				if n >= int(it["max"]):
 					row["ok"] = false
 					row["why"] = "Réserve pleine"
-			"omamori":
-				row["note"] = "dans vos poches : %d" % GameState.item_count("omamori")
+			"omamori", "dango":
+				row["note"] = "dans vos poches : %d" % GameState.item_count(id)
 				if GameState.inventory_total() >= GameState.INVENTORY_MAX:
 					row["ok"] = false
 					row["why"] = "Poches pleines"
@@ -104,6 +109,14 @@ func catalog() -> Array:
 					row["ok"] = false
 					row["why"] = "Un vœu par jour"
 		rows.append(row)
+	# décoration (scripts/decor.gd) : on la pose ensuite où l'on veut avec B
+	for id in Decor.ITEMS:
+		var d: Dictionary = Decor.ITEMS[id]
+		if int(d.get("price", -1)) < 0:
+			continue
+		var have := Decor.owned(id) + Decor.placed_count(id)
+		rows.append({"id": id, "name": d["name"], "desc": d["desc"], "price": int(d["price"]), "color": d["color"],
+			"note": "déco  ·  vous en avez %d" % have if have > 0 else "déco", "ok": true, "why": ""})
 	for who in GameState.gone:
 		if GameState.gone[who]:
 			rows.append({"id": "priere_retour:" + String(who), "name": "Prière de retour — %s" % Story.display_name(who),
@@ -136,8 +149,8 @@ func _buy(id: String) -> void:
 	match id:
 		"encens", "granules":
 			GameState.stock[id] = int(GameState.stock.get(id, 0)) + 1
-		"omamori":
-			if not GameState.add_item("omamori"):
+		"omamori", "dango":
+			if not GameState.add_item(id):
 				GameState.add_coins(price)       # poches pleines : on rend la monnaie
 		"ema_vierge":
 			var wish: String = await game.hud.ask_text("Votre vœu, sur l'ema", "Que la montagne...", 48)
@@ -148,7 +161,9 @@ func _buy(id: String) -> void:
 			_ema_day = GameState.day
 			game.extras.hang_player_ema(wish)
 		_:
-			if id.begins_with("priere_retour:"):
+			if Decor.ITEMS.has(id):
+				Decor.give(id)
+			elif id.begins_with("priere_retour:"):
 				var who := id.trim_prefix("priere_retour:")
 				GameState.bring_back(who)
 				game.extras.refresh_visitor_ema()

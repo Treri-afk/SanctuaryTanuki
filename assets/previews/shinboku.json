@@ -1,0 +1,29 @@
+{
+  "name": "shinboku",
+  "triangles": 10444,
+  "dims_xyz_m": [
+    10.571,
+    10.822,
+    24.01
+  ],
+  "min_z": -0.01,
+  "center_xy": [
+    -0.077,
+    0.367
+  ],
+  "collisions": [
+    "trunk-col"
+  ],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [],
+  "tris_per_object": {
+    "trunk": 940,
+    "foliage": 5520,
+    "rope": 3984,
+    "trunk-col": 36
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/shinboku.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/shinboku.png"
+}

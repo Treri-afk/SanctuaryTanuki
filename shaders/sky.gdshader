@@ -17,6 +17,10 @@ uniform float cloud_speed = 0.006;
 uniform float sun_size = 1.6;          // degres
 uniform float sun_glow = 0.6;
 uniform float horizon_height = 0.06;
+// la nuit, la « lumiere du soleil » est la lune : disque creme avec ses mers, halo froid (moon = 0 le jour)
+uniform float moon = 0.0;
+uniform float moon_size = 1.9;         // degres
+uniform vec4 moon_color : source_color = vec4(1.0, 0.96, 0.86, 1.0);
 uniform sampler2D cloud_noise : filter_linear_mipmap, repeat_enable;
 
 float sky_fbm(vec2 p) {
@@ -67,7 +71,22 @@ void sky() {
 	// disque du soleil (devant les nuages fins, derriere les epais)
 	float disc = smoothstep(cos(radians(sun_size)), cos(radians(sun_size * 0.82)), sdot);
 	if (!AT_CUBEMAP_PASS) {
-		col = mix(col, sun_glow_color.rgb * 3.0 + vec3(0.6), disc * smoothstep(-0.02, 0.01, y) * sun_glow);
+		col = mix(col, sun_glow_color.rgb * 3.0 + vec3(0.6), disc * smoothstep(-0.02, 0.01, y) * sun_glow * (1.0 - moon));
+	}
+	if (moon > 0.0) {
+		float r = radians(moon_size);
+		col += moon_color.rgb * (pow(s, 1800.0 / (moon_size * moon_size)) * 0.35 + pow(s, 40.0) * 0.05) * moon;
+		if (!AT_CUBEMAP_PASS) {
+			float md = smoothstep(cos(r), cos(r * 0.94), sdot);
+			// coordonnees dans le disque (-1..1) pour placer les mers sombres
+			vec3 t1 = normalize(cross(sd, vec3(0.0, 1.0, 0.0)));
+			vec3 t2 = cross(t1, sd);
+			vec2 q = vec2(dot(d, t1), dot(d, t2)) / sin(r);
+			float mare = textureLod(cloud_noise, q * 0.32 + vec2(0.37, 0.21), 0.0).r;
+			float limb = 1.0 - 0.12 * dot(q, q);
+			vec3 mc = moon_color.rgb * limb * (1.0 - 0.2 * smoothstep(0.5, 0.68, mare));
+			col = mix(col, mc * 1.5, md * moon * smoothstep(-0.02, 0.01, y));
+		}
 	}
 
 	if (y < 0.0) {

@@ -1,0 +1,26 @@
+{
+  "name": "cork_gun",
+  "triangles": 319,
+  "dims_xyz_m": [
+    0.06,
+    0.646,
+    0.119
+  ],
+  "min_z": -0.089,
+  "center_xy": [
+    0.0,
+    0.018
+  ],
+  "collisions": [],
+  "materials": [
+    "tree_vcol"
+  ],
+  "warnings": [
+    "origine pas au sol (min z = -0.089)"
+  ],
+  "tris_per_object": {
+    "gun": 319
+  },
+  "glb": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/models/cork_gun.glb",
+  "preview": "/Users/moi/Documents/VS Code project/SanctuaryTanuki/assets/previews/cork_gun.png"
+}

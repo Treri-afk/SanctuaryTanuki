@@ -222,6 +222,8 @@
         return "possède " + GS.itemName(story, c.item) + " " + c.op + " " + c.value;
       case "coins":
         return "pièces " + c.op + " " + c.value;
+      case "festival":
+        return "fête : " + (GS.PREPS[c.prep || ""] || c.prep) + " " + c.op + " " + c.value;
     }
     return "?";
   };
@@ -256,7 +258,7 @@
       const where = { visit: v.id };
       if (visitIds.has(v.id)) out.push({ level: "err", ...where, msg: "Identifiant de visite en double : " + v.id });
       visitIds.add(v.id);
-      if (v.kind !== "night" && !chars.has(v.character)) out.push({ level: "err", ...where, msg: "Personnage inconnu : « " + v.character + " »" });
+      if (v.kind !== "night" && v.character !== GS.NARRATOR && !chars.has(v.character)) out.push({ level: "err", ...where, msg: "Personnage inconnu : « " + v.character + " »" });
       if (!v.nodes[v.start]) out.push({ level: "err", ...where, msg: "Pas de noeud de départ." });
       if (v.day_min && v.day_max && v.day_min > v.day_max) out.push({ level: "err", ...where, msg: "Jour minimum après le jour maximum." });
       scanConds(v.conditions, where);
@@ -325,6 +327,10 @@
     return { day: 1, affection: aff, flags: {}, visited: {}, coins: +(story.settings.start_coins || 0), items: {} };
   };
 
+  // préparatifs de la fête (condition « festival », voir scripts/festival.gd) ; "" = nombre de préparatifs terminés
+  GS.PREPS = { "": "préparatifs terminés", lanternes: "lanternes accrochées", nobori: "banderoles plantées",
+    offrandes: "offrandes déposées", "offrandes.dango": "dango déposés", invitations: "personnes invitées" };
+
   const cmp = (a, op, b) => ({ ">=": a >= b, "<=": a <= b, ">": a > b, "<": a < b, "==": a === b, "!=": a !== b }[op]);
 
   GS.check = function (conds, st) {
@@ -335,6 +341,7 @@
       if (c.type === "visited" && !!st.visited[c.visit] !== (c.is !== false)) return false;
       if (c.type === "item" && !cmp(+((st.items || {})[c.item] || 0), c.op, +c.value)) return false;
       if (c.type === "coins" && !cmp(+(st.coins || 0), c.op, +c.value)) return false;
+      if (c.type === "festival" && !cmp(+((st.festival || {})[c.prep || ""] || 0), c.op, +c.value)) return false;
     }
     return true;
   };
